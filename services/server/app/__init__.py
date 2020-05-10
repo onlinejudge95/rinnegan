@@ -1,11 +1,12 @@
 from flask import Flask
+import simplejson as json
 
 
 def create_app():
     app = Flask(__name__)
 
-    @app.route("/")
+    @app.route("/health")
     def index():
-        return "Hello, World!"
+        return json.dumps({"health": "good"})
 
     return app
