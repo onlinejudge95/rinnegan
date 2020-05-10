@@ -3,7 +3,7 @@ import simplejson as json
 from app.config import cfg_map
 
 
-def create_app(environemnt=None):
+def create_app(environemnt):
     app = Flask(__name__)
     app.config.from_object(cfg_map[environemnt])
 
