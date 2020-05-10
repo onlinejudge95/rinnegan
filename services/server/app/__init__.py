@@ -1,5 +1,5 @@
 from flask import Flask
-import simplejson as json
+
 from app.config import cfg_map
 
 
@@ -11,8 +11,8 @@ def create_app(environemnt):
     def ctx():
         return {"app": app}
 
-    @app.route("/health")
-    def index():
-        return json.dumps({"health": "good"})
+    from app.api import api
+
+    api.init_app(app)
 
     return app
