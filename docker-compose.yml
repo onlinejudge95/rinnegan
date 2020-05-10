@@ -32,6 +32,8 @@ services:
       - backend
     ports:
       - 8000:5000
+    volumes:
+      - ./services/server:/usr/src/app
     build:
       context: ./services/server/
       dockerfile: dev.Dockerfile

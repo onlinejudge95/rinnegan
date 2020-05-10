@@ -16,4 +16,4 @@ COPY . .
 
 RUN chmod +x entrypoint.sh
 
-CMD [ "python", "manage.py" ]
+CMD [ "python", "manage.py", "run", "-h", "0.0.0.0" ]

@@ -5,3 +5,6 @@ env/
 
 # database
 services/db/data/
+
+# caches
+__pycache__/
