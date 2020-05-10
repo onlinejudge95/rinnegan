@@ -3,7 +3,7 @@ version: "3.7"
 networks:
   backend:
     driver: bridge
-    name: backend
+    name: sentimental-backend
 
 services:
   postgres:
