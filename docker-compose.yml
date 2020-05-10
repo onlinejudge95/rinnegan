@@ -1,0 +1,22 @@
+version: "3.7"
+
+networks:
+  backend:
+    driver: bridge
+    name: sentimental-backend
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    env_file:
+      - .env
+    expose:
+      - 5432
+    networks:
+      - backend
+    volumes:
+      - ./services/db/data:/var/lib/postgresql/data/
+    build:
+      context: ./services/db/
+      dockerfile: Dockerfile
