@@ -1,1 +1,1 @@
-Flask
+black==19.10b0
