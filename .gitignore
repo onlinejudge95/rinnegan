@@ -9,3 +9,6 @@ services/db/data/
 # caches
 __pycache__/
 .pytest_cache/
+
+# editor configs
+.vscode/
