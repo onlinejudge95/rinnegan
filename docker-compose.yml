@@ -10,7 +10,7 @@ services:
     container_name: postgres
     image: postgres
     env_file:
-      - .env
+      - ./services/db/.env
     expose:
       - 5432
     networks:
@@ -20,3 +20,20 @@ services:
     build:
       context: ./services/db/
       dockerfile: Dockerfile
+
+  server:
+    container_name: server
+    image: server
+    depends_on:
+      - postgres
+    env_file:
+      - ./services/server/.env
+    networks:
+      - backend
+    ports:
+      - 8000:5000
+    volumes:
+      - ./services/server:/usr/src/app
+    build:
+      context: ./services/server/
+      dockerfile: dev.Dockerfile
