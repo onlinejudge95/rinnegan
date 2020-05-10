@@ -1,2 +1,7 @@
+# environments
 node_modules/
 env/
+.env
+
+# database
+services/db/data/
