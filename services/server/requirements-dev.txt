@@ -1,2 +1,10 @@
+Flask==1.1.2
+Flask-RESTX==0.2.0
+Flask-SQLAlchemy==2.4.1
+Flask-Bcrypt==0.7.1
+PyJWT==1.7.1
+
 black==19.10b0
 pytest==5.4.2
+
+psycopg2-binary==2.8.5

@@ -1,12 +1,21 @@
 import functools
 from flask import Flask, request, abort
+from flask_bcrypt import Bcrypt
+from flask_sqlalchemy import SQLAlchemy
 
 from app.config import cfg_map
+
+
+db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 
 def create_app(environemnt):
     app = Flask(__name__)
     app.config.from_object(cfg_map[environemnt])
+
+    db.init_app(app)
+    bcrypt.init_app(app)
 
     from app.api import api
 

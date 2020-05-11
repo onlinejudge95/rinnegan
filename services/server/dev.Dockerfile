@@ -9,7 +9,6 @@ COPY ./requirements.txt .
 COPY ./requirements-dev.txt .
 
 RUN pip install --upgrade pip setuptools wheel && \
-    pip install --requirement requirements.txt && \
     pip install --requirement requirements-dev.txt
 
 COPY . .
