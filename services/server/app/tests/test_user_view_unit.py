@@ -124,3 +124,30 @@ def test_add_user_empty_data(test_app):
 
     data = response.get_json()
     assert "define a Content-Type header" in data["message"]
+
+
+# Test fetching user list passes
+def test_get_users(test_app, monkeypatch):
+    def mock_get_all_users():
+        return [
+            {"id": 1, "username": "test_user_one", "email": "test_user_one@mail.com"},
+            {"id": 2, "username": "test_user_two", "email": "test_user_two@mail.com"},
+        ]
+
+    monkeypatch.setattr(app.api.users.views, "get_all_users", mock_get_all_users)
+
+    client = test_app.test_client()
+    response = client.get("/users", headers={"Accept": "application/json"})
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+
+    assert len(data) == 2
+    assert "test_user_one" in data[0]["username"]
+    assert "test_user_one@mail.com" in data[0]["email"]
+    assert not "password" in data[0]
+
+    assert "test_user_two" in data[1]["username"]
+    assert "test_user_two@mail.com" in data[1]["email"]
+    assert not "password" in data[1]

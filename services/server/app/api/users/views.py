@@ -1,11 +1,11 @@
-from app.api.users.crud import get_user_by_email, add_user
+from app.api.users.crud import get_user_by_email, add_user, get_all_users
 from flask import request, abort
 from flask_restx import Namespace, Resource, fields
 
 users_namespace = Namespace("users")
 
-user_model = users_namespace.model(
-    "User",
+user_readable = users_namespace.model(
+    "Existing-User",
     {
         "id": fields.Integer(readOnly=True),
         "username": fields.String(required=True),
@@ -13,17 +13,18 @@ user_model = users_namespace.model(
     },
 )
 
-user_post_model = users_namespace.inherit(
-    "User Create", user_model, {"password": fields.String(required=True)}
+user_writable = users_namespace.inherit(
+    "New-User", user_readable, {"password": fields.String(required=True)}
 )
 
 
 class UsersList(Resource):
-    @users_namespace.expect(user_post_model, validate=True)
+    @staticmethod
+    @users_namespace.expect(user_writable, validate=True)
     @users_namespace.response(
         400, "Sorry.The provided email <user_email> is already registered"
     )
-    def post(self):
+    def post():
         request_data = request.get_json()
         response = dict()
 
@@ -40,6 +41,11 @@ class UsersList(Resource):
         response["id"] = user_id
         response["message"] = f"{request_data['email']} was added"
         return response, 201
+
+    @staticmethod
+    @users_namespace.marshal_with(user_readable, as_list=True)
+    def get():
+        return get_all_users(), 200
 
 
 users_namespace.add_resource(UsersList, "")

@@ -11,3 +11,7 @@ def add_user(username, email, password):
     db.session.add(user)
     db.session.commit()
     return user.id
+
+
+def get_all_users():
+    return User.query.all()
