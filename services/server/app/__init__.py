@@ -27,7 +27,7 @@ def create_app(environemnt):
 
     @app.before_request
     def check_headers(*args, **kwargs):
-        if request.path != "/swagger":
+        if "swagger" not in request.path:
             accepts = request.headers.get("Accept")
             if not accepts or accepts != "application/json":
                 abort(415, "Only content type supported is application/json")
