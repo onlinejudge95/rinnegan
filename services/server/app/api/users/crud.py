@@ -3,7 +3,7 @@ from app.api.users.models import User
 
 
 def get_user_by_email(email):
-    pass
+    return User.query.filter_by(email=email).first()
 
 
 def add_user(username, email, password):

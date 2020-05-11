@@ -20,10 +20,19 @@ user_post_model = users_namespace.inherit(
 
 class UsersList(Resource):
     @users_namespace.expect(user_post_model, validate=True)
-    @users_namespace.response(400, "Sorry.The provided email is already registered")
+    @users_namespace.response(
+        400, "Sorry.The provided email <user_email> is already registered"
+    )
     def post(self):
         request_data = request.get_json()
         response = dict()
+
+        user_exists = get_user_by_email(request_data["email"])
+        if user_exists:
+            response[
+                "message"
+            ] = f"Sorry.The provided email {request_data['email']} is already registered"
+            return response, 400
 
         user_id = add_user(
             request_data["username"], request_data["email"], request_data["password"]

@@ -50,7 +50,7 @@ def test_add_user_empty_data(test_app):
 
 
 # Test user creation fails due to invalid data
-def test_add_user_empty_data(test_app):
+def test_add_user_invalid_data(test_app):
     client = test_app.test_client()
     response = client.post(
         "/users",
@@ -64,9 +64,12 @@ def test_add_user_empty_data(test_app):
 
 
 # Test user creation fails due to duplicate entry
-def test_add_user_empty_data(test_app, monkeypatch):
+def test_add_user_duplicate_email(test_app, monkeypatch):
     def mock_get_user_by_email(email):
         return None
+
+    def mock_get_user_by_email_fail(email):
+        return True
 
     def mock_add_user(username, email, password):
         return 1
@@ -89,6 +92,9 @@ def test_add_user_empty_data(test_app, monkeypatch):
         ),
         headers={"Accept": "application/json", "Content-Type": "application/json"},
     )
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_email", mock_get_user_by_email_fail
+    )
     response = client.post(
         "/users",
         data=json.dumps(
@@ -103,7 +109,7 @@ def test_add_user_empty_data(test_app, monkeypatch):
     assert response.status_code == 400
 
     data = response.get_json()
-    assert "email is already registered" in data["message"]
+    assert "test_user@email.com is already registered" in data["message"]
 
 
 # Test user creation fails due to invalid content-type header
