@@ -23,13 +23,19 @@ def create_app(environemnt):
 
     @app.shell_context_processor
     def ctx():
-        return {"app": app}
+        return {"app": app, "db": db}
 
     @app.before_request
     def check_headers(*args, **kwargs):
-        accepts = request.headers.get("Accept")
-
-        if not accepts or accepts != "application/json":
-            abort(415, "Only content type supported is application/json")
+        if request.path != "/swagger":
+            accepts = request.headers.get("Accept")
+            if not accepts or accepts != "application/json":
+                abort(415, "Only content type supported is application/json")
+            if request.method in ["POST", "PATCH"]:
+                content_type = request.headers.get("Content-Type")
+                if not content_type or content_type != "application/json":
+                    abort(
+                        415, "POST & PATCH requests should define a Content-Type header"
+                    )
 
     return app
