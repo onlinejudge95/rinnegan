@@ -33,5 +33,4 @@ def test_health_check_fails_invalid_headers(test_app):
     assert response.status_code == 415
 
     data = response.get_json()
-
     assert "application/json" in data["message"]

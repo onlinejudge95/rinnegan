@@ -11,11 +11,10 @@ class Health(Resource):
     def get(self):
         try:
             with open(app.config["HEALTHCHECK_FILE_PATH"], "r") as fp:
-                _ = fp.read()
+                health = fp.read().strip()
+                return json.dumps({"health": health}), 200
         except IOError:
             return json.dumps({"health": "bad"}), 404
-        else:
-            return json.dumps({"health": "good"}), 200
 
 
 health_namespace.add_resource(Health, "")
