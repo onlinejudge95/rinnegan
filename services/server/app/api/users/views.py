@@ -3,6 +3,7 @@ from app.api.users.crud import (
     add_user,
     get_all_users,
     get_user_by_id,
+    remove_user,
 )
 from flask import request, abort
 from flask_restx import Namespace, Resource, fields
@@ -57,7 +58,7 @@ class UsersList(Resource):
 class UsersDetail(Resource):
     @staticmethod
     @users_namespace.marshal_with(user_readable)
-    @users_namespace.response(400, "User <user_id> does not exist")
+    @users_namespace.response(404, "User <user_id> does not exist")
     def get(user_id):
         user = get_user_by_id(user_id)
         response = dict()
@@ -66,6 +67,17 @@ class UsersDetail(Resource):
             users_namespace.abort(404, f"User {user_id} does not exist")
 
         return user, 200
+
+    @staticmethod
+    @users_namespace.response(404, "User <user_id> does not exist")
+    def delete(user_id):
+        user = get_user_by_id(user_id)
+
+        if not user:
+            users_namespace.abort(404, f"User {user_id} does not exist")
+
+        remove_user(user)
+        return dict(), 204
 
 
 users_namespace.add_resource(UsersList, "")

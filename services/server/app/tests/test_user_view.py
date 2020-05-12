@@ -142,10 +142,32 @@ def test_single_user(test_app, test_database, add_user):
 
 
 # Test fetching single user fails due to incorrect id
-def test_single_user(test_app, test_database):
+def test_single_user_invalid_id(test_app, test_database):
     client = test_app.test_client()
 
     response = client.get(f"/users/1", headers={"Accept": "application/json"})
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]
+
+
+# Test removing a user passes
+def test_remove_user(test_app, test_database, add_user):
+    user = add_user("test_user", "test_user@mail.com", "test_password")
+    client = test_app.test_client()
+
+    response = client.delete(
+        f"/users/{user.id}", headers={"Accept": "application/json"}
+    )
+    assert response.status_code == 204
+
+
+# Test removing a user fails due to invalid id
+def test_remove_user_invalid_id(test_app, test_database, add_user):
+    client = test_app.test_client()
+
+    response = client.delete(f"/users/1", headers={"Accept": "application/json"})
     assert response.status_code == 404
 
     data = response.get_json()

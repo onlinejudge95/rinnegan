@@ -186,3 +186,45 @@ def test_single_user_invalid_id(test_app, monkeypatch):
 
     data = response.get_json()
     assert "does not exist" in data["message"]
+
+
+# Test removing a user passes
+def test_remove_user(test_app, monkeypatch):
+    class MockDict(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockDict, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+    def mock_get_user_by_id(user_id):
+        mock_user = MockDict()
+        mock_user.update(
+            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
+        )
+        return mock_user
+
+    def mock_remove_user(user):
+        return True
+
+    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(app.api.users.views, "remove_user", mock_remove_user)
+
+    client = test_app.test_client()
+
+    response = client.delete(f"/users/1", headers={"Accept": "application/json"})
+    assert response.status_code == 204
+
+
+# Test removing a user fails due to invalid id
+def test_remove_user_invalid_id(test_app, monkeypatch):
+    def mock_get_user_by_id(user_id):
+        return None
+
+    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+
+    client = test_app.test_client()
+
+    response = client.delete(f"/users/1", headers={"Accept": "application/json"})
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]

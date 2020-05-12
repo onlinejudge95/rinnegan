@@ -8,14 +8,14 @@ app = create_app(os.getenv("FLASK_ENV"))
 cli = FlaskGroup()
 
 
-@cli.command("flush")
+@cli.command("flush", help="Recreate the database")
 def flush():
     db.drop_all()
     db.create_all()
     db.session.commit()
 
 
-@cli.command("seed")
+@cli.command("seed", help="Seeds the database with some initial data")
 def seed():
     db.session.add(
         User(
