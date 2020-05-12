@@ -113,7 +113,7 @@ def test_add_user_duplicate_email(test_app, monkeypatch):
 
 
 # Test user creation fails due to invalid content-type header
-def test_add_user_empty_data(test_app):
+def test_add_user_invalid_header(test_app):
     client = test_app.test_client()
     response = client.post(
         "/users",
@@ -228,3 +228,115 @@ def test_remove_user_invalid_id(test_app, monkeypatch):
 
     data = response.get_json()
     assert "does not exist" in data["message"]
+
+
+# Test update a user passes
+def test_update_user(test_app, monkeypatch):
+    class MockDict(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockDict, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+    def mock_get_user_by_id(user_id):
+        mock_user = MockDict()
+        mock_user.update(
+            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
+        )
+        return mock_user
+
+    def mock_update_user(user, username, email):
+        mock_user = MockDict()
+        mock_user.update({"id": 1, "username": username, "email": email})
+        return mock_user
+
+    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(app.api.users.views, "update_user", mock_update_user)
+
+    client = test_app.test_client()
+
+    response = client.put(
+        "/users/1",
+        data=json.dumps(
+            {"username": "test_user_update", "email": "test_user_update@mail.com"}
+        ),
+        headers={"Accept": "application/json", "Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data["id"] == 1
+    assert data["username"] == "test_user_update"
+    assert data["email"] == "test_user_update@mail.com"
+
+
+# Test update a user fails due to empty data
+def test_update_user_empty_data(test_app, monkeypatch):
+    class MockDict(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockDict, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+    def mock_get_user_by_id(user_id):
+        mock_user = MockDict()
+        mock_user.update(
+            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
+        )
+        return mock_user
+
+    def mock_update_user(user, username, email):
+        mock_user = MockDict()
+        mock_user.update({"id": 1, "username": username, "email": email})
+        return mock_user
+
+    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(app.api.users.views, "update_user", mock_update_user)
+
+    client = test_app.test_client()
+
+    response = client.put(
+        "/users/1",
+        data=json.dumps({}),
+        headers={"Accept": "application/json", "Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 400
+
+    data = response.get_json()
+    assert "Input payload validation failed" in data["message"]
+
+
+# Test update a user fails due to invalid id
+def test_update_user_invalid_id(test_app, monkeypatch):
+    def mock_get_user_by_id(user_id):
+        return None
+
+    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+
+    client = test_app.test_client()
+    response = client.put(
+        "/users/10",
+        data=json.dumps(
+            {"username": "test_user_update", "email": "test_user_update@mail.com"}
+        ),
+        headers={"Accept": "application/json", "Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]
+
+
+# Test update a user fails due to invalid headers
+def test_update_user_invalid_headers(test_app, monkeypatch):
+    client = test_app.test_client()
+    response = client.put(
+        "/users",
+        data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Accept": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "define a Content-Type header" in data["message"]

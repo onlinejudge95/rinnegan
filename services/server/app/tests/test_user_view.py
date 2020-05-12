@@ -1,4 +1,5 @@
 import json
+import pytest
 
 # Test user creation passes
 def test_add_user(test_app, test_database):
@@ -172,3 +173,76 @@ def test_remove_user_invalid_id(test_app, test_database, add_user):
 
     data = response.get_json()
     assert "does not exist" in data["message"]
+
+
+# Test update a user passes
+def test_update_user(test_app, test_database, add_user):
+    user = add_user("test_user", "test_user@mail.com", "test_password")
+
+    client = test_app.test_client()
+
+    response = client.put(
+        f"/users/{user.id}",
+        data=json.dumps(
+            {"username": "test_user_update", "email": "test_user_update@mail.com"}
+        ),
+        headers={"Accept": "application/json", "Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data["id"] == 1, data
+    assert data["username"] == "test_user_update"
+    assert data["email"] == "test_user_update@mail.com"
+
+
+# Test update a user fails due to empty data
+def test_update_user_empty_data(test_app, test_database, add_user):
+    user = add_user("test_user", "test_user@mail.com", "test_password")
+
+    client = test_app.test_client()
+
+    response = client.put(
+        f"/users/{user.id}",
+        data=json.dumps({}),
+        headers={"Accept": "application/json", "Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 400
+
+    data = response.get_json()
+    assert "Input payload validation failed" in data["message"]
+
+
+# Test update a user fails due to invalid id
+def test_update_user_invalid_id(test_app, test_database, add_user):
+    client = test_app.test_client()
+    response = client.put(
+        "/users/10",
+        data=json.dumps(
+            {"username": "test_user_update", "email": "test_user_update@mail.com"}
+        ),
+        headers={"Accept": "application/json", "Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]
+
+
+# Test update a user fails due to invalid headers
+def test_update_user_invalid_headers(test_app, test_database, add_user):
+    user = add_user("test_user", "test_user@mail.com", "test_password")
+
+    client = test_app.test_client()
+    response = client.put(
+        "/users",
+        data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Accept": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "define a Content-Type header" in data["message"]

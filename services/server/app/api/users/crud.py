@@ -24,3 +24,10 @@ def get_user_by_id(user_id):
 def remove_user(user):
     db.session.delete(user)
     db.session.commit()
+
+
+def update_user(user, username, email):
+    user.username = username
+    user.email = email
+    db.session.commit()
+    return user

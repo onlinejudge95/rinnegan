@@ -31,7 +31,7 @@ def create_app(environemnt):
             accepts = request.headers.get("Accept")
             if not accepts or accepts != "application/json":
                 abort(415, "Only content type supported is application/json")
-            if request.method in ["POST", "PATCH"]:
+            if request.method in ["POST", "PUT"]:
                 content_type = request.headers.get("Content-Type")
                 if not content_type or content_type != "application/json":
                     abort(

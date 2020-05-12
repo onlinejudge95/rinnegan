@@ -4,6 +4,7 @@ from app.api.users.crud import (
     get_all_users,
     get_user_by_id,
     remove_user,
+    update_user,
 )
 from flask import request, abort
 from flask_restx import Namespace, Resource, fields
@@ -54,7 +55,6 @@ class UsersList(Resource):
         return get_all_users(), 200
 
 
-# @users_namespace.param("user_id")
 class UsersDetail(Resource):
     @staticmethod
     @users_namespace.marshal_with(user_readable)
@@ -78,6 +78,24 @@ class UsersDetail(Resource):
 
         remove_user(user)
         return dict(), 204
+
+    @staticmethod
+    @users_namespace.expect(user_readable, validate=True)
+    @users_namespace.marshal_with(user_readable)
+    @users_namespace.response(404, "User <user_id> does not exist")
+    def put(user_id):
+        request_data = request.get_json()
+
+        user = get_user_by_id(user_id)
+
+        if not user:
+            users_namespace.abort(404, f"User {user_id} does not exist")
+
+        updated_user = update_user(
+            user, request_data["username"], request_data["email"]
+        )
+
+        return updated_user, 200
 
 
 users_namespace.add_resource(UsersList, "")
