@@ -151,3 +151,38 @@ def test_get_users(test_app, monkeypatch):
     assert "test_user_two" in data[1]["username"]
     assert "test_user_two@mail.com" in data[1]["email"]
     assert not "password" in data[1]
+
+
+# Test fetching single user passes
+def test_single_user(test_app, monkeypatch):
+    def mock_get_user_by_id(user_id):
+        return {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
+
+    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+
+    client = test_app.test_client()
+
+    response = client.get("/users/1", headers={"Accept": "application/json"})
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data["id"] == 1, data
+    assert data["username"] == "test_user"
+    assert data["email"] == "test_user@mail.com"
+    assert "password" not in data.keys()
+
+
+# Test fetching single user fails due to incorrect id
+def test_single_user_invalid_id(test_app, monkeypatch):
+    def mock_get_user_by_id(user_id):
+        return None
+
+    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+
+    client = test_app.test_client()
+
+    response = client.get("/users/1", headers={"Accept": "application/json"})
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]

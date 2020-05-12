@@ -1,4 +1,9 @@
-from app.api.users.crud import get_user_by_email, add_user, get_all_users
+from app.api.users.crud import (
+    get_user_by_email,
+    add_user,
+    get_all_users,
+    get_user_by_id,
+)
 from flask import request, abort
 from flask_restx import Namespace, Resource, fields
 
@@ -14,7 +19,7 @@ user_readable = users_namespace.model(
 )
 
 user_writable = users_namespace.inherit(
-    "New-User", user_readable, {"password": fields.String(required=True)}
+    "New-User", user_readable, {"password": fields.String(required=True)},
 )
 
 
@@ -48,4 +53,20 @@ class UsersList(Resource):
         return get_all_users(), 200
 
 
+# @users_namespace.param("user_id")
+class UsersDetail(Resource):
+    @staticmethod
+    @users_namespace.marshal_with(user_readable)
+    @users_namespace.response(400, "User <user_id> does not exist")
+    def get(user_id):
+        user = get_user_by_id(user_id)
+        response = dict()
+
+        if not user:
+            users_namespace.abort(404, f"User {user_id} does not exist")
+
+        return user, 200
+
+
 users_namespace.add_resource(UsersList, "")
+users_namespace.add_resource(UsersDetail, "/<int:user_id>")

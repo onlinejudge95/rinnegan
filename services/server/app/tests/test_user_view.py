@@ -124,3 +124,29 @@ def test_get_users(test_app, test_database, add_user):
     assert "test_user_two" in data[1]["username"]
     assert "test_user_two@mail.com" in data[1]["email"]
     assert not "password" in data[1]
+
+
+# Test fetching single user passes
+def test_single_user(test_app, test_database, add_user):
+    user = add_user("test_user", "test_user@mail.com", "test_password")
+    client = test_app.test_client()
+
+    response = client.get(f"/users/{user.id}", headers={"Accept": "application/json"})
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data["id"] == user.id
+    assert data["username"] == "test_user"
+    assert data["email"] == "test_user@mail.com"
+    assert "password" not in data.keys()
+
+
+# Test fetching single user fails due to incorrect id
+def test_single_user(test_app, test_database):
+    client = test_app.test_client()
+
+    response = client.get(f"/users/1", headers={"Accept": "application/json"})
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]
