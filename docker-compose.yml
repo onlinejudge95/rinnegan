@@ -8,7 +8,7 @@ networks:
 services:
   postgres:
     container_name: postgres
-    image: postgres
+    image: postgres:development
     env_file:
       - ./services/db/.env
     expose:
@@ -23,7 +23,7 @@ services:
 
   server:
     container_name: server
-    image: server
+    image: server:development
     depends_on:
       - postgres
     env_file:

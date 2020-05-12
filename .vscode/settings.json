@@ -1,4 +1,5 @@
 {
+  "files.autoSave": "off",
   "files.insertFinalNewline": true,
   "python.formatting.provider": "black"
 }
