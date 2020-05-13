@@ -1,5 +1,5 @@
 import json
-import pytest
+
 
 # Test user creation passes
 def test_add_user(test_app, test_database):
@@ -45,7 +45,7 @@ def test_add_user_empty_data(test_app, test_database):
 
 
 # Test user creation fails due to invalid data
-def test_add_user_empty_data(test_app, test_database):
+def test_add_user_invalid_data(test_app, test_database):
     client = test_app.test_client()
     response = client.post(
         "/users",
@@ -135,11 +135,11 @@ def test_get_users(test_app, test_database, add_user):
     assert len(data) == 2
     assert "test_user_one" in data[0]["username"]
     assert "test_user_one@mail.com" in data[0]["email"]
-    assert not "password" in data[0]
+    assert "password" not in data[0]
 
     assert "test_user_two" in data[1]["username"]
     assert "test_user_two@mail.com" in data[1]["email"]
-    assert not "password" in data[1]
+    assert "password" not in data[1]
 
 
 # Test fetching single user passes
@@ -163,7 +163,7 @@ def test_single_user(test_app, test_database, add_user):
 def test_single_user_invalid_id(test_app, test_database):
     client = test_app.test_client()
 
-    response = client.get(f"/users/1", headers={"Accept": "application/json"})
+    response = client.get("/users/1", headers={"Accept": "application/json"})
     assert response.status_code == 404
 
     data = response.get_json()
@@ -186,7 +186,7 @@ def test_remove_user_invalid_id(test_app, test_database, add_user):
     client = test_app.test_client()
 
     response = client.delete(
-        f"/users/1", headers={"Accept": "application/json"}
+        "/users/1", headers={"Accept": "application/json"}
     )
     assert response.status_code == 404
 
@@ -268,7 +268,7 @@ def test_update_user_invalid_id(test_app, test_database, add_user):
 
 # Test update a user fails due to invalid headers
 def test_update_user_invalid_headers(test_app, test_database, add_user):
-    user = add_user("test_user", "test_user@mail.com", "test_password")
+    add_user("test_user", "test_user@mail.com", "test_password")
 
     client = test_app.test_client()
     response = client.put(

@@ -171,11 +171,11 @@ def test_get_users(test_app, monkeypatch):
     assert len(data) == 2
     assert "test_user_one" in data[0]["username"]
     assert "test_user_one@mail.com" in data[0]["email"]
-    assert not "password" in data[0]
+    assert "password" not in data[0]
 
     assert "test_user_two" in data[1]["username"]
     assert "test_user_two@mail.com" in data[1]["email"]
-    assert not "password" in data[1]
+    assert "password" not in data[1]
 
 
 # Test fetching single user passes
@@ -246,7 +246,7 @@ def test_remove_user(test_app, monkeypatch):
     client = test_app.test_client()
 
     response = client.delete(
-        f"/users/1", headers={"Accept": "application/json"}
+        "/users/1", headers={"Accept": "application/json"}
     )
     assert response.status_code == 204
 
@@ -263,7 +263,7 @@ def test_remove_user_invalid_id(test_app, monkeypatch):
     client = test_app.test_client()
 
     response = client.delete(
-        f"/users/1", headers={"Accept": "application/json"}
+        "/users/1", headers={"Accept": "application/json"}
     )
     assert response.status_code == 404
 

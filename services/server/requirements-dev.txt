@@ -5,6 +5,7 @@ Flask-Bcrypt==0.7.1
 PyJWT==1.7.1
 
 black==19.10b0
+flake8==3.8.1
 pytest==5.4.2
 
 psycopg2-binary==2.8.5

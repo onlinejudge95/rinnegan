@@ -1,6 +1,3 @@
-import os
-
-
 # Test development config
 def test_development_config(test_app):
     test_app.config.from_object("app.config.DevelopmentConfig")

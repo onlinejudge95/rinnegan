@@ -6,7 +6,7 @@ from app.api.users.crud import (
     remove_user,
     update_user,
 )
-from flask import request, abort
+from flask import request
 from flask_restx import Namespace, Resource, fields
 
 users_namespace = Namespace("users")
@@ -33,13 +33,14 @@ class UsersList(Resource):
     )
     def post():
         request_data = request.get_json()
+        email = request_data["email"]
         response = dict()
 
-        user_exists = get_user_by_email(request_data["email"])
+        user_exists = get_user_by_email(email)
         if user_exists:
             response[
                 "message"
-            ] = f"Sorry.The provided email {request_data['email']} is already registered"
+            ] = f"Sorry.The provided email {email} is already registered"
             return response, 400
 
         user_id = add_user(
@@ -63,7 +64,6 @@ class UsersDetail(Resource):
     @users_namespace.response(404, "User <user_id> does not exist")
     def get(user_id):
         user = get_user_by_id(user_id)
-        response = dict()
 
         if not user:
             users_namespace.abort(404, f"User {user_id} does not exist")
