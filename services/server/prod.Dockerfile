@@ -9,8 +9,6 @@ RUN apt-get update && \
 
 COPY ./requirements.txt .
 
-COPY ./requirements-dev.txt .
-
 RUN pip install --upgrade pip setuptools wheel && \
     pip install --requirement requirements.txt
 
@@ -18,4 +16,4 @@ COPY . .
 
 RUN chmod +x entrypoint.sh
 
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT [ "entrypoint.sh" ]
