@@ -71,6 +71,7 @@ test:server:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
     DATABASE_TEST_URL: postgres://postgres:postgres@postgres:5432/test
+    DATABASE_URL: postgres://postgres:postgres@postgres:5432/test
     FLASK_ENV: testing
   before_script:
     - cd /usr/src/app
