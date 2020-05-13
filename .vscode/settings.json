@@ -1,5 +1,10 @@
 {
   "files.autoSave": "off",
   "files.insertFinalNewline": true,
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": [
+    "--config",
+    "services/server/pyproject.toml"
+  ],
+  "python.pythonPath": "/home/onlinejudge95/Workspace/onlinejudge95/rinnegan/env/bin/python3.8"
 }

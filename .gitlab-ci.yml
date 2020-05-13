@@ -70,4 +70,5 @@ test:server:
     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/test
     FLASK_ENV: testing
   script:
+    - black --config /usr/src/app/pyproject.toml .
     - pytest -c /usr/src/app/app/tests/pytest.ini

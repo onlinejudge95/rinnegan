@@ -10,9 +10,7 @@ def test_add_user_passes(test_app, monkeypatch):
     def mock_add_user(username, email, password):
         return 1
 
-    monkeypatch.setattr(
-        app.api.users.views, "get_user_by_email", mock_get_user_by_email
-    )
+    monkeypatch.setattr(app.api.users.views, "get_user_by_email", mock_get_user_by_email)
 
     monkeypatch.setattr(app.api.users.views, "add_user", mock_add_user)
 
@@ -20,11 +18,7 @@ def test_add_user_passes(test_app, monkeypatch):
     response = client.post(
         "/users",
         data=json.dumps(
-            {
-                "username": "test_user",
-                "email": "test_user@email.com",
-                "password": "test_password",
-            }
+            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
         ),
         headers={"Accept": "application/json", "Content-Type": "application/json"},
     )
@@ -74,9 +68,7 @@ def test_add_user_duplicate_email(test_app, monkeypatch):
     def mock_add_user(username, email, password):
         return 1
 
-    monkeypatch.setattr(
-        app.api.users.views, "get_user_by_email", mock_get_user_by_email
-    )
+    monkeypatch.setattr(app.api.users.views, "get_user_by_email", mock_get_user_by_email)
 
     monkeypatch.setattr(app.api.users.views, "add_user", mock_add_user)
 
@@ -84,25 +76,15 @@ def test_add_user_duplicate_email(test_app, monkeypatch):
     client.post(
         "/users",
         data=json.dumps(
-            {
-                "username": "test_user",
-                "email": "test_user@email.com",
-                "password": "test_password",
-            }
+            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
         ),
         headers={"Accept": "application/json", "Content-Type": "application/json"},
     )
-    monkeypatch.setattr(
-        app.api.users.views, "get_user_by_email", mock_get_user_by_email_fail
-    )
+    monkeypatch.setattr(app.api.users.views, "get_user_by_email", mock_get_user_by_email_fail)
     response = client.post(
         "/users",
         data=json.dumps(
-            {
-                "username": "test_user",
-                "email": "test_user@email.com",
-                "password": "test_password",
-            }
+            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
         ),
         headers={"Accept": "application/json", "Content-Type": "application/json"},
     )
@@ -197,9 +179,7 @@ def test_remove_user(test_app, monkeypatch):
 
     def mock_get_user_by_id(user_id):
         mock_user = MockDict()
-        mock_user.update(
-            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
-        )
+        mock_user.update({"id": 1, "username": "test_user", "email": "test_user@mail.com"})
         return mock_user
 
     def mock_remove_user(user):
@@ -239,9 +219,7 @@ def test_update_user(test_app, monkeypatch):
 
     def mock_get_user_by_id(user_id):
         mock_user = MockDict()
-        mock_user.update(
-            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
-        )
+        mock_user.update({"id": 1, "username": "test_user", "email": "test_user@mail.com"})
         return mock_user
 
     def mock_update_user(user, username, email):
@@ -256,9 +234,7 @@ def test_update_user(test_app, monkeypatch):
 
     response = client.put(
         "/users/1",
-        data=json.dumps(
-            {"username": "test_user_update", "email": "test_user_update@mail.com"}
-        ),
+        data=json.dumps({"username": "test_user_update", "email": "test_user_update@mail.com"}),
         headers={"Accept": "application/json", "Content-Type": "application/json"},
     )
 
@@ -279,9 +255,7 @@ def test_update_user_empty_data(test_app, monkeypatch):
 
     def mock_get_user_by_id(user_id):
         mock_user = MockDict()
-        mock_user.update(
-            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
-        )
+        mock_user.update({"id": 1, "username": "test_user", "email": "test_user@mail.com"})
         return mock_user
 
     def mock_update_user(user, username, email):
@@ -316,9 +290,7 @@ def test_update_user_invalid_id(test_app, monkeypatch):
     client = test_app.test_client()
     response = client.put(
         "/users/10",
-        data=json.dumps(
-            {"username": "test_user_update", "email": "test_user_update@mail.com"}
-        ),
+        data=json.dumps({"username": "test_user_update", "email": "test_user_update@mail.com"}),
         headers={"Accept": "application/json", "Content-Type": "application/json"},
     )
 

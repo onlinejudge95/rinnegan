@@ -28,9 +28,7 @@ user_writable = users_namespace.inherit(
 class UsersList(Resource):
     @staticmethod
     @users_namespace.expect(user_writable, validate=True)
-    @users_namespace.response(
-        400, "Sorry.The provided email <user_email> is already registered"
-    )
+    @users_namespace.response(400, "Sorry.The provided email <user_email> is already registered")
     def post():
         request_data = request.get_json()
         response = dict()
@@ -91,9 +89,7 @@ class UsersDetail(Resource):
         if not user:
             users_namespace.abort(404, f"User {user_id} does not exist")
 
-        updated_user = update_user(
-            user, request_data["username"], request_data["email"]
-        )
+        updated_user = update_user(user, request_data["username"], request_data["email"])
 
         return updated_user, 200
 
