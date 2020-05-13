@@ -43,3 +43,22 @@ build:serverdevelopment:
       "./services/server"
   after_script:
     - docker push $IMAGE:serverdevelopment
+
+build:serverproduction:
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:serverproduction || true
+  script:
+    - docker build
+      --cache-from $IMAGE:serverproduction
+      --tag $IMAGE:serverproduction
+      --file ./services/server/prod.Dockerfile
+      --build-arg SECRET_KEY=$SECRET_KEY
+      "./services/server"
+  after_script:
+    - docker push $IMAGE:serverproduction
