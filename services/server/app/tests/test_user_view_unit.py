@@ -10,7 +10,9 @@ def test_add_user_passes(test_app, monkeypatch):
     def mock_add_user(username, email, password):
         return 1
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_email", mock_get_user_by_email)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_email", mock_get_user_by_email
+    )
 
     monkeypatch.setattr(app.api.users.views, "add_user", mock_add_user)
 
@@ -18,9 +20,16 @@ def test_add_user_passes(test_app, monkeypatch):
     response = client.post(
         "/users",
         data=json.dumps(
-            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
+            {
+                "username": "test_user",
+                "email": "test_user@email.com",
+                "password": "test_password",
+            }
         ),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
     assert response.status_code == 201
 
@@ -35,7 +44,10 @@ def test_add_user_empty_data(test_app):
     response = client.post(
         "/users",
         data=json.dumps({}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
     assert response.status_code == 400
 
@@ -49,7 +61,10 @@ def test_add_user_invalid_data(test_app):
     response = client.post(
         "/users",
         data=json.dumps({"email": "test_user@email.com"}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
     assert response.status_code == 400
 
@@ -68,7 +83,9 @@ def test_add_user_duplicate_email(test_app, monkeypatch):
     def mock_add_user(username, email, password):
         return 1
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_email", mock_get_user_by_email)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_email", mock_get_user_by_email
+    )
 
     monkeypatch.setattr(app.api.users.views, "add_user", mock_add_user)
 
@@ -76,17 +93,33 @@ def test_add_user_duplicate_email(test_app, monkeypatch):
     client.post(
         "/users",
         data=json.dumps(
-            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
+            {
+                "username": "test_user",
+                "email": "test_user@email.com",
+                "password": "test_password",
+            }
         ),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
-    monkeypatch.setattr(app.api.users.views, "get_user_by_email", mock_get_user_by_email_fail)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_email", mock_get_user_by_email_fail
+    )
     response = client.post(
         "/users",
         data=json.dumps(
-            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
+            {
+                "username": "test_user",
+                "email": "test_user@email.com",
+                "password": "test_password",
+            }
         ),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
     assert response.status_code == 400
 
@@ -112,11 +145,21 @@ def test_add_user_invalid_header(test_app):
 def test_get_users(test_app, monkeypatch):
     def mock_get_all_users():
         return [
-            {"id": 1, "username": "test_user_one", "email": "test_user_one@mail.com"},
-            {"id": 2, "username": "test_user_two", "email": "test_user_two@mail.com"},
+            {
+                "id": 1,
+                "username": "test_user_one",
+                "email": "test_user_one@mail.com",
+            },
+            {
+                "id": 2,
+                "username": "test_user_two",
+                "email": "test_user_two@mail.com",
+            },
         ]
 
-    monkeypatch.setattr(app.api.users.views, "get_all_users", mock_get_all_users)
+    monkeypatch.setattr(
+        app.api.users.views, "get_all_users", mock_get_all_users
+    )
 
     client = test_app.test_client()
     response = client.get("/users", headers={"Accept": "application/json"})
@@ -138,9 +181,15 @@ def test_get_users(test_app, monkeypatch):
 # Test fetching single user passes
 def test_single_user(test_app, monkeypatch):
     def mock_get_user_by_id(user_id):
-        return {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
+        return {
+            "id": 1,
+            "username": "test_user",
+            "email": "test_user@mail.com",
+        }
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_id", mock_get_user_by_id
+    )
 
     client = test_app.test_client()
 
@@ -159,7 +208,9 @@ def test_single_user_invalid_id(test_app, monkeypatch):
     def mock_get_user_by_id(user_id):
         return None
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_id", mock_get_user_by_id
+    )
 
     client = test_app.test_client()
 
@@ -179,18 +230,24 @@ def test_remove_user(test_app, monkeypatch):
 
     def mock_get_user_by_id(user_id):
         mock_user = MockDict()
-        mock_user.update({"id": 1, "username": "test_user", "email": "test_user@mail.com"})
+        mock_user.update(
+            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
+        )
         return mock_user
 
     def mock_remove_user(user):
         return True
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_id", mock_get_user_by_id
+    )
     monkeypatch.setattr(app.api.users.views, "remove_user", mock_remove_user)
 
     client = test_app.test_client()
 
-    response = client.delete(f"/users/1", headers={"Accept": "application/json"})
+    response = client.delete(
+        f"/users/1", headers={"Accept": "application/json"}
+    )
     assert response.status_code == 204
 
 
@@ -199,11 +256,15 @@ def test_remove_user_invalid_id(test_app, monkeypatch):
     def mock_get_user_by_id(user_id):
         return None
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_id", mock_get_user_by_id
+    )
 
     client = test_app.test_client()
 
-    response = client.delete(f"/users/1", headers={"Accept": "application/json"})
+    response = client.delete(
+        f"/users/1", headers={"Accept": "application/json"}
+    )
     assert response.status_code == 404
 
     data = response.get_json()
@@ -219,7 +280,9 @@ def test_update_user(test_app, monkeypatch):
 
     def mock_get_user_by_id(user_id):
         mock_user = MockDict()
-        mock_user.update({"id": 1, "username": "test_user", "email": "test_user@mail.com"})
+        mock_user.update(
+            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
+        )
         return mock_user
 
     def mock_update_user(user, username, email):
@@ -227,15 +290,25 @@ def test_update_user(test_app, monkeypatch):
         mock_user.update({"id": 1, "username": username, "email": email})
         return mock_user
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_id", mock_get_user_by_id
+    )
     monkeypatch.setattr(app.api.users.views, "update_user", mock_update_user)
 
     client = test_app.test_client()
 
     response = client.put(
         "/users/1",
-        data=json.dumps({"username": "test_user_update", "email": "test_user_update@mail.com"}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        data=json.dumps(
+            {
+                "username": "test_user_update",
+                "email": "test_user_update@mail.com",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 200
@@ -255,7 +328,9 @@ def test_update_user_empty_data(test_app, monkeypatch):
 
     def mock_get_user_by_id(user_id):
         mock_user = MockDict()
-        mock_user.update({"id": 1, "username": "test_user", "email": "test_user@mail.com"})
+        mock_user.update(
+            {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
+        )
         return mock_user
 
     def mock_update_user(user, username, email):
@@ -263,7 +338,9 @@ def test_update_user_empty_data(test_app, monkeypatch):
         mock_user.update({"id": 1, "username": username, "email": email})
         return mock_user
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_id", mock_get_user_by_id
+    )
     monkeypatch.setattr(app.api.users.views, "update_user", mock_update_user)
 
     client = test_app.test_client()
@@ -271,7 +348,10 @@ def test_update_user_empty_data(test_app, monkeypatch):
     response = client.put(
         "/users/1",
         data=json.dumps({}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 400
@@ -285,13 +365,23 @@ def test_update_user_invalid_id(test_app, monkeypatch):
     def mock_get_user_by_id(user_id):
         return None
 
-    monkeypatch.setattr(app.api.users.views, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(
+        app.api.users.views, "get_user_by_id", mock_get_user_by_id
+    )
 
     client = test_app.test_client()
     response = client.put(
         "/users/10",
-        data=json.dumps({"username": "test_user_update", "email": "test_user_update@mail.com"}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        data=json.dumps(
+            {
+                "username": "test_user_update",
+                "email": "test_user_update@mail.com",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 404

@@ -7,9 +7,16 @@ def test_add_user(test_app, test_database):
     response = client.post(
         "/users",
         data=json.dumps(
-            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
+            {
+                "username": "test_user",
+                "email": "test_user@email.com",
+                "password": "test_password",
+            }
         ),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 201
@@ -25,7 +32,10 @@ def test_add_user_empty_data(test_app, test_database):
     response = client.post(
         "/users",
         data=json.dumps({}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 400
@@ -40,7 +50,10 @@ def test_add_user_empty_data(test_app, test_database):
     response = client.post(
         "/users",
         data=json.dumps({"email": "test_user@email.com"}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 400
@@ -55,16 +68,30 @@ def test_add_user_duplicate_email(test_app, test_database):
     client.post(
         "/users",
         data=json.dumps(
-            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
+            {
+                "username": "test_user",
+                "email": "test_user@email.com",
+                "password": "test_password",
+            }
         ),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
     response = client.post(
         "/users",
         data=json.dumps(
-            {"username": "test_user", "email": "test_user@email.com", "password": "test_password",}
+            {
+                "username": "test_user",
+                "email": "test_user@email.com",
+                "password": "test_password",
+            }
         ),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
     assert response.status_code == 400
 
@@ -89,10 +116,14 @@ def test_add_user_empty_data(test_app, test_database):
 # Test fetching user list passes
 def test_get_users(test_app, test_database, add_user):
     add_user(
-        username="test_user_one", email="test_user_one@mail.com", password="test_password_one",
+        username="test_user_one",
+        email="test_user_one@mail.com",
+        password="test_password_one",
     )
     add_user(
-        username="test_user_two", email="test_user_two@mail.com", password="test_password_two",
+        username="test_user_two",
+        email="test_user_two@mail.com",
+        password="test_password_two",
     )
     client = test_app.test_client()
     response = client.get("/users", headers={"Accept": "application/json"})
@@ -116,7 +147,9 @@ def test_single_user(test_app, test_database, add_user):
     user = add_user("test_user", "test_user@mail.com", "test_password")
     client = test_app.test_client()
 
-    response = client.get(f"/users/{user.id}", headers={"Accept": "application/json"})
+    response = client.get(
+        f"/users/{user.id}", headers={"Accept": "application/json"}
+    )
     assert response.status_code == 200
 
     data = response.get_json()
@@ -142,7 +175,9 @@ def test_remove_user(test_app, test_database, add_user):
     user = add_user("test_user", "test_user@mail.com", "test_password")
     client = test_app.test_client()
 
-    response = client.delete(f"/users/{user.id}", headers={"Accept": "application/json"})
+    response = client.delete(
+        f"/users/{user.id}", headers={"Accept": "application/json"}
+    )
     assert response.status_code == 204
 
 
@@ -150,7 +185,9 @@ def test_remove_user(test_app, test_database, add_user):
 def test_remove_user_invalid_id(test_app, test_database, add_user):
     client = test_app.test_client()
 
-    response = client.delete(f"/users/1", headers={"Accept": "application/json"})
+    response = client.delete(
+        f"/users/1", headers={"Accept": "application/json"}
+    )
     assert response.status_code == 404
 
     data = response.get_json()
@@ -165,8 +202,16 @@ def test_update_user(test_app, test_database, add_user):
 
     response = client.put(
         f"/users/{user.id}",
-        data=json.dumps({"username": "test_user_update", "email": "test_user_update@mail.com"}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        data=json.dumps(
+            {
+                "username": "test_user_update",
+                "email": "test_user_update@mail.com",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 200
@@ -186,7 +231,10 @@ def test_update_user_empty_data(test_app, test_database, add_user):
     response = client.put(
         f"/users/{user.id}",
         data=json.dumps({}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 400
@@ -200,8 +248,16 @@ def test_update_user_invalid_id(test_app, test_database, add_user):
     client = test_app.test_client()
     response = client.put(
         "/users/10",
-        data=json.dumps({"username": "test_user_update", "email": "test_user_update@mail.com"}),
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        data=json.dumps(
+            {
+                "username": "test_user_update",
+                "email": "test_user_update@mail.com",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
     )
 
     assert response.status_code == 404
