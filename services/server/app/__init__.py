@@ -36,7 +36,7 @@ def create_app(environemnt):
                 if not content_type or content_type != "application/json":
                     abort(
                         415,
-                        "POST & PATCH requests should define a Content-Type header",
+                        "POST/PUT requests should define Content-Type header",
                     )
 
     return app
