@@ -2,6 +2,7 @@ image: docker:stable
 
 stages:
   - build
+  - test
 
 variables:
   IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
@@ -20,7 +21,6 @@ build:database:
       --cache-from $IMAGE:database
       --tag $IMAGE:database
       --file ./services/db/Dockerfile
-      --build-arg SECRET_KEY=$SECRET_KEY
       "./services/db"
   after_script:
     - docker push $IMAGE:database
@@ -39,7 +39,6 @@ build:serverdevelopment:
       --cache-from $IMAGE:serverdevelopment
       --tag $IMAGE:serverdevelopment
       --file ./services/server/dev.Dockerfile
-      --build-arg SECRET_KEY=$SECRET_KEY
       "./services/server"
   after_script:
     - docker push $IMAGE:serverdevelopment
@@ -58,7 +57,22 @@ build:serverproduction:
       --cache-from $IMAGE:serverproduction
       --tag $IMAGE:serverproduction
       --file ./services/server/prod.Dockerfile
-      --build-arg SECRET_KEY=$SECRET_KEY
       "./services/server"
   after_script:
     - docker push $IMAGE:serverproduction
+
+test:server:
+  stage: test
+  image: $IMAGE:serverdevelopment
+  services:
+    - postgres:latest
+  variables:
+    POSTGRES_DB: test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    DATABASE_TEST_URL: postgres://postgres:postgres@postgres:5432/test
+    FLASK_ENV: testing
+  before_script:
+    - cd /usr/src/app
+  script:
+    - pytest
