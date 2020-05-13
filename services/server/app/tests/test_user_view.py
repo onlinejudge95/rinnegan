@@ -100,7 +100,7 @@ def test_add_user_duplicate_email(test_app, test_database):
 
 
 # Test user creation fails due to invalid content-type header
-def test_add_user_empty_data(test_app, test_database):
+def test_add_user_invalid_header(test_app, test_database):
     client = test_app.test_client()
     response = client.post(
         "/users",
@@ -110,7 +110,7 @@ def test_add_user_empty_data(test_app, test_database):
     assert response.status_code == 415
 
     data = response.get_json()
-    assert "define a Content-Type header" in data["message"]
+    assert "define Content-Type header" in data["message"]
 
 
 # Test fetching user list passes
@@ -279,4 +279,4 @@ def test_update_user_invalid_headers(test_app, test_database, add_user):
     assert response.status_code == 415
 
     data = response.get_json()
-    assert "define a Content-Type header" in data["message"]
+    assert "define Content-Type header" in data["message"]

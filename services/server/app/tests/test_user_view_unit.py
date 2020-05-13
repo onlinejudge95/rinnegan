@@ -138,7 +138,7 @@ def test_add_user_invalid_header(test_app):
     assert response.status_code == 415
 
     data = response.get_json()
-    assert "define a Content-Type header" in data["message"]
+    assert "define Content-Type header" in data["message"]
 
 
 # Test fetching user list passes
@@ -401,4 +401,4 @@ def test_update_user_invalid_headers(test_app, monkeypatch):
     assert response.status_code == 415
 
     data = response.get_json()
-    assert "define a Content-Type header" in data["message"]
+    assert "define Content-Type header" in data["message"]
