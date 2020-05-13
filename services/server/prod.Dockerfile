@@ -5,7 +5,7 @@ LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 WORKDIR /usr/src/app
 
 RUN apt-get update && \
-    apt-get install gcc python3-dev libpq-dev
+    apt-get install -y gcc python3-dev libpq-dev
 
 COPY ./requirements.txt .
 
