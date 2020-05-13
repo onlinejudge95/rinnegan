@@ -1,6 +1,9 @@
-import json
 from flask import current_app as app
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace
+from flask_restx import Resource
+
+import json
+
 
 health_namespace = Namespace("health")
 

@@ -1,8 +1,9 @@
-from flask import Flask, request, abort
+from app.config import cfg_map
+from flask import abort
+from flask import Flask
+from flask import request
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-
-from app.config import cfg_map
 
 
 db = SQLAlchemy()

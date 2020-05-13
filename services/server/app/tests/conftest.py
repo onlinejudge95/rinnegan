@@ -1,7 +1,8 @@
-import pytest
-
-from app import create_app, db
+from app import create_app
+from app import db
 from app.api.users.models import User
+
+import pytest
 
 
 @pytest.fixture(scope="module")

@@ -1,13 +1,14 @@
-from app.api.users.crud import (
-    get_user_by_email,
-    add_user,
-    get_all_users,
-    get_user_by_id,
-    remove_user,
-    update_user,
-)
+from app.api.users.crud import add_user
+from app.api.users.crud import get_all_users
+from app.api.users.crud import get_user_by_email
+from app.api.users.crud import get_user_by_id
+from app.api.users.crud import remove_user
+from app.api.users.crud import update_user
 from flask import request
-from flask_restx import Namespace, Resource, fields
+from flask_restx import fields
+from flask_restx import Namespace
+from flask_restx import Resource
+
 
 users_namespace = Namespace("users")
 

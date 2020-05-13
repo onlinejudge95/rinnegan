@@ -1,5 +1,5 @@
-import json
 import app.api.users.views
+import json
 
 
 # Test user creation passes
