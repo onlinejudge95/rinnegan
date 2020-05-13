@@ -29,8 +29,6 @@ build:serverdevelopment:
   stage: build
   services:
     - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay2
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE:serverdevelopment || true
@@ -47,8 +45,6 @@ build:serverproduction:
   stage: build
   services:
     - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay2
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE:serverproduction || true
@@ -70,8 +66,8 @@ test:server:
     POSTGRES_DB: test
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
-    DATABASE_TEST_URL: postgres://postgres:postgres@postgres:5432/test
-    DATABASE_URL: postgres://postgres:postgres@postgres:5432/test
+    DATABASE_TEST_URL: postgresql://postgres:postgres@postgres:5432/test
+    DATABASE_URL: postgresql://postgres:postgres@postgres:5432/test
     FLASK_ENV: testing
   before_script:
     - cd /usr/src/app
