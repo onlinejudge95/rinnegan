@@ -6,7 +6,7 @@ stages:
 variables:
   IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
 
-build:
+build:database:
   stage: build
   services:
     - docker:dind
@@ -14,13 +14,32 @@ build:
     DOCKER_DRIVER: overlay2
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:db || true
+    - docker pull $IMAGE:database || true
   script:
     - docker build
-      --cache-from $IMAGE:db
-      --tag $IMAGE:db
+      --cache-from $IMAGE:database
+      --tag $IMAGE:database
       --file ./services/db/Dockerfile
       --build-arg SECRET_KEY=$SECRET_KEY
       "./services/db"
   after_script:
-    - docker push $IMAGE:db
+    - docker push $IMAGE:database
+
+build:serverdevelopment:
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:serverdevelopment || true
+  script:
+    - docker build
+      --cache-from $IMAGE:serverdevelopment
+      --tag $IMAGE:serverdevelopment
+      --file ./services/server/dev.Dockerfile
+      --build-arg SECRET_KEY=$SECRET_KEY
+      "./services/server"
+  after_script:
+    - docker push $IMAGE:serverdevelopment
