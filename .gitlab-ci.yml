@@ -69,7 +69,5 @@ test:server:
     DATABASE_TEST_URL: postgresql://postgres:postgres@postgres:5432/test
     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/test
     FLASK_ENV: testing
-  before_script:
-    - cd /usr/src/app
   script:
-    - pytest
+    - pytest -c /usr/src/app/app/tests/pytest.ini
