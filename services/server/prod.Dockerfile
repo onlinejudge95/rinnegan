@@ -1,4 +1,4 @@
-FROM python:3.8.2 as builder
+FROM python:3.8.2-slim as builder
 
 LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
@@ -14,25 +14,8 @@ COPY ./requirements-dev.txt .
 RUN pip install --upgrade pip setuptools wheel && \
     pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels --requirement requirements.txt
 
-# COPY . .
 
-# RUN pip install --requirement requirements-dev.txt
-
-# RUN black --check --config pyproject.toml . && \
-#     flake8 --config setup.cfg . && \
-#     isort \
-#     --atomic \
-#     --case-sensitive \
-#     --check-only \
-#     --force-alphabetical-sort-within-sections \
-#     --lines-after-imports 2 \
-#     --lines-between-types 1 \
-#     --recursive \
-#     --force-single-line-imports \
-#     --line-width 79 . && \
-#     pytest -c /usr/src/app/app/tests/pytest.ini
-
-FROM python:3.8.2
+FROM python:3.8.2-slim
 
 WORKDIR /usr/src/app
 

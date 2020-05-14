@@ -1,4 +1,4 @@
-FROM python:3.8.2
+FROM python:3.8.2-slim
 
 LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
