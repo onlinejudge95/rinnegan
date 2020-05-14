@@ -80,6 +80,8 @@ test:server:
     DATABASE_TEST_URL: postgresql://postgres:postgres@postgres:5432/test
     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/test
     FLASK_ENV: testing
+  before_script:
+    - apk add --no-cache curl
   script:
     - black --check --config /usr/src/app/pyproject.toml /usr/src/app
     - flake8 --config /usr/src/app/setup.cfg /usr/src/app
