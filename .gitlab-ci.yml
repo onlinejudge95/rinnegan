@@ -92,7 +92,7 @@ deploy:serverstaging:
       --tag $HEROKU_REGISTRY_IMAGE
       --file ./services/server/prod.Dockerfile
       ./services/server
-    - chmod +x ./services/server/deploy.sh
+    - chmod +x ./bin/deploy.sh
     - docker push $HEROKU_REGISTRY_IMAGE
   after_script:
-    - ./services/server/deploy.sh
+    - ./bin/deploy.sh
