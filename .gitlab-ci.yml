@@ -10,6 +10,10 @@ variables:
 
 build:database:
   stage: build
+  except:
+    refs:
+      - master
+      - staging
   services:
     - docker:dind
   variables:
@@ -28,6 +32,9 @@ build:database:
 
 build:serverdevelopment:
   stage: build
+  except:
+    refs:
+      - master
   services:
     - docker:dind
   before_script:
@@ -60,6 +67,9 @@ build:serverproduction:
 
 test:server:
   stage: test
+  except:
+    refs:
+      - master
   image: $IMAGE:serverdevelopment
   services:
     - postgres:latest
@@ -78,6 +88,9 @@ test:server:
 
 deploy:serverstaging:
   stage: deploy
+  only:
+    refs:
+      - staging
   services:
     - docker:dind
   variables:
