@@ -1,9 +1,9 @@
-import functools
-from flask import Flask, request, abort
+from app.config import cfg_map
+from flask import abort
+from flask import Flask
+from flask import request
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-
-from app.config import cfg_map
 
 
 db = SQLAlchemy()
@@ -35,7 +35,8 @@ def create_app(environemnt):
                 content_type = request.headers.get("Content-Type")
                 if not content_type or content_type != "application/json":
                     abort(
-                        415, "POST & PATCH requests should define a Content-Type header"
+                        415,
+                        "POST/PUT requests should define Content-Type header",
                     )
 
     return app

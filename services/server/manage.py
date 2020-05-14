@@ -1,7 +1,9 @@
-import os
-from app import create_app, db
-from flask.cli import FlaskGroup
+from app import create_app
+from app import db
 from app.api.users.models import User
+from flask.cli import FlaskGroup
+
+import os
 
 
 app = create_app(os.getenv("FLASK_ENV"))

@@ -1,13 +1,14 @@
-from app.api.users.crud import (
-    get_user_by_email,
-    add_user,
-    get_all_users,
-    get_user_by_id,
-    remove_user,
-    update_user,
-)
-from flask import request, abort
-from flask_restx import Namespace, Resource, fields
+from app.api.users.crud import add_user
+from app.api.users.crud import get_all_users
+from app.api.users.crud import get_user_by_email
+from app.api.users.crud import get_user_by_id
+from app.api.users.crud import remove_user
+from app.api.users.crud import update_user
+from flask import request
+from flask_restx import fields
+from flask_restx import Namespace
+from flask_restx import Resource
+
 
 users_namespace = Namespace("users")
 
@@ -33,17 +34,20 @@ class UsersList(Resource):
     )
     def post():
         request_data = request.get_json()
+        email = request_data["email"]
         response = dict()
 
-        user_exists = get_user_by_email(request_data["email"])
+        user_exists = get_user_by_email(email)
         if user_exists:
             response[
                 "message"
-            ] = f"Sorry.The provided email {request_data['email']} is already registered"
+            ] = f"Sorry.The provided email {email} is already registered"
             return response, 400
 
         user_id = add_user(
-            request_data["username"], request_data["email"], request_data["password"]
+            request_data["username"],
+            request_data["email"],
+            request_data["password"],
         )
         response["id"] = user_id
         response["message"] = f"{request_data['email']} was added"
@@ -61,7 +65,6 @@ class UsersDetail(Resource):
     @users_namespace.response(404, "User <user_id> does not exist")
     def get(user_id):
         user = get_user_by_id(user_id)
-        response = dict()
 
         if not user:
             users_namespace.abort(404, f"User {user_id} does not exist")
