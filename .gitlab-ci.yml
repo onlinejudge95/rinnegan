@@ -85,6 +85,8 @@ test:server:
     - flake8 --config /usr/src/app/setup.cfg /usr/src/app
     - isort --atomic --case-sensitive --check-only --force-alphabetical-sort-within-sections --lines-after-imports 2 --lines-between-types 1 --recursive --force-single-line-imports --line-width 79 /usr/src/app
     - pytest -c /usr/src/app/app/tests/pytest.ini
+  after_script:
+    - bash <(curl -s https://codecov.io/bash)
 
 deploy:serverstaging:
   stage: deploy
