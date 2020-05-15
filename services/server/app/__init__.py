@@ -4,14 +4,16 @@ from flask import Flask
 from flask import request
 from flask_admin import Admin
 from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 import os
 
 
+admin = Admin(template_mode="bootstrap3")
 db = SQLAlchemy()
 bcrypt = Bcrypt()
-admin = Admin(template_mode="bootstrap3")
+migrate = Migrate()
 
 
 def create_app(environemnt):
@@ -20,6 +22,7 @@ def create_app(environemnt):
 
     db.init_app(app)
     bcrypt.init_app(app)
+    migrate.init_app(app, db)
 
     from app.api import api
 
