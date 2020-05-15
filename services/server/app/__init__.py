@@ -2,12 +2,16 @@ from app.config import cfg_map
 from flask import abort
 from flask import Flask
 from flask import request
+from flask_admin import Admin
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+
+import os
 
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
+admin = Admin(template_mode="bootstrap3")
 
 
 def create_app(environemnt):
@@ -25,9 +29,12 @@ def create_app(environemnt):
     def ctx():
         return {"app": app, "db": db}
 
+    if os.getenv("FLASK_ENV") != "production":
+        admin.init_app(app)
+
     @app.before_request
-    def check_headers(*args, **kwargs):
-        if "swagger" not in request.path:
+    def check_headers():
+        if "swagger" not in request.path and "admin" not in request.path:
             accepts = request.headers.get("Accept")
             if not accepts or accepts != "application/json":
                 abort(415, "Only content type supported is application/json")

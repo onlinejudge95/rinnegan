@@ -1,10 +1,12 @@
 from app import bcrypt
 from app import db
 from flask import current_app
+from flask_admin.contrib.sqla import ModelView
 from sqlalchemy.sql import func
 
 import datetime
 import jwt
+import os
 
 
 class User(db.Model):
@@ -53,3 +55,9 @@ class User(db.Model):
             algorithms=[config.get("JWT_ENCODE_ALGORITHM")],
         )
         return payload["sub"]
+
+
+if os.getenv("FLASK_ENV") != "production":
+    from app import admin
+
+    admin.add_view(ModelView(User, db.session))
