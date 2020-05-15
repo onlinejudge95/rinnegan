@@ -8,29 +8,7 @@ stages:
 variables:
   IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
 
-build:database:
-  stage: build
-  except:
-    refs:
-      - master
-      - staging
-  services:
-    - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay2
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:database || true
-  script:
-    - docker build
-      --cache-from $IMAGE:database
-      --tag $IMAGE:database
-      --file ./services/db/Dockerfile
-      ./services/db
-  after_script:
-    - docker push $IMAGE:database
-
-build:serverdevelopment:
+build:
   stage: build
   except:
     refs:
@@ -39,38 +17,22 @@ build:serverdevelopment:
     - docker:dind
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:serverdevelopment || true
+    - docker pull $IMAGE:server || true
   script:
     - docker build
-      --cache-from $IMAGE:serverdevelopment
-      --tag $IMAGE:serverdevelopment
-      --file ./services/server/dev.Dockerfile
+      --cache-from $IMAGE:server
+      --tag $IMAGE:server
+      --file ./services/server/Dockerfile
       ./services/server
   after_script:
-    - docker push $IMAGE:serverdevelopment
-
-build:serverproduction:
-  stage: build
-  services:
-    - docker:dind
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:serverproduction || true
-  script:
-    - docker build
-      --cache-from $IMAGE:serverproduction
-      --tag $IMAGE:serverproduction
-      --file ./services/server/prod.Dockerfile
-      ./services/server
-  after_script:
-    - docker push $IMAGE:serverproduction
+    - docker push $IMAGE:server
 
 test:server:
   stage: test
   except:
     refs:
       - master
-  image: $IMAGE:serverdevelopment
+  image: $IMAGE:server
   services:
     - postgres:latest
   variables:
@@ -80,9 +42,10 @@ test:server:
     DATABASE_TEST_URL: postgresql://postgres:postgres@postgres:5432/test
     DATABASE_URL: postgresql://postgres:postgres@postgres:5432/test
     FLASK_ENV: testing
+    PORT: 5000
   before_script:
-    - apt-get update
-    - apt-get install -y curl
+    - apt update
+    - apt install -y curl
   script:
     - black --check --config /usr/src/app/pyproject.toml /usr/src/app
     - flake8 --config /usr/src/app/setup.cfg /usr/src/app
@@ -91,7 +54,7 @@ test:server:
   after_script:
     - bash <(curl -s https://codecov.io/bash)
 
-deploy:serverstaging:
+deploy:staging:
   stage: deploy
   only:
     refs:
@@ -108,7 +71,7 @@ deploy:serverstaging:
   script:
     - docker build
       --tag $HEROKU_REGISTRY_IMAGE
-      --file ./services/server/prod.Dockerfile
+      --file ./services/server/Dockerfile
       ./services/server
     - chmod +x ./bin/deploy.sh
     - docker push $HEROKU_REGISTRY_IMAGE
