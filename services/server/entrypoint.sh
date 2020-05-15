@@ -9,4 +9,6 @@ else
     echo "${DIR} exists\n"
 fi
 
+flask db upgrade
+
 gunicorn --config /usr/src/app/gunicorn.conf.py manage:app
