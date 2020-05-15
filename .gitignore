@@ -12,3 +12,6 @@ __pycache__/
 
 # editor configs
 .vscode/
+
+# logs
+services/server/logs/

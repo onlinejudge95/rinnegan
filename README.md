@@ -1,5 +1,8 @@
 # rinnegan
 
+- Staging [![staging](https://gitlab.com/onlinejudge95/rinnegan/badges/staging/pipeline.svg)](https://gitlab.com/onlinejudge95/rinnegan/commits/staging)
+- Production [![staging](https://gitlab.com/onlinejudge95/rinnegan/badges/master/pipeline.svg)](https://gitlab.com/onlinejudge95/rinnegan/commits/master)
+
 ## About
 
 In compact form, rinnegan is sentiments as a service for an end user.
