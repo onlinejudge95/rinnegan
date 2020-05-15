@@ -36,4 +36,4 @@ services:
       - ./services/server:/usr/src/app
     build:
       context: ./services/server/
-      dockerfile: dev.Dockerfile
+      dockerfile: Dockerfile

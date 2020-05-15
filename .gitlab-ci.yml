@@ -44,26 +44,10 @@ build:serverdevelopment:
     - docker build
       --cache-from $IMAGE:serverdevelopment
       --tag $IMAGE:serverdevelopment
-      --file ./services/server/dev.Dockerfile
+      --file ./services/server/Dockerfile
       ./services/server
   after_script:
     - docker push $IMAGE:serverdevelopment
-
-build:serverproduction:
-  stage: build
-  services:
-    - docker:dind
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:serverproduction || true
-  script:
-    - docker build
-      --cache-from $IMAGE:serverproduction
-      --tag $IMAGE:serverproduction
-      --file ./services/server/prod.Dockerfile
-      ./services/server
-  after_script:
-    - docker push $IMAGE:serverproduction
 
 test:server:
   stage: test

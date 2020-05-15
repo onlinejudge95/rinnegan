@@ -9,15 +9,18 @@ RUN apt-get update && \
 
 COPY ./requirements.txt .
 
-COPY ./requirements-dev.txt .
-
 RUN pip install --upgrade pip setuptools wheel && \
     pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels --requirement requirements.txt
 
+##############################################################################
 
 FROM python:3.8.2-slim
 
 WORKDIR /usr/src/app
+
+RUN apt-get update && \
+    apt-get install -y python3-dev libpq-dev && \
+    apt-get autoremove
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
