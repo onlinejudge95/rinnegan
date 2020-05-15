@@ -2,6 +2,7 @@ from app import create_app
 from app import db
 from app.api.users.models import User
 
+import os
 import pytest
 
 
@@ -31,3 +32,12 @@ def add_user():
         return user
 
     return _add_user
+
+
+@pytest.fixture(scope="module")
+def test_admin_app():
+    os.environ["FLASK_ENV"] = "production"
+    app = create_app("production")
+
+    with app.app_context():
+        yield app
