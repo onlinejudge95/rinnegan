@@ -8,29 +8,7 @@ stages:
 variables:
   IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
 
-build:database:
-  stage: build
-  except:
-    refs:
-      - master
-      - staging
-  services:
-    - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay2
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:database || true
-  script:
-    - docker build
-      --cache-from $IMAGE:database
-      --tag $IMAGE:database
-      --file ./services/db/Dockerfile
-      ./services/db
-  after_script:
-    - docker push $IMAGE:database
-
-build:serverdevelopment:
+build:
   stage: build
   except:
     refs:
@@ -39,22 +17,22 @@ build:serverdevelopment:
     - docker:dind
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:serverdevelopment || true
+    - docker pull $IMAGE:server || true
   script:
     - docker build
-      --cache-from $IMAGE:serverdevelopment
-      --tag $IMAGE:serverdevelopment
+      --cache-from $IMAGE:server
+      --tag $IMAGE:server
       --file ./services/server/Dockerfile
       ./services/server
   after_script:
-    - docker push $IMAGE:serverdevelopment
+    - docker push $IMAGE:server
 
 test:server:
   stage: test
   except:
     refs:
       - master
-  image: $IMAGE:serverdevelopment
+  image: $IMAGE:server
   services:
     - postgres:latest
   variables:
@@ -75,7 +53,7 @@ test:server:
   after_script:
     - bash <(curl -s https://codecov.io/bash)
 
-deploy:serverstaging:
+deploy:staging:
   stage: deploy
   only:
     refs:
@@ -92,7 +70,7 @@ deploy:serverstaging:
   script:
     - docker build
       --tag $HEROKU_REGISTRY_IMAGE
-      --file ./services/server/prod.Dockerfile
+      --file ./services/server/Dockerfile
       ./services/server
     - chmod +x ./bin/deploy.sh
     - docker push $HEROKU_REGISTRY_IMAGE
