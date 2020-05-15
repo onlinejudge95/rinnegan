@@ -34,6 +34,7 @@ services:
       - 8000:5000
     volumes:
       - ./services/server:/usr/src/app
+      - ./services/server/logs:/var/log/gunicorn/
     build:
       context: ./services/server/
       dockerfile: Dockerfile
