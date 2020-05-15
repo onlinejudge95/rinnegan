@@ -35,6 +35,7 @@ services:
     volumes:
       - ./services/server:/usr/src/app
       - ./services/server/logs:/var/log/gunicorn/
+      - ./services/server/migrations:/usr/src/app/migrations
     build:
       context: ./services/server/
       dockerfile: Dockerfile
