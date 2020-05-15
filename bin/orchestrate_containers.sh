@@ -1,5 +1,5 @@
 #!/bin/zsh
 
 docker-compose down
-sudo chown -R onlinejudge95:onlinejudge95 .
+sudo chown -R $USER:$USER .
 docker-compose up --build --detach
