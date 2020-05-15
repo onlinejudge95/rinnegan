@@ -1,10 +1,11 @@
 from app import bcrypt
 from app import db
+from app.api.users.admin import UserAdminView
 from flask import current_app
-from sqlalchemy.sql import func
 
 import datetime
 import jwt
+import os
 
 
 class User(db.Model):
@@ -15,8 +16,6 @@ class User(db.Model):
     username = db.Column(db.String(128), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(128), nullable=False)
-    active = db.Column(db.Boolean(), default=True, nullable=False)
-    created_date = db.Column(db.DateTime, default=func.now(), nullable=False)
 
     def __init__(self, username, email, password):
         self.username = username
@@ -53,3 +52,9 @@ class User(db.Model):
             algorithms=[config.get("JWT_ENCODE_ALGORITHM")],
         )
         return payload["sub"]
+
+
+if os.getenv("FLASK_ENV") != "production":
+    from app import admin
+
+    admin.add_view(UserAdminView(User, db.session))
