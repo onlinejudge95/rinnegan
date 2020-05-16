@@ -28,10 +28,6 @@ def create_app(environemnt):
 
     api.init_app(app)
 
-    @app.shell_context_processor
-    def ctx():
-        return {"app": app, "db": db}
-
     if os.getenv("FLASK_ENV") != "production":
         admin.init_app(app)
 
