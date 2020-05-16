@@ -2,8 +2,8 @@
 
 ## About
 
-We are currently using `python:3.8.2-slim` image from dockerhub for the database.
-The current image size for server is `411MB` and is tagged as `server:development`
+We are currently using `python:3.8.2-alpine` image from dockerhub for the database.
+The current image size for server is `367MB` and is tagged as `server:development`
 
 Server for rinnegan is written in `Flask` using `Flask-RESTX` as swagger support.
 We currently have a single pipeline involving following stages
