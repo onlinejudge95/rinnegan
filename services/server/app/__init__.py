@@ -4,6 +4,7 @@ from flask import Flask
 from flask import request
 from flask_admin import Admin
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
@@ -12,6 +13,7 @@ import os
 
 admin = Admin(template_mode="bootstrap3")
 db = SQLAlchemy()
+cors = CORS()
 bcrypt = Bcrypt()
 migrate = Migrate()
 
@@ -21,6 +23,9 @@ def create_app(environemnt):
     app.config.from_object(cfg_map[environemnt])
 
     db.init_app(app)
+    cors.init_app(
+        app, resources={r"*": {"origins": app.config["CORS_ALLOWED_ORIGIN"]}}
+    )
     bcrypt.init_app(app)
     migrate.init_app(app, db)
 
