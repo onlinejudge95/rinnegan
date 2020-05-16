@@ -44,8 +44,8 @@ test:server:
     FLASK_ENV: testing
     PORT: 5000
   before_script:
-    - apt update
-    - apt install -y curl
+    - apk update
+    - apk add bash curl
   script:
     - black --check --config /usr/src/app/pyproject.toml /usr/src/app
     - flake8 --config /usr/src/app/setup.cfg /usr/src/app

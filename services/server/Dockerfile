@@ -1,11 +1,11 @@
-FROM python:3.8.2-slim as builder
+FROM python:3.8.2-alpine as builder
 
 LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
 WORKDIR /usr/src/app
 
-RUN apt-get update && \
-    apt-get install -y gcc python3-dev libpq-dev
+RUN apk update && \
+    apk add --no-cache build-base postgresql-dev
 
 COPY ./requirements.txt .
 
@@ -14,13 +14,13 @@ RUN pip install --upgrade pip setuptools wheel && \
 
 ##############################################################################
 
-FROM python:3.8.2-slim
+FROM python:3.8.2-alpine
 
 WORKDIR /usr/src/app
 
-RUN apt-get update && \
-    apt-get install -y python3-dev libpq-dev && \
-    apt-get autoremove
+RUN apk update && \
+    apk add --no-cache build-base postgresql-dev libffi-dev && \
+    rm -rf /var/cache/apk/*
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1

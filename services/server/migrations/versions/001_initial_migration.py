@@ -1,8 +1,8 @@
-"""Initial migrations
+"""Initial migration
 
 Revision ID: 001
 Revises:
-Create Date: 2020-05-15 20:24:23.372611
+Create Date: 2020-05-16 10:40:57.195137
 
 """
 from alembic import op

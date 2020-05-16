@@ -1,40 +1,6 @@
 from app import create_app
-from app import db
-from app.api.users.models import User
-from flask.cli import FlaskGroup
 
 import os
 
 
 app = create_app(os.getenv("FLASK_ENV"))
-cli = FlaskGroup()
-
-
-@cli.command("flush", help="Recreate the database")
-def flush():
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
-
-
-@cli.command("seed", help="Seeds the database with some initial data")
-def seed():
-    db.session.add(
-        User(
-            username="sentimental_user_one",
-            email="sentimental_user_one@gmail.com",
-            password="password",
-        )
-    )
-    db.session.add(
-        User(
-            username="sentimental_user_two",
-            email="sentimental_user_two@gmail.com",
-            password="password",
-        )
-    )
-    db.session.commit()
-
-
-if __name__ == "__main__":
-    cli()
