@@ -220,3 +220,7 @@ def worker_int(worker):
 
 def worker_abort(worker):
     worker.log.info("worker received SIGABRT signal")
+
+
+if os.getenv("FLASK_ENV") == "development":
+    reload = True
