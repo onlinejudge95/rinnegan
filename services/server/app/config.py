@@ -12,6 +12,7 @@ class BaseConfig:
     ACCESS_TOKEN_EXPIRATION = 900
     REFRESH_TOKEN_EXPIRATION = 2592000
     JWT_ENCODE_ALGORITHM = "HS256"
+    CORS_ALLOWED_ORIGIN = os.getenv("CORS_ALLOWED_ORIGIN")
 
 
 class DevelopmentConfig(BaseConfig):
