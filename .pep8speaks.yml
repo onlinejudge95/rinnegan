@@ -4,8 +4,11 @@ scanner:
 
 flake8:
   max-line-length: 79
-  exclude: ["services/server/migrations"]
   statistics: True
+  exclude:
+    - services/server/migrations
+  ignore:
+    - W503
 
 message:
   opened:
