@@ -49,7 +49,7 @@ test:server:
   script:
     - black --check --config /usr/src/app/pyproject.toml /usr/src/app
     - flake8 --config /usr/src/app/setup.cfg /usr/src/app
-    - isort --atomic --case-sensitive --check-only --force-alphabetical-sort-within-sections --force-single-line-imports --lines-after-imports 2 --lines-between-types 1 --line-width 79 --recursive /usr/src/app
+    - isort --atomic --case-sensitive --check-only --force-alphabetical-sort-within-sections --force-single-line-imports --lines-after-imports 2 --lines-between-types 1 --line-width 79 --recursive --skip-glob "migrations/*" /usr/src/app
     - pytest -c /usr/src/app/app/tests/pytest.ini
   after_script:
     - bash <(curl -s https://codecov.io/bash)

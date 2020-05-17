@@ -12,7 +12,6 @@ def test_development_config(test_app):
     assert test_app.config["ACCESS_TOKEN_EXPIRATION"] == 900
     assert test_app.config["REFRESH_TOKEN_EXPIRATION"] == 2592000
     assert test_app.config["JWT_ENCODE_ALGORITHM"] == "HS384"
-    assert config["CORS_ALLOWED_ORIGIN"]
 
 
 # Test testing config
@@ -29,7 +28,6 @@ def test_testing_config(test_app):
     assert test_app.config["ACCESS_TOKEN_EXPIRATION"] == 3
     assert test_app.config["REFRESH_TOKEN_EXPIRATION"] == 3
     assert test_app.config["JWT_ENCODE_ALGORITHM"] == "HS256"
-    assert config["CORS_ALLOWED_ORIGIN"]
 
 
 # Test production config
@@ -46,4 +44,3 @@ def test_production_config(test_app):
     assert test_app.config["ACCESS_TOKEN_EXPIRATION"] == 900
     assert test_app.config["REFRESH_TOKEN_EXPIRATION"] == 2592000
     assert test_app.config["JWT_ENCODE_ALGORITHM"] == "HS512"
-    assert config["CORS_ALLOWED_ORIGIN"]

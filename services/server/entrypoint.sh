@@ -9,6 +9,8 @@ else
     echo "${DIR} exists\n"
 fi
 
-flask db upgrade
+if [ $FLASK_ENV == "production" ]; then
+    flask db upgrade
+fi
 
 gunicorn --config /usr/src/app/gunicorn.conf.py manage:app

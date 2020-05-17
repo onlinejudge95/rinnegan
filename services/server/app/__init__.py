@@ -23,9 +23,7 @@ def create_app(environemnt):
     app.config.from_object(cfg_map[environemnt])
 
     db.init_app(app)
-    cors.init_app(
-        app, resources={r"*": {"origins": app.config["CORS_ALLOWED_ORIGIN"]}}
-    )
+    cors.init_app(app, resources={r"*": {"origins": "*"}})
     bcrypt.init_app(app)
     migrate.init_app(app, db)
 
