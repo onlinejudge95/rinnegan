@@ -26,7 +26,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 COPY --from=builder /usr/src/app/wheels /wheels
-COPY --from=builder /usr/src/app/requirements.txt .
 
 RUN pip install --upgrade pip setuptools wheel && \
     pip install --no-cache-dir /wheels/*

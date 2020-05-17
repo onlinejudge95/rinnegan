@@ -2,6 +2,5 @@
 line-length = 79
 target-version = ["py38"]
 exclude = """
-__pycache__/
-env/
+migrations/
 """
