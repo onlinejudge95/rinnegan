@@ -3,5 +3,5 @@
   "files.insertFinalNewline": true,
   "python.formatting.provider": "black",
   "python.formatting.blackArgs": ["--config", "services/server/pyproject.toml"],
-  "python.pythonPath": "env/bin/python3.8"
+  "python.pythonPath": "env/bin/python"
 }
