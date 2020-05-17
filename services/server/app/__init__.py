@@ -23,7 +23,7 @@ def create_app(environemnt):
     app.config.from_object(cfg_map[environemnt])
 
     db.init_app(app)
-    cors.init_app(app, resources={r"*": {"origins": "*"}})
+    cors.init_app(app, resources={r"/*": {"origins": "*"}})
     bcrypt.init_app(app)
     migrate.init_app(app, db)
 
@@ -36,7 +36,11 @@ def create_app(environemnt):
 
     @app.before_request
     def check_headers():
-        if "swagger" not in request.path and "admin" not in request.path:
+        if (
+            "swagger" not in request.path
+            and "admin" not in request.path
+            and request.method != "OPTIONS"
+        ):
             accepts = request.headers.get("Accept")
             if not accepts or accepts != "application/json":
                 abort(415, "Only content type supported is application/json")

@@ -5,6 +5,7 @@ from app.api.users.crud import get_user_by_id
 from app.api.users.crud import remove_user
 from app.api.users.crud import update_user
 from flask import request
+from flask_cors import cross_origin
 from flask_restx import fields
 from flask_restx import Namespace
 from flask_restx import Resource
@@ -28,6 +29,7 @@ user_writable = users_namespace.inherit(
 
 class UsersList(Resource):
     @staticmethod
+    @cross_origin()
     @users_namespace.expect(user_writable, validate=True)
     @users_namespace.response(
         400, "Sorry.The provided email <user_email> is already registered"
