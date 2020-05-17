@@ -1,0 +1,17 @@
+scanner:
+  diff_only: True
+  linter: flake8
+
+flake8:
+  max-line-length: 79
+  exclude: ["services/server/migrations"]
+  statistics: True
+
+message:
+  opened:
+    header: ""
+    footer: ""
+  updated:
+    header: ""
+    footer: ""
+  no_errors: "There are currently no PEP 8 issues detected in this Pull Request, thanks for following PEP8. Cheers! :beers: "
