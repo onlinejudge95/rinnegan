@@ -1,10 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
+import UserList from "./components/UserList";
 
 class App extends React.Component {
-  constructor() {
-    super();
+  state = { users: [] };
+
+  componentDidMount() {
     this.getUsers();
   }
 
@@ -14,7 +16,7 @@ class App extends React.Component {
         headers: { Accept: "application/json" },
       })
       .then((res) => {
-        console.log(res);
+        this.setState({ users: res.data });
       })
       .catch((err) => {
         console.log(err);
@@ -31,6 +33,7 @@ class App extends React.Component {
               <h1 className="title is-1">Sentimental</h1>
               <hr />
               <br />
+              <UserList users={this.state.users} />
             </div>
           </div>
         </div>
