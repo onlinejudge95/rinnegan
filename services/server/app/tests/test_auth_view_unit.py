@@ -165,7 +165,7 @@ def test_user_registration_duplicate_entry(test_app, monkeypatch):
 def test_user_registration_invalid_header(test_app):
     client = test_app.test_client()
     response = client.post(
-        "/users",
+        "/auth/register",
         data=json.dumps({"email": "test_user@email.com"}),
         headers={"Accept": "application/json"},
     )

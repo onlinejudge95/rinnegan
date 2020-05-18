@@ -102,3 +102,59 @@ def test_user_registration_invalid_header(test_app, test_database):
 
     data = response.get_json()
     assert "define Content-Type header" in data["message"]
+
+
+# Test user login passes
+def test_user_login(test_app, test_database, add_user):
+    add_user("test_user", "test_user@mail.com", "test_password")
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 200
+
+    data = response.get_json()
+
+    assert data["access_token"]
+    assert data["refresh_token"]
+
+
+# Test user login fails due to unregistered user
+def test_user_login_unregistered_user(test_app, test_database):
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 404
+
+    data = response.get_json()
+
+    assert "test_user@mail.com does not exists" in data["message"]
+
+
+# Test user login fails due to invalid header
+def test_user_login_invalid_header(test_app, test_database):
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Accept": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "define Content-Type header" in data["message"]
