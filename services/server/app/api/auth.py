@@ -7,7 +7,7 @@ from flask_restx import Resource
 
 
 auth_namespace = Namespace("auth")
-user_readable = auth_namespace.model(
+fetch_registered_user = auth_namespace.model(
     "Existing-User",
     {
         "id": fields.Integer(readOnly=True),
@@ -16,15 +16,17 @@ user_readable = auth_namespace.model(
     },
 )
 
-user_writable = auth_namespace.inherit(
-    "New-User", user_readable, {"password": fields.String(required=True)},
+register_user = auth_namespace.inherit(
+    "New-User",
+    fetch_registered_user,
+    {"password": fields.String(required=True)},
 )
 
 
 class Register(Resource):
     @staticmethod
-    @auth_namespace.marshal_with(user_readable)
-    @auth_namespace.expect(user_writable, validate=True)
+    @auth_namespace.marshal_with(fetch_registered_user)
+    @auth_namespace.expect(register_user, validate=True)
     @auth_namespace.response(201, "Successfully registered a new user")
     @auth_namespace.response(
         400, "Sorry.The provided email <user_email> is already registered"
@@ -47,10 +49,48 @@ class Register(Resource):
         return user, 201
 
 
+login_user = auth_namespace.model(
+    "Log-In",
+    {
+        "email": fields.String(required=True),
+        "password": fields.String(required=True),
+    },
+)
+
+refresh = auth_namespace.model(
+    "Refresh", {"refresh_token": fields.String(required=True)},
+)
+user_tokens = auth_namespace.inherit(
+    "Tokens", refresh, {"access_token": fields.String(required=True)},
+)
+
+
 class Login(Resource):
     @staticmethod
+    @auth_namespace.marshal_with(user_tokens)
+    @auth_namespace.expect(login_user, validate=True)
+    @auth_namespace.response(200, "Successfully logged the user in")
+    @auth_namespace.response(
+        404, "User with email <user_email> does not exists"
+    )
     def post():
-        pass
+        request_data = request.get_json()
+        email = request_data.get("email")
+
+        user = get_user_by_email(email)
+        if not user:
+            auth_namespace.abort(
+                404, f"User with email {email} does not exists"
+            )
+        response = {
+            "access_token": user.encode_token(user.id, "access").decode(
+                "utf-8"
+            ),
+            "refresh_token": user.encode_token(user.id, "refresh").decode(
+                "utf-8"
+            ),
+        }
+        return response, 200
 
 
 class Refresh(Resource):
