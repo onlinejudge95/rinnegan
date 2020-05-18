@@ -7,4 +7,6 @@ docker-compose exec server isort --atomic --case-sensitive --force-alphabetical-
 docker-compose exec server pytest -c /usr/src/app/app/tests/pytest.ini
 
 # Client tests
+docker-compose exec client npm run lint
+docker-compose exec client npm run prettier:check
 docker-compose exec client npm test
