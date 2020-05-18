@@ -49,7 +49,7 @@ class App extends React.Component {
       });
   };
 
-  handleChange = (event) => {
+  onHandleChange = (event) => {
     const obj = {};
     obj[event.target.name] = event.target.value;
     this.setState(obj);
@@ -70,7 +70,7 @@ class App extends React.Component {
                 username={this.state.username}
                 email={this.state.email}
                 password={this.state.password}
-                handleChange={this.handleChange}
+                handleChange={this.onHandleChange}
               />
               <br />
               <br />
