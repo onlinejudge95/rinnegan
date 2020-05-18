@@ -8,7 +8,7 @@ stages:
 variables:
   IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
 
-build:
+build:server:
   stage: build
   except:
     refs:
@@ -26,6 +26,25 @@ build:
       ./services/server
   after_script:
     - docker push $IMAGE:server
+
+build:client:
+  stage: build
+  except:
+    refs:
+      - master
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:client || true
+  script:
+    - docker build
+      --cache-from $IMAGE:client
+      --tag $IMAGE:client
+      --file ./services/client/Dockerfile
+      ./services/client
+  after_script:
+    - docker push $IMAGE:client
 
 test:server:
   stage: test
