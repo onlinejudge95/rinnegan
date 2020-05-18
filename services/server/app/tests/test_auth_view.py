@@ -358,7 +358,6 @@ def test_user_status_missing_token(test_app, test_database, add_user):
         },
     )
     data = response.get_json()
-    access_token = data["access_token"]
 
     response = client.get(
         "/auth/status",
