@@ -12,4 +12,8 @@ RUN npm ci
 
 RUN npm install react-scripts@3.4.0
 
-CMD ["npm", "start"]
+COPY . .
+
+RUN chmod +x entrypoint.sh
+
+CMD ["./entrypoint.sh"]
