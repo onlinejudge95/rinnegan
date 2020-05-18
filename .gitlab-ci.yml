@@ -15,6 +15,8 @@ build:server:
       - master
   services:
     - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE:server || true
@@ -34,6 +36,9 @@ build:client:
       - master
   services:
     - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    REACT_APP_USERS_SERVICE_URL: http://localhost:8001
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE:client || true
@@ -65,6 +70,7 @@ test:server:
   before_script:
     - apk update
     - apk add bash curl
+    - cd /usr/src/app
   script:
     - black --check --config /usr/src/app/pyproject.toml /usr/src/app
     - flake8 --config /usr/src/app/setup.cfg /usr/src/app
@@ -79,12 +85,12 @@ test:client:
     refs:
       - master
   image: $IMAGE:client
-  variables:
-    NODE_ENV: development
   before_script:
     - cd /usr/src/app
   script:
-    - npm test
+    - npm run lint
+    - npm run prettier:check
+    - npm run test
 
 deploy:staging:
   stage: deploy
