@@ -1,0 +1,23 @@
+version = 1
+
+test_patterns = [
+    "*tests/**",
+    "*/__tests__/**"
+]
+
+exclude_patterns = ["migrations/**"]
+
+[[analyzers]]
+name = "docker"
+enabled = true
+
+  [analyzers.meta]
+  dockerfile_paths = [
+    "services/client/Dockerfile",
+    "services/db/Dockerfile",
+    "services/server/Dockerfile"
+  ]
+
+  trusted_registries = [
+    "registry.gitlab.com"
+  ]
