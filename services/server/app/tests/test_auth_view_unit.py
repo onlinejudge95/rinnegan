@@ -258,3 +258,22 @@ def test_user_login_invalid_header(test_app):
 
     data = response.get_json()
     assert "define Content-Type header" in data["message"]
+
+
+# Test refresh token passes
+# Test refresh token fails due to expired token
+# Test refresh token fails due to invalid token
+
+
+# Test refresh token fails due to invalid headers
+def test_refresh_token_invalid_header(test_app):
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Accept": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "define Content-Type header" in data["message"]

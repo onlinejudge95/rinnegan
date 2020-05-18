@@ -1,4 +1,4 @@
-import json
+import json, time
 
 
 # Test user registration passes
@@ -152,6 +152,104 @@ def test_user_login_invalid_header(test_app, test_database):
     response = client.post(
         "/auth/login",
         data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Accept": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "define Content-Type header" in data["message"]
+
+
+# Test refresh token passes
+def test_refresh_token(test_app, test_database, add_user):
+    add_user("test_user", "test_user@mail.com", "test_password")
+
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    refresh_token = data["refresh_token"]
+
+    response = client.post(
+        "/auth/refresh",
+        data=json.dumps({"refresh_token": refresh_token}),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data["refresh_token"]
+    assert data["access_token"]
+    assert refresh_token != data["refresh_token"]
+
+
+# Test refresh token fails due to expired token
+def test_refresh_token_expired(test_app, test_database, add_user):
+    add_user("test_user", "test_user@mail.com", "test_password")
+
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    refresh_token = data["refresh_token"]
+    time.sleep(4)
+
+    response = client.post(
+        "/auth/refresh",
+        data=json.dumps({"refresh_token": refresh_token}),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Token expired" in data["message"]
+
+
+# Test refresh token fails due to invalid token
+def test_refresh_token_invalid(test_app, test_database):
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/refresh",
+        data=json.dumps({"refresh_token": "refresh_token"}),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]
+
+
+# Test refresh token fails due to invalid headers
+def test_refresh_token_invalid_header(test_app):
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/refresh",
+        data=json.dumps({"refresh_token": "refresh"}),
         headers={"Accept": "application/json"},
     )
     assert response.status_code == 415

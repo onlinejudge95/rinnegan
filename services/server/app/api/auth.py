@@ -1,9 +1,11 @@
 from app.api.users.crud import add_user
-from app.api.users.crud import get_user_by_email
+from app.api.users.crud import get_user_by_email, get_user_by_id
 from flask import request
 from flask_restx import fields
 from flask_restx import Namespace
 from flask_restx import Resource
+import jwt
+from app.api.users.models import User
 
 
 auth_namespace = Namespace("auth")
@@ -20,6 +22,21 @@ register_user = auth_namespace.inherit(
     "New-User",
     fetch_registered_user,
     {"password": fields.String(required=True)},
+)
+
+login_user = auth_namespace.model(
+    "Log-In",
+    {
+        "email": fields.String(required=True),
+        "password": fields.String(required=True),
+    },
+)
+
+refresh = auth_namespace.model(
+    "Refresh", {"refresh_token": fields.String(required=True)},
+)
+user_tokens = auth_namespace.inherit(
+    "Tokens", refresh, {"access_token": fields.String(required=True)},
 )
 
 
@@ -47,22 +64,6 @@ class Register(Resource):
             request_data["password"],
         )
         return user, 201
-
-
-login_user = auth_namespace.model(
-    "Log-In",
-    {
-        "email": fields.String(required=True),
-        "password": fields.String(required=True),
-    },
-)
-
-refresh = auth_namespace.model(
-    "Refresh", {"refresh_token": fields.String(required=True)},
-)
-user_tokens = auth_namespace.inherit(
-    "Tokens", refresh, {"access_token": fields.String(required=True)},
-)
 
 
 class Login(Resource):
@@ -95,8 +96,28 @@ class Login(Resource):
 
 class Refresh(Resource):
     @staticmethod
+    @auth_namespace.marshal_with(user_tokens)
+    @auth_namespace.expect(refresh, validate=True)
+    @auth_namespace.response(200, "Successfully logged the user in")
+    @auth_namespace.response(401, "Invalid token. Please log in again.")
     def post():
-        pass
+        request_data = request.get_json()
+        refresh_token = request_data.get("refresh_token")
+
+        try:
+            user_id = User.decode_token(refresh_token)
+            user = get_user_by_id(user_id)
+            if not user:
+                auth_namespace.abort(401, "Invalid token. Please log in again")
+            response = {
+                "access_token": user.encode_token(user.id, "access"),
+                "refresh_token": user.encode_token(user.id, "refresh"),
+            }
+            return response, 200
+        except jwt.ExpiredSignatureError:
+            auth_namespace.abort(401, "Token expired. Please log in again.")
+        except jwt.InvalidTokenError:
+            auth_namespace.abort(401, "Invalid token. Please log in again.")
 
 
 class Status(Resource):
