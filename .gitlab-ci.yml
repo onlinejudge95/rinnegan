@@ -73,6 +73,17 @@ test:server:
   after_script:
     - bash <(curl -s https://codecov.io/bash)
 
+test:client:
+  stage: test
+  except:
+    refs:
+      - master
+  image: $IMAGE:client
+  variables:
+    NODE_ENV: development
+  script:
+    - npm test
+
 deploy:staging:
   stage: deploy
   only:
