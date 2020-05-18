@@ -394,6 +394,41 @@ def test_refresh_token_invalid(test_app, monkeypatch):
     assert "Invalid token" in data["message"]
 
 
+# Test refresh token fails due to invalid user id
+# def test_refresh_token_invalid_user(test_app, monkeypatch):
+#     class MockUser(dict):
+#         def __init__(self, *args, **kwargs):
+#             super(MockUser, self).__init__(*args, **kwargs)
+#             self.__dict__ = self
+
+#         def encode_token(self, user_id, token_type):
+#             return bytes("refresh_token", "utf-8")
+
+#         @staticmethod
+#         def decode_token(token):
+#             raise jwt.InvalidTokenError()
+
+#     def mock_get_user_by_id(user_id):
+#         return None
+
+#     monkeypatch.setattr(app.api.auth, "User", MockUser)
+#     monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
+
+#     client = test_app.test_client()
+#     response = client.post(
+#         "/auth/refresh",
+#         data=json.dumps({"refresh_token": "refresh_token"}),
+#         headers={
+#             "Accept": "application/json",
+#             "Content-Type": "application/json",
+#         },
+#     )
+#     assert response.status_code == 401
+
+#     data = response.get_json()
+#     assert "Invalid token" in data["message"]
+
+
 # Test refresh token fails due to invalid headers
 def test_refresh_token_invalid_header(test_app):
     client = test_app.test_client()

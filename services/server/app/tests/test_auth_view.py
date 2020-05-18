@@ -308,6 +308,71 @@ def test_user_status_invalid_token(test_app, test_database):
     assert "Invalid token" in data["message"]
 
 
+# Test user status fails due to expired token
+def test_user_status_expired(test_app, test_database, add_user):
+    add_user("test_user", "test_user@mail.com", "test_password")
+    test_app.config["ACCESS_TOKEN_EXPIRATION"] = -1
+
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
+    response = client.get(
+        "/auth/status",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Token expired" in data["message"]
+
+
+# Test user status fails due to missing token
+def test_user_status_missing_token(test_app, test_database, add_user):
+    add_user("test_user", "test_user@mail.com", "test_password")
+    test_app.config["ACCESS_TOKEN_EXPIRATION"] = -1
+
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
+    response = client.get(
+        "/auth/status",
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 403
+
+    data = response.get_json()
+    assert "Token required" in data["message"]
+
+
 # Test user status fails due to invalid headers
 def test_user_status_invalid_header(test_app):
     client = test_app.test_client()

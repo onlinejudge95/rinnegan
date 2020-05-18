@@ -110,8 +110,6 @@ class Refresh(Resource):
         try:
             user_id = User.decode_token(refresh_token)
             user = get_user_by_id(user_id)
-            if not user:
-                auth_namespace.abort(401, "Invalid token. Please log in again")
             response = {
                 "access_token": user.encode_token(user.id, "access"),
                 "refresh_token": user.encode_token(user.id, "refresh"),
@@ -139,10 +137,6 @@ class Status(Resource):
             access_token = auth_header.split()[1]
             user_id = User.decode_token(access_token)
             user = get_user_by_id(user_id)
-            if not user:
-                auth_namespace.abort(
-                    401, "Invalid token. Please log in again."
-                )
             return user, 200
         except jwt.ExpiredSignatureError:
             auth_namespace.abort(401, "Token expired. Please log in again.")

@@ -34,6 +34,16 @@ def add_user():
     return _add_user
 
 
+@pytest.fixture(scope="function")
+def remove_user():
+    def _remove_user(user_id):
+        user = User.query.get(user_id)
+        db.session.delete(user)
+        db.session.commit()
+
+    return _remove_user
+
+
 @pytest.fixture(scope="module")
 def test_admin_app():
     os.environ["FLASK_ENV"] = "production"
