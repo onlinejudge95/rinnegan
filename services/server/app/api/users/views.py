@@ -31,6 +31,7 @@ class UsersList(Resource):
     @staticmethod
     @cross_origin()
     @users_namespace.expect(user_writable, validate=True)
+    @users_namespace.response(201, "Successfully added the user")
     @users_namespace.response(
         400, "Sorry.The provided email <user_email> is already registered"
     )
@@ -46,12 +47,12 @@ class UsersList(Resource):
             ] = f"Sorry.The provided email {email} is already registered"
             return response, 400
 
-        user_id = add_user(
+        user = add_user(
             request_data["username"],
             request_data["email"],
             request_data["password"],
         )
-        response["id"] = user_id
+        response["id"] = user.id
         response["message"] = f"{request_data['email']} was added"
         return response, 201
 

@@ -3,12 +3,26 @@ import json
 
 
 # Test user creation passes
-def test_add_user_passes(test_app, monkeypatch):
+def test_add_user(test_app, monkeypatch):
+    class MockDict(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockDict, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
     def mock_get_user_by_email(email):
         return None
 
     def mock_add_user(username, email, password):
-        return 1
+        mock_user = MockDict()
+        mock_user.update(
+            {
+                "id": 1,
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        )
+        return mock_user
 
     monkeypatch.setattr(
         app.api.users.views, "get_user_by_email", mock_get_user_by_email
@@ -74,6 +88,11 @@ def test_add_user_invalid_data(test_app):
 
 # Test user creation fails due to duplicate entry
 def test_add_user_duplicate_email(test_app, monkeypatch):
+    class MockDict(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockDict, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
     def mock_get_user_by_email(email):
         return None
 
@@ -81,7 +100,16 @@ def test_add_user_duplicate_email(test_app, monkeypatch):
         return True
 
     def mock_add_user(username, email, password):
-        return 1
+        mock_user = MockDict()
+        mock_user.update(
+            {
+                "id": 1,
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        )
+        return mock_user
 
     monkeypatch.setattr(
         app.api.users.views, "get_user_by_email", mock_get_user_by_email

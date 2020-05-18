@@ -70,7 +70,7 @@ def test_add_user_duplicate_email(test_app, test_database):
         data=json.dumps(
             {
                 "username": "test_user",
-                "email": "test_user@email.com",
+                "email": "test_user@mail.com",
                 "password": "test_password",
             }
         ),
@@ -84,7 +84,7 @@ def test_add_user_duplicate_email(test_app, test_database):
         data=json.dumps(
             {
                 "username": "test_user",
-                "email": "test_user@email.com",
+                "email": "test_user@mail.com",
                 "password": "test_password",
             }
         ),
@@ -96,7 +96,7 @@ def test_add_user_duplicate_email(test_app, test_database):
     assert response.status_code == 400
 
     data = response.get_json()
-    assert "test_user@email.com is already registered" in data["message"]
+    assert "test_user@mail.com is already registered" in data["message"]
 
 
 # Test user creation fails due to invalid content-type header
