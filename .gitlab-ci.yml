@@ -81,6 +81,8 @@ test:client:
   image: $IMAGE:client
   variables:
     NODE_ENV: development
+  before_script:
+    - cd /usr/src/app
   script:
     - npm test
 
