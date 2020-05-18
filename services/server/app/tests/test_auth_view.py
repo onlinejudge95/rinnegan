@@ -1,4 +1,4 @@
-import json, time
+import json
 
 
 # Test user registration passes
@@ -197,6 +197,7 @@ def test_refresh_token(test_app, test_database, add_user):
 # Test refresh token fails due to expired token
 def test_refresh_token_expired(test_app, test_database, add_user):
     add_user("test_user", "test_user@mail.com", "test_password")
+    test_app.config["REFRESH_TOKEN_EXPIRATION"] = -1
 
     client = test_app.test_client()
     response = client.post(
@@ -211,7 +212,6 @@ def test_refresh_token_expired(test_app, test_database, add_user):
     )
     data = response.get_json()
     refresh_token = data["refresh_token"]
-    time.sleep(4)
 
     response = client.post(
         "/auth/refresh",

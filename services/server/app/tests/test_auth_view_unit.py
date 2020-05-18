@@ -1,5 +1,6 @@
 import app.api.auth
 import json
+import jwt
 
 
 # Test user registration passes
@@ -261,8 +262,136 @@ def test_user_login_invalid_header(test_app):
 
 
 # Test refresh token passes
+def test_refresh_token(test_app, monkeypatch):
+    class MockUser(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockUser, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        def encode_token(self, user_id, token_type):
+            return bytes("refresh_token", "utf-8")
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
+    def mock_get_user_by_id(user_id):
+        mock_user = MockUser()
+        mock_user.update(
+            {
+                "id": 1,
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        )
+        return mock_user
+
+    monkeypatch.setattr(app.api.auth, "User", MockUser)
+    monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
+
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/refresh",
+        data=json.dumps({"refresh_token": "refresh_token"}),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data["refresh_token"]
+    assert data["access_token"]
+
+
 # Test refresh token fails due to expired token
+def test_refresh_token_expired(test_app, monkeypatch):
+    class MockUser(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockUser, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        def encode_token(self, user_id, token_type):
+            return bytes("refresh_token", "utf-8")
+
+        @staticmethod
+        def decode_token(token):
+            raise jwt.ExpiredSignatureError()
+
+    def mock_get_user_by_id(user_id):
+        mock_user = MockUser()
+        mock_user.update(
+            {
+                "id": 1,
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        )
+        return mock_user
+
+    monkeypatch.setattr(app.api.auth, "User", MockUser)
+    monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
+
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/refresh",
+        data=json.dumps({"refresh_token": "refresh_token"}),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Token expired" in data["message"]
+
+
 # Test refresh token fails due to invalid token
+def test_refresh_token_invalid(test_app, monkeypatch):
+    class MockUser(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockUser, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        def encode_token(self, user_id, token_type):
+            return bytes("refresh_token", "utf-8")
+
+        @staticmethod
+        def decode_token(token):
+            raise jwt.InvalidTokenError()
+
+    def mock_get_user_by_id(user_id):
+        mock_user = MockUser()
+        mock_user.update(
+            {
+                "id": 1,
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        )
+        return mock_user
+
+    monkeypatch.setattr(app.api.auth, "User", MockUser)
+    monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
+
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/refresh",
+        data=json.dumps({"refresh_token": "refresh_token"}),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]
 
 
 # Test refresh token fails due to invalid headers
