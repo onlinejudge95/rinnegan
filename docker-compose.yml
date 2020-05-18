@@ -5,10 +5,14 @@ networks:
     driver: bridge
     name: sentimental-backend
 
+  frontend:
+    driver: bridge
+    name: sentimental-frontend
+
 services:
-  postgres:
-    container_name: postgres
-    image: postgres:development
+  database:
+    container_name: database
+    image: database:development
     env_file:
       - ./services/db/.env
     expose:
@@ -25,17 +29,36 @@ services:
     container_name: server
     image: server:development
     depends_on:
-      - postgres
+      - database
     env_file:
       - ./services/server/.env
     networks:
       - backend
     ports:
-      - 8000:5000
+      - 8001:5000
     volumes:
       - ./services/server:/usr/src/app
       - ./services/server/logs:/var/log/gunicorn/
       - ./services/server/migrations:/usr/src/app/migrations
     build:
       context: ./services/server/
+      dockerfile: Dockerfile
+
+  client:
+    container_name: client
+    image: client:development
+    depends_on:
+      - server
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_USERS_SERVICE_URL=http://localhost:8001
+    networks:
+      - frontend
+    ports:
+      - 8000:3000
+    volumes:
+      - ./services/client:/usr/src/app
+      - /usr/src/app/node_modules
+    build:
+      context: ./services/client/
       dockerfile: Dockerfile

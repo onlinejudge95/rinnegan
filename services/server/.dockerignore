@@ -5,3 +5,4 @@ __pycache__/
 .env.example
 README.md
 .coverage
+Dockerfile
