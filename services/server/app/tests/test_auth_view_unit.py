@@ -406,3 +406,95 @@ def test_refresh_token_invalid_header(test_app):
 
     data = response.get_json()
     assert "define Content-Type header" in data["message"]
+
+
+# Test user status passes
+def test_user_status(test_app, monkeypatch):
+    class MockUser(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockUser, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
+    def mock_get_user_by_id(user_id):
+        mock_user = MockUser()
+        mock_user.update(
+            {
+                "id": 1,
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        )
+        return mock_user
+
+    monkeypatch.setattr(app.api.auth, "User", MockUser)
+    monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
+    client = test_app.test_client()
+    response = client.get(
+        "/auth/status",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer access_token",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 200, response.get_json()
+
+    data = response.get_json()
+    assert data["username"] == "test_user"
+    assert data["email"] == "test_user@mail.com"
+    assert "password" not in data.keys()
+
+
+# Test user status fails due to invalid access token
+def test_user_status_invalid_token(test_app, monkeypatch):
+    class MockUser(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockUser, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            raise jwt.InvalidTokenError()
+
+    def mock_get_user_by_id(user_id):
+        mock_user = MockUser()
+        mock_user.update(
+            {
+                "id": 1,
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        )
+        return mock_user
+
+    monkeypatch.setattr(app.api.auth, "User", MockUser)
+    monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
+    client = test_app.test_client()
+    response = client.get(
+        "/auth/status",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer invalid_token",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]
+
+
+# Test user status fails due to invalid headers
+def test_user_status_invalid_header(test_app):
+    client = test_app.test_client()
+    response = client.get("/auth/status")
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "content type supported is application/json" in data["message"]

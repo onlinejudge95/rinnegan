@@ -11,6 +11,10 @@ import jwt
 
 
 auth_namespace = Namespace("auth")
+
+parser = auth_namespace.parser()
+parser.add_argument("Authorization", location="header")
+
 fetch_registered_user = auth_namespace.model(
     "Existing-User",
     {
@@ -19,13 +23,11 @@ fetch_registered_user = auth_namespace.model(
         "email": fields.String(required=True),
     },
 )
-
 register_user = auth_namespace.inherit(
     "New-User",
     fetch_registered_user,
     {"password": fields.String(required=True)},
 )
-
 login_user = auth_namespace.model(
     "Log-In",
     {
@@ -33,7 +35,6 @@ login_user = auth_namespace.model(
         "password": fields.String(required=True),
     },
 )
-
 refresh = auth_namespace.model(
     "Refresh", {"refresh_token": fields.String(required=True)},
 )
@@ -124,8 +125,29 @@ class Refresh(Resource):
 
 class Status(Resource):
     @staticmethod
+    @auth_namespace.marshal_with(fetch_registered_user)
+    @auth_namespace.expect(parser)
+    @auth_namespace.response(200, "Successfully got the user status")
+    @auth_namespace.response(401, "Invalid token. Please log in again.")
     def get():
-        pass
+        auth_header = request.headers.get("Authorization")
+
+        if not auth_header:
+            auth_namespace.abort(403, "Token required to fetch the status")
+
+        try:
+            access_token = auth_header.split()[1]
+            user_id = User.decode_token(access_token)
+            user = get_user_by_id(user_id)
+            if not user:
+                auth_namespace.abort(
+                    401, "Invalid token. Please log in again."
+                )
+            return user, 200
+        except jwt.ExpiredSignatureError:
+            auth_namespace.abort(401, "Token expired. Please log in again.")
+        except jwt.InvalidTokenError:
+            auth_namespace.abort(401, "Invalid token. Please log in again.")
 
 
 auth_namespace.add_resource(Register, "/register")

@@ -256,3 +256,63 @@ def test_refresh_token_invalid_header(test_app):
 
     data = response.get_json()
     assert "define Content-Type header" in data["message"]
+
+
+# Test user status passes
+def test_user_status(test_app, test_database, add_user):
+    add_user("test_user", "test_user@mail.com", "test_password")
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
+    response = client.get(
+        "/auth/status",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data["username"] == "test_user"
+    assert data["email"] == "test_user@mail.com"
+    assert "password" not in data.keys()
+
+
+# Test user status fails due to invalid access token
+def test_user_status_invalid_token(test_app, test_database):
+    client = test_app.test_client()
+    response = client.get(
+        "/auth/status",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer invalid_token",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]
+
+
+# Test user status fails due to invalid headers
+def test_user_status_invalid_header(test_app):
+    client = test_app.test_client()
+    response = client.get("/auth/status")
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "content type supported is application/json" in data["message"]
