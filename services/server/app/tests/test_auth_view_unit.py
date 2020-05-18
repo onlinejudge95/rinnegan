@@ -438,7 +438,7 @@ def test_user_status(test_app, monkeypatch):
         "/auth/status",
         headers={
             "Accept": "application/json",
-            "Authorization": f"Bearer access_token",
+            "Authorization": "Bearer access_token",
             "Content-Type": "application/json",
         },
     )
@@ -480,7 +480,7 @@ def test_user_status_invalid_token(test_app, monkeypatch):
         "/auth/status",
         headers={
             "Accept": "application/json",
-            "Authorization": f"Bearer invalid_token",
+            "Authorization": "Bearer invalid_token",
             "Content-Type": "application/json",
         },
     )

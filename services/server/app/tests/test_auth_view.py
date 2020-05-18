@@ -298,7 +298,7 @@ def test_user_status_invalid_token(test_app, test_database):
         "/auth/status",
         headers={
             "Accept": "application/json",
-            "Authorization": f"Bearer invalid_token",
+            "Authorization": "Bearer invalid_token",
             "Content-Type": "application/json",
         },
     )
