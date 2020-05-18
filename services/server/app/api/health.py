@@ -9,9 +9,10 @@ health_namespace = Namespace("health")
 
 
 class Health(Resource):
+    @staticmethod
     @health_namespace.response(200, "Health check passing")
     @health_namespace.response(404, "Health check failed")
-    def get(self):
+    def get():
         health = "bad"
         try:
             with open(app.config["HEALTHCHECK_FILE_PATH"], "r") as fp:
