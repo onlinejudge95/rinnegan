@@ -48,7 +48,7 @@ class App extends React.Component {
       });
   };
 
-  handleRegisterFormSubmit = (data) => {
+  onRegisterFormSubmit = (data) => {
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -64,7 +64,7 @@ class App extends React.Component {
       .catch((err) => console.log(err));
   };
 
-  handleLoginFormSubmit = (data) => {
+  onLoginFormSubmit = (data) => {
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -92,7 +92,7 @@ class App extends React.Component {
     return false;
   };
 
-  logoutUser = () => {
+  onLogOutUser = () => {
     window.localStorage.removeItem("refreshToken");
     this.setState({ accessToken: null });
   };
@@ -100,7 +100,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <NavBar title={this.state.title} logoutUser={this.logoutUser} />
+        <NavBar title={this.state.title} handleLogOutUser={this.onLogOutUser} />
         <section className="section">
           <div className="container">
             <div className="columns">
@@ -131,9 +131,7 @@ class App extends React.Component {
                       return (
                         <RegisterForm
                           isAuthenticated={this.isAuthenticated}
-                          handleRegisterFormSubmit={
-                            this.handleRegisterFormSubmit
-                          }
+                          handleRegisterFormSubmit={this.onRegisterFormSubmit}
                         />
                       );
                     }}
@@ -145,7 +143,7 @@ class App extends React.Component {
                       return (
                         <LoginForm
                           isAuthenticated={this.isAuthenticated}
-                          handleLoginFormSubmit={this.handleLoginFormSubmit}
+                          handleLoginFormSubmit={this.onLoginFormSubmit}
                         />
                       );
                     }}

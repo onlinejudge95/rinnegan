@@ -7,7 +7,7 @@ afterEach(cleanup);
 
 const props = {
   title: "Hello World!",
-  logoutUser: () => {
+  handleLogOutUser: () => {
     return tr;
   },
 };

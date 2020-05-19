@@ -50,7 +50,7 @@ const Navbar = (props) => {
             <Link to="/login" className="navbar-item">
               Log In
             </Link>
-            <span onClick={props.logoutUser} className="navbar-item">
+            <span onClick={props.handleLogOutUser} className="navbar-item">
               Log Out
             </span>
           </div>
@@ -62,7 +62,7 @@ const Navbar = (props) => {
 
 Navbar.propTypes = {
   title: PropTypes.string.isRequired,
-  logoutUser: PropTypes.func.isRequired,
+  handleLogOutUser: PropTypes.func.isRequired,
 };
 
 export default Navbar;
