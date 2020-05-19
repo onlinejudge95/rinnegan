@@ -5,14 +5,20 @@ import NavBar from "../NavBar";
 
 afterEach(cleanup);
 
+const props = {
+  title: "Hello World!",
+  handleLogOutUser: () => {
+    return tr;
+  },
+};
 const title = "Hello World!";
 
 it("renders title", () => {
-  const { getByText } = renderWithRouter(<NavBar title={title} />);
+  const { getByText } = renderWithRouter(<NavBar {...props} />);
   expect(getByText(title)).toHaveClass("nav-title");
 });
 
 it("renders", () => {
-  const { asFragment } = renderWithRouter(<NavBar title={title} />);
+  const { asFragment } = renderWithRouter(<NavBar {...props} />);
   expect(asFragment()).toMatchSnapshot();
 });
