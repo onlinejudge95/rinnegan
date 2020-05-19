@@ -79,7 +79,6 @@ test:server:
   before_script:
     - apk update
     - apk add bash curl
-    - cd /usr/src/app
   script:
     - black --check --config /usr/src/app/pyproject.toml /usr/src/app
     - flake8 --config /usr/src/app/setup.cfg /usr/src/app
@@ -97,8 +96,6 @@ test:client:
       - "*/**.md"
       - "*/**.html"
   image: $IMAGE:client
-  before_script:
-    - cd /usr/src/app
   script:
     - npm run prettier:check
     - npm run lint
