@@ -62,12 +62,11 @@ exports[`renders 1`] = `
           >
             Log In
           </a>
-          <a
+          <span
             class="navbar-item"
-            href="/logout"
           >
             Log Out
-          </a>
+          </span>
         </div>
       </div>
     </section>

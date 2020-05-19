@@ -12,6 +12,7 @@ class App extends React.Component {
   state = {
     users: [],
     title: "Sentimental",
+    accessToken: null,
   };
 
   addUser = (data) => {
@@ -47,10 +48,59 @@ class App extends React.Component {
       });
   };
 
+  handleRegisterFormSubmit = (data) => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+
+    axios
+      .post(`${process.env.REACT_APP_USERS_SERVICE_URL}/auth/register`, data, {
+        headers,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  handleLoginFormSubmit = (data) => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+
+    axios
+      .post(`${process.env.REACT_APP_USERS_SERVICE_URL}/auth/login`, data, {
+        headers,
+      })
+      .then((response) => {
+        this.setState({ accessToken: response.data.access_token });
+        this.getUsers();
+        window.localStorage.setItem(
+          "refreshToken",
+          response.data.refresh_token
+        );
+      })
+      .catch((err) => console.log(err));
+  };
+
+  isAuthenticated = () => {
+    if (this.state.accessToken) {
+      return true;
+    }
+    return false;
+  };
+
+  logoutUser = () => {
+    window.localStorage.removeItem("refreshToken");
+    this.setState({ accessToken: null });
+  };
+
   render() {
     return (
       <div>
-        <NavBar title={this.state.title} />
+        <NavBar title={this.state.title} logoutUser={this.logoutUser} />
         <section className="section">
           <div className="container">
             <div className="columns">
@@ -75,8 +125,32 @@ class App extends React.Component {
                     }}
                   />
                   <Route path="/about" component={About} exact />
-                  <Route path="/register" component={RegisterForm} exact />
-                  <Route path="/login" component={LoginForm} exact />
+                  <Route
+                    path="/register"
+                    render={() => {
+                      return (
+                        <RegisterForm
+                          isAuthenticated={this.isAuthenticated}
+                          handleRegisterFormSubmit={
+                            this.handleRegisterFormSubmit
+                          }
+                        />
+                      );
+                    }}
+                    exact
+                  />
+                  <Route
+                    path="/login"
+                    render={() => {
+                      return (
+                        <LoginForm
+                          isAuthenticated={this.isAuthenticated}
+                          handleLoginFormSubmit={this.handleLoginFormSubmit}
+                        />
+                      );
+                    }}
+                    exact
+                  />
                 </Switch>
               </div>
             </div>
