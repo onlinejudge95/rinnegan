@@ -19,5 +19,6 @@ enabled = true
   ]
 
   trusted_registries = [
+    "registry.hub.docker.com",
     "registry.gitlab.com"
   ]
