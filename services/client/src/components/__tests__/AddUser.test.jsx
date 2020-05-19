@@ -6,13 +6,7 @@ import AddUser from "../AddUser";
 afterEach(cleanup);
 
 const props = {
-  username: "",
-  email: "",
-  password: "",
   addUser: () => {
-    return true;
-  },
-  handleChange: () => {
     return true;
   },
 };
@@ -21,17 +15,14 @@ it("renders with default props", () => {
   const { getByLabelText, getByText } = render(<AddUser {...props} />);
   const usernameInput = getByLabelText("Username");
   expect(usernameInput).toHaveAttribute("type", "text");
-  expect(usernameInput).toHaveAttribute("required");
   expect(usernameInput).not.toHaveValue();
 
   const emailInput = getByLabelText("Email");
   expect(emailInput).toHaveAttribute("type", "email");
-  expect(emailInput).toHaveAttribute("required");
   expect(emailInput).not.toHaveValue();
 
   const passwordInput = getByLabelText("Password");
   expect(passwordInput).toHaveAttribute("type", "password");
-  expect(passwordInput).toHaveAttribute("required");
   expect(passwordInput).not.toHaveValue();
 
   const buttonInput = getByText("Submit");
