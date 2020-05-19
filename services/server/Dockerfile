@@ -1,4 +1,4 @@
-FROM python:3.8.2-alpine as builder
+FROM python:3.8.3-alpine as builder
 
 LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
@@ -17,7 +17,7 @@ RUN pip install pipenv==2018.11.26 && \
 
 ##############################################################################
 
-FROM python:3.8.2-alpine
+FROM python:3.8.3-alpine
 
 WORKDIR /usr/src/app
 
