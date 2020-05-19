@@ -5,12 +5,15 @@ LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 WORKDIR /usr/src/app
 
 RUN apk update && \
-    apk add --no-cache build-base postgresql-dev
+    apk add --no-cache build-base postgresql-dev libffi-dev
 
-COPY ./requirements.txt .
+COPY ./Pipfile ./
 
-RUN pip install --upgrade pip setuptools wheel && \
-    pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels --requirement requirements.txt
+RUN pip install pipenv==2018.11.26 && \
+    pipenv lock --requirements > ./requirements.txt && \
+    pipenv lock --dev --requirements > ./requirements-dev.txt && \
+    pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels --requirement ./requirements.txt && \
+    pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels --requirement ./requirements-dev.txt
 
 ##############################################################################
 
@@ -27,8 +30,7 @@ ENV PYTHONUNBUFFERED 1
 
 COPY --from=builder /usr/src/app/wheels /wheels
 
-RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir /wheels/*
+RUN pip install --no-cache-dir /wheels/*
 
 COPY . .
 
