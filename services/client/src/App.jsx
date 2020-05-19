@@ -11,23 +11,13 @@ import LoginForm from "./components/LoginForm";
 class App extends React.Component {
   state = {
     users: [],
-    username: "",
-    email: "",
-    password: "",
     title: "Sentimental",
   };
 
-  addUser = (event) => {
-    event.preventDefault();
+  addUser = (data) => {
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
-    };
-
-    const data = {
-      username: this.state.username,
-      email: this.state.email,
-      password: this.state.password,
     };
 
     axios
@@ -35,9 +25,7 @@ class App extends React.Component {
         headers,
       })
       .then((response) => {
-        console.log(response);
         this.getUsers();
-        this.setState({ username: "", email: "", password: "" });
       })
       .catch((err) => console.log(err));
   };
@@ -59,12 +47,6 @@ class App extends React.Component {
       });
   };
 
-  onHandleChange = (event) => {
-    const obj = {};
-    obj[event.target.name] = event.target.value;
-    this.setState(obj);
-  };
-
   render() {
     return (
       <div>
@@ -84,13 +66,7 @@ class App extends React.Component {
                           <h1 className="title is-1">Sentimental</h1>
                           <hr />
                           <br />
-                          <AddUser
-                            addUser={this.addUser}
-                            username={this.state.username}
-                            email={this.state.email}
-                            password={this.state.password}
-                            handleChange={this.onHandleChange}
-                          />
+                          <AddUser addUser={this.addUser} />
                           <br />
                           <br />
                           <UserList users={this.state.users} />
