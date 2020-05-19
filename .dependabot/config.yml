@@ -3,9 +3,9 @@ update_configs:
   # Keep Pipfile.lock up to date as soon as
   # new versions are published to the pypi
   - package_manager: "python"
-    directory: "/"
+    directory: "/services/server"
     update_schedule: "live"
-    target_branch: "master"
+    target_branch: "staging"
     default_reviewers:
       - "onlinejudge95"
     default_assignees:
@@ -13,14 +13,33 @@ update_configs:
     default_labels:
       - "dependencies"
       - "dependabot"
+      - "server"
     allowed_updates:
       - match:
           update_type: "security"
 
-  # Keep dev.Dockerfile up to date as soon as
+  # Keep client Dockerfile up to date as soon as
   # new versions are published to the dockerhub.
   - package_manager: "docker"
-    directory: "/"
+    directory: "/services/client"
+    update_schedule: "weekly"
+    target_branch: "staging"
+    default_reviewers:
+      - "onlinejudge95"
+    default_assignees:
+      - "dependabot"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "client"
+    allowed_updates:
+      - match:
+          update_type: "security"
+
+  # Keep server Dockerfile up to date as soon as
+  # new versions are published to the dockerhub.
+  - package_manager: "docker"
+    directory: "/services/server"
     update_schedule: "weekly"
     target_branch: "master"
     default_reviewers:
@@ -30,23 +49,7 @@ update_configs:
     default_labels:
       - "dependencies"
       - "dependabot"
-    allowed_updates:
-      - match:
-          update_type: "security"
-
-  # Keep prod.Dockerfile up to date as soon as
-  # new versions are published to the dockerhub.
-  - package_manager: "docker"
-    directory: "/"
-    update_schedule: "weekly"
-    target_branch: "master"
-    default_reviewers:
-      - "onlinejudge95"
-    default_assignees:
-      - "dependabot"
-    default_labels:
-      - "dependencies"
-      - "dependabot"
+      - "server"
     allowed_updates:
       - match:
           update_type: "security"
