@@ -86,32 +86,6 @@ describe("handles form validation correctly", () => {
     });
   });
 
-  // it("when email field is not valid", async () => {
-  //   const mockProps = {
-  //     handleRegisterFormSubmit: jest.fn(),
-  //     isAuthenticated: jest.fn(),
-  //   };
-
-  //   const { getByLabelText, container, findByTestId } = renderWithRouter(
-  //     <RegisterForm {...mockProps} />
-  //   );
-
-  //   expect(mockProps.handleRegisterFormSubmit).toHaveBeenCalledTimes(0);
-
-  //   const emailInput = getByLabelText("Email");
-  //   fireEvent.change(emailInput, { target: { value: "invalid_mail" } });
-  //   fireEvent.blur(emailInput);
-  //   expect((await findByTestId("errors-email")).innerHTML).toBe(
-  //     "Enter a valid email"
-  //   );
-
-  //   const form = container.querySelector("form");
-  //   fireEvent.submit(form);
-
-  //   await wait(() => {
-  //     expect(mockProps.handleRegisterFormSubmit).toHaveBeenCalledTimes(0);
-  //   });
-  // });
   it("when email field is not valid", async () => {
     const mockProps = {
       handleRegisterFormSubmit: jest.fn(),
