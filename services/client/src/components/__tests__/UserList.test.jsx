@@ -11,12 +11,12 @@ const users = [
 ];
 
 it("renders a username", () => {
-  const { getByText } = render(<UserList users={users} />);
-  expect(getByText("test_user_one")).toHaveClass("username");
-  expect(getByText("test_user_two")).toHaveClass("username");
+  const dom = render(<UserList users={users} />);
+  expect(dom.getByText("test_user_one")).toHaveClass("username");
+  expect(dom.getByText("test_user_two")).toHaveClass("username");
 });
 
 it("renders", () => {
-  const { asFragment } = render(<UserList users={users} />);
-  expect(asFragment()).toMatchSnapshot();
+  const dom = render(<UserList users={users} />);
+  expect(dom.asFragment()).toMatchSnapshot();
 });

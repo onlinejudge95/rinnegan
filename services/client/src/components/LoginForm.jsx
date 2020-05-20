@@ -27,6 +27,7 @@ const LoginForm = (props) => {
         validationSchema={Yup.object().shape({
           email: Yup.string()
             .required("Email is required")
+            .email("Enter a valid email")
             .min(6, "Email must be greater than 5 characters"),
           password: Yup.string()
             .required("Password is required")
@@ -63,7 +64,9 @@ const LoginForm = (props) => {
                   }
                 />
                 {errors.email && touched.email && (
-                  <div className="input-feedback">{errors.email}</div>
+                  <div className="input-feedback" data-testid="errors-email">
+                    {errors.email}
+                  </div>
                 )}
               </div>
               <div className="field">
@@ -85,7 +88,9 @@ const LoginForm = (props) => {
                   }
                 />
                 {errors.password && touched.password && (
-                  <div className="input-feedback">{errors.password}</div>
+                  <div className="input-feedback" data-testid="errors-password">
+                    {errors.password}
+                  </div>
                 )}
               </div>
               <input

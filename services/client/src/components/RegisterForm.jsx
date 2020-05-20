@@ -31,6 +31,7 @@ const RegisterForm = (props) => {
             .min(6, "Username must be greater than 5 characters"),
           email: Yup.string()
             .required("Email is required")
+            .email("Enter a valid email")
             .min(6, "Email must be greater than 5 characters"),
           password: Yup.string()
             .required("Password is required")
@@ -69,7 +70,9 @@ const RegisterForm = (props) => {
                   }
                 />
                 {errors.username && touched.username && (
-                  <div className="input-feedback">{errors.username}</div>
+                  <div className="input-feedback" data-testid="errors-username">
+                    {errors.username}
+                  </div>
                 )}
               </div>
               <div className="field">
@@ -89,7 +92,9 @@ const RegisterForm = (props) => {
                   }
                 />
                 {errors.email && touched.email && (
-                  <div className="input-feedback">{errors.email}</div>
+                  <div className="input-feedback" data-testid="errors-email">
+                    {errors.email}
+                  </div>
                 )}
               </div>
               <div className="field">
@@ -111,7 +116,9 @@ const RegisterForm = (props) => {
                   }
                 />
                 {errors.password && touched.password && (
-                  <div className="input-feedback">{errors.password}</div>
+                  <div className="input-feedback" data-testid="errors-password">
+                    {errors.password}
+                  </div>
                 )}
               </div>
               <input

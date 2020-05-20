@@ -12,20 +12,21 @@ const props = {
 };
 
 it("renders with default props", () => {
-  const { getByLabelText, getByText } = render(<AddUser {...props} />);
-  const usernameInput = getByLabelText("Username");
+  const dom = render(<AddUser {...props} />);
+
+  const usernameInput = dom.getByLabelText("Username");
   expect(usernameInput).toHaveAttribute("type", "text");
   expect(usernameInput).not.toHaveValue();
 
-  const emailInput = getByLabelText("Email");
+  const emailInput = dom.getByLabelText("Email");
   expect(emailInput).toHaveAttribute("type", "email");
   expect(emailInput).not.toHaveValue();
 
-  const passwordInput = getByLabelText("Password");
+  const passwordInput = dom.getByLabelText("Password");
   expect(passwordInput).toHaveAttribute("type", "password");
   expect(passwordInput).not.toHaveValue();
 
-  const buttonInput = getByText("Submit");
+  const buttonInput = dom.getByText("Submit");
   expect(buttonInput).toHaveValue("Submit");
 });
 
