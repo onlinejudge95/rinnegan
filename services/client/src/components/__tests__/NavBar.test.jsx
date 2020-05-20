@@ -14,11 +14,11 @@ const props = {
 const title = "Hello World!";
 
 it("renders title", () => {
-  const { getByText } = renderWithRouter(<NavBar {...props} />);
-  expect(getByText(title)).toHaveClass("nav-title");
+  const dom = renderWithRouter(<NavBar {...props} />);
+  expect(dom.getByText(title)).toHaveClass("nav-title");
 });
 
 it("renders", () => {
-  const { asFragment } = renderWithRouter(<NavBar {...props} />);
-  expect(asFragment()).toMatchSnapshot();
+  const dom = renderWithRouter(<NavBar {...props} />);
+  expect(dom.asFragment()).toMatchSnapshot();
 });
