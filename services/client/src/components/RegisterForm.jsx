@@ -31,6 +31,7 @@ const RegisterForm = (props) => {
             .min(6, "Username must be greater than 5 characters"),
           email: Yup.string()
             .required("Email is required")
+            .email("Enter a valid email")
             .min(6, "Email must be greater than 5 characters"),
           password: Yup.string()
             .required("Password is required")
