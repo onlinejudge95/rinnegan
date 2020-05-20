@@ -16,69 +16,65 @@ describe("renders", () => {
   };
 
   it("registration form", () => {
-    const { getByText } = renderWithRouter(<RegisterForm {...props} />);
-    expect(getByText("Register")).toHaveClass("title");
+    const dom = renderWithRouter(<RegisterForm {...props} />);
+    expect(dom.getByText("Register")).toHaveClass("title");
   });
 
   it("default props", () => {
-    const { getByLabelText, getByText } = renderWithRouter(
-      <RegisterForm {...props} />
-    );
+    const dom = renderWithRouter(<RegisterForm {...props} />);
 
-    const usernameInput = getByLabelText("Username");
+    const usernameInput = dom.getByLabelText("Username");
     expect(usernameInput).toHaveAttribute("type", "text");
     expect(usernameInput).not.toHaveValue();
 
-    const emailInput = getByLabelText("Email");
+    const emailInput = dom.getByLabelText("Email");
     expect(emailInput).toHaveAttribute("type", "email");
     expect(emailInput).not.toHaveValue();
 
-    const passwordInput = getByLabelText("Password");
+    const passwordInput = dom.getByLabelText("Password");
     expect(passwordInput).toHaveAttribute("type", "password");
     expect(passwordInput).not.toHaveValue();
 
-    const buttonInput = getByText("Submit");
+    const buttonInput = dom.getByText("Submit");
     expect(buttonInput).toHaveValue("Submit");
   });
 
   it("a snapshot properly", () => {
-    const { asFragment } = renderWithRouter(<RegisterForm {...props} />);
-    expect(asFragment()).toMatchSnapshot();
+    const dom = renderWithRouter(<RegisterForm {...props} />);
+    expect(dom.asFragment()).toMatchSnapshot();
   });
 });
 
 describe("handles form validation correctly", () => {
-  it("when fields are empty", async () => {
-    const mockProps = {
-      handleRegisterFormSubmit: jest.fn(),
-      isAuthenticated: jest.fn(),
-    };
+  const mockProps = {
+    handleRegisterFormSubmit: jest.fn(),
+    isAuthenticated: jest.fn(),
+  };
 
-    const { getByLabelText, container, findByTestId } = renderWithRouter(
-      <RegisterForm {...mockProps} />
-    );
+  it("when fields are empty", async () => {
+    const dom = renderWithRouter(<RegisterForm {...mockProps} />);
 
     expect(mockProps.handleRegisterFormSubmit).toHaveBeenCalledTimes(0);
 
-    const usernameInput = getByLabelText("Username");
+    const usernameInput = dom.getByLabelText("Username");
     fireEvent.blur(usernameInput);
-    expect((await findByTestId("errors-username")).innerHTML).toBe(
+    expect((await dom.findByTestId("errors-username")).innerHTML).toBe(
       "Username is required"
     );
 
-    const emailInput = getByLabelText("Email");
+    const emailInput = dom.getByLabelText("Email");
     fireEvent.blur(emailInput);
-    expect((await findByTestId("errors-email")).innerHTML).toBe(
+    expect((await dom.findByTestId("errors-email")).innerHTML).toBe(
       "Email is required"
     );
 
-    const passwordInput = getByLabelText("Password");
+    const passwordInput = dom.getByLabelText("Password");
     fireEvent.blur(passwordInput);
-    expect((await findByTestId("errors-password")).innerHTML).toBe(
+    expect((await dom.findByTestId("errors-password")).innerHTML).toBe(
       "Password is required"
     );
 
-    const form = container.querySelector("form");
+    const form = dom.container.querySelector("form");
     fireEvent.submit(form);
 
     await wait(() => {
@@ -87,11 +83,6 @@ describe("handles form validation correctly", () => {
   });
 
   it("when email field is not valid", async () => {
-    const mockProps = {
-      handleRegisterFormSubmit: jest.fn(),
-      isAuthenticated: jest.fn(),
-    };
-
     const { getByLabelText, container, findByTestId } = renderWithRouter(
       <RegisterForm {...mockProps} />
     );
@@ -114,11 +105,6 @@ describe("handles form validation correctly", () => {
   });
 
   it("when fields are not the proper length", async () => {
-    const mockProps = {
-      handleRegisterFormSubmit: jest.fn(),
-      isAuthenticated: jest.fn(),
-    };
-
     const { getByLabelText, container, findByTestId } = renderWithRouter(
       <RegisterForm {...mockProps} />
     );
@@ -155,11 +141,6 @@ describe("handles form validation correctly", () => {
   });
 
   it("when fields are valid", async () => {
-    const mockProps = {
-      handleRegisterFormSubmit: jest.fn(),
-      isAuthenticated: jest.fn(),
-    };
-
     const { getByLabelText, container, findByTestId } = renderWithRouter(
       <RegisterForm {...mockProps} />
     );
