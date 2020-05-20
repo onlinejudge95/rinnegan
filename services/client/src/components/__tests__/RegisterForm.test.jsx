@@ -113,7 +113,76 @@ describe("handles form validation correctly", () => {
     });
   });
 
-  // it("when fields are not the proper length", async () => {});
+  it("when fields are not the proper length", async () => {
+    const mockProps = {
+      handleRegisterFormSubmit: jest.fn(),
+      isAuthenticated: jest.fn(),
+    };
 
-  // it("when fields are valid", async () => {});
+    const { getByLabelText, container, findByTestId } = renderWithRouter(
+      <RegisterForm {...mockProps} />
+    );
+
+    expect(mockProps.handleRegisterFormSubmit).toHaveBeenCalledTimes(0);
+
+    const usernameInput = getByLabelText("Username");
+    fireEvent.change(usernameInput, { target: { value: "null" } });
+    fireEvent.blur(usernameInput);
+    expect((await findByTestId("errors-username")).innerHTML).toBe(
+      "Username must be greater than 5 characters"
+    );
+
+    const emailInput = getByLabelText("Email");
+    fireEvent.change(emailInput, { target: { value: "t@t.c" } });
+    fireEvent.blur(emailInput);
+    expect((await findByTestId("errors-email")).innerHTML).toBe(
+      "Email must be greater than 5 characters"
+    );
+
+    const passwordInput = getByLabelText("Password");
+    fireEvent.change(passwordInput, { target: { value: "invalid" } });
+    fireEvent.blur(passwordInput);
+    expect((await findByTestId("errors-password")).innerHTML).toBe(
+      "Password must be greater than 10 characters"
+    );
+
+    const form = container.querySelector("form");
+    fireEvent.submit(form);
+
+    await wait(() => {
+      expect(mockProps.handleRegisterFormSubmit).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  it("when fields are valid", async () => {
+    const mockProps = {
+      handleRegisterFormSubmit: jest.fn(),
+      isAuthenticated: jest.fn(),
+    };
+
+    const { getByLabelText, container, findByTestId } = renderWithRouter(
+      <RegisterForm {...mockProps} />
+    );
+
+    expect(mockProps.handleRegisterFormSubmit).toHaveBeenCalledTimes(0);
+
+    const usernameInput = getByLabelText("Username");
+    fireEvent.change(usernameInput, { target: { value: "proper" } });
+    fireEvent.blur(usernameInput);
+
+    const emailInput = getByLabelText("Email");
+    fireEvent.change(emailInput, { target: { value: "t@t.com" } });
+    fireEvent.blur(emailInput);
+
+    const passwordInput = getByLabelText("Password");
+    fireEvent.change(passwordInput, { target: { value: "properlength" } });
+    fireEvent.blur(passwordInput);
+
+    const form = container.querySelector("form");
+    fireEvent.submit(form);
+
+    await wait(() => {
+      expect(mockProps.handleRegisterFormSubmit).toHaveBeenCalledTimes(1);
+    });
+  });
 });
