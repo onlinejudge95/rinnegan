@@ -154,7 +154,10 @@ class App extends React.Component {
                     path="/status"
                     render={() => {
                       return (
-                        <UserStatus accessToken={this.state.accessToken} />
+                        <UserStatus
+                          accessToken={this.state.accessToken}
+                          isAuthenticated={this.isAuthenticated}
+                        />
                       );
                     }}
                     exact

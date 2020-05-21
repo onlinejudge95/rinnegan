@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 import PropTypes from "prop-types";
 
@@ -20,7 +21,6 @@ class UserStatus extends React.Component {
         headers,
       })
       .then((response) => {
-        console.log(response.data);
         this.setState({
           email: response.data.email,
           username: response.data.username,
@@ -32,6 +32,9 @@ class UserStatus extends React.Component {
   };
 
   render() {
+    if (!this.props.isAuthenticated()) {
+      return <Redirect to="/login" />;
+    }
     return (
       <div>
         <ul>
@@ -50,7 +53,9 @@ class UserStatus extends React.Component {
 }
 
 UserStatus.propTypes = {
+  // eslint-disable-next-line
   accssToken: PropTypes.string,
+  isAuthenticated: PropTypes.func.isRequired,
 };
 
 export default UserStatus;
