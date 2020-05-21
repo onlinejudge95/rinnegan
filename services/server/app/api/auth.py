@@ -13,7 +13,7 @@ import jwt
 auth_namespace = Namespace("auth")
 
 parser = auth_namespace.parser()
-parser.add_argument("Authorization", location="header")
+parser.add_argument("Authorization", location="headers")
 
 fetch_registered_user = auth_namespace.model(
     "Existing-User",

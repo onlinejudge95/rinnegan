@@ -20,6 +20,7 @@ class UserStatus extends React.Component {
         headers,
       })
       .then((response) => {
+        console.log(response.data);
         this.setState({
           email: response.data.email,
           username: response.data.username,

@@ -9,17 +9,13 @@ afterEach(cleanup);
 jest.mock("axios");
 
 it("renders properly when authenticated", async () => {
-  axios.mockImplementationOnce(() =>
+  axios.get.mockImplementationOnce(() =>
     Promise.resolve({
       data: { email: "test_user@mail.com", username: "test_user" },
     })
   );
 
   const dom = render(<UserStatus />);
-
-  await wait(() => {
-    expect(axios).toHaveBeenCalledTimes(1);
-  });
 
   expect((await dom.findByTestId("user-email")).innerHTML).toBe(
     "test_user@mail.com"
