@@ -7,6 +7,7 @@ import About from "./components/About";
 import NavBar from "./components/NavBar";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
+import UserStatus from "./components/UserStatus";
 
 class App extends React.Component {
   state = {
@@ -145,6 +146,15 @@ class App extends React.Component {
                           isAuthenticated={this.isAuthenticated}
                           handleLoginFormSubmit={this.onLoginFormSubmit}
                         />
+                      );
+                    }}
+                    exact
+                  />
+                  <Route
+                    path="/status"
+                    render={() => {
+                      return (
+                        <UserStatus accessToken={this.state.accessToken} />
                       );
                     }}
                     exact
