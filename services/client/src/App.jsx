@@ -8,13 +8,20 @@ import NavBar from "./components/NavBar";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import UserStatus from "./components/UserStatus";
+import Message from "./components/Message";
 
 class App extends React.Component {
   state = {
     users: [],
     title: "Sentimental",
     accessToken: null,
+    messageText: null,
+    messageType: null,
   };
+
+  componentDidMount() {
+    this.getUsers();
+  }
 
   addUser = (data) => {
     const headers = {
@@ -28,13 +35,14 @@ class App extends React.Component {
       })
       .then((response) => {
         this.getUsers();
+        this.setState({ username: "", email: "" });
+        this.createMessage("success", "User added.");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        this.createMessage("danger", "That user already exists.");
+      });
   };
-
-  componentDidMount() {
-    this.getUsers();
-  }
 
   getUsers = () => {
     const headers = { Accept: "application/json" };
@@ -61,8 +69,12 @@ class App extends React.Component {
       })
       .then((response) => {
         console.log(response.data);
+        this.createMessage("success", "You have registered successfully.");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        this.createMessage("danger", "That user already exists.");
+      });
   };
 
   onLoginFormSubmit = (data) => {
@@ -82,8 +94,12 @@ class App extends React.Component {
           "refreshToken",
           response.data.refresh_token
         );
+        this.createMessage("success", "You have logged in successfully.");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        this.createMessage("danger", "Incorrect email and/or password.");
+      });
   };
 
   isAuthenticated = () => {
@@ -96,6 +112,22 @@ class App extends React.Component {
   onLogOutUser = () => {
     window.localStorage.removeItem("refreshToken");
     this.setState({ accessToken: null });
+    this.createMessage("success", "You have logged out.");
+  };
+
+  createMessage = (type, text) => {
+    this.setState({
+      messageText: text,
+      messageType: type,
+    });
+
+    setTimeout(() => {
+      this.removeMessage();
+    }, 3000);
+  };
+
+  removeMessage = () => {
+    this.setState({ messageText: null, messageType: null });
   };
 
   render() {
@@ -108,6 +140,13 @@ class App extends React.Component {
         />
         <section className="section">
           <div className="container">
+            {this.state.messageType && this.state.messageText && (
+              <Message
+                messageText={this.state.messageText}
+                messageType={this.state.messageType}
+                removeMessage={this.removeMessage}
+              />
+            )}
             <div className="columns">
               <div className="column is-half">
                 <br />
