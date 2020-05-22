@@ -3,6 +3,7 @@ import { render, cleanup, wait } from "@testing-library/react";
 import axios from "axios";
 
 import UserStatus from "../UserStatus";
+import { Route } from "react-router-dom";
 
 afterEach(cleanup);
 
@@ -42,3 +43,5 @@ it("renders", async () => {
 
   expect(dom.asFragment()).toMatchSnapshot();
 });
+
+// TODO:- Write test for validating a refresh token if it has been altered and a new tab is opened with the status Route, it should redirect to login route
