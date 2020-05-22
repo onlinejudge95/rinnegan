@@ -22,9 +22,9 @@ describe("when authenticated", () => {
     await wait(() => {
       expect(mockProps.isAuthenticated).toHaveBeenCalledTimes(1);
     });
-    expect((await findByTestId("nav-about")).innerHTML).toBe("About");
-    expect((await findByTestId("nav-status")).innerHTML).toBe("User Status");
-    expect((await findByTestId("nav-logout")).innerHTML).toBe("Log Out");
+    expect((await dom.findByTestId("nav-about")).innerHTML).toBe("About");
+    expect((await dom.findByTestId("nav-status")).innerHTML).toBe("Status");
+    expect((await dom.findByTestId("nav-logout")).innerHTML).toBe("Log-Out");
   });
 
   it("renders a snapshot properly", () => {
@@ -50,9 +50,9 @@ describe("when unauthenticated", () => {
     await wait(() => {
       expect(mockProps.isAuthenticated).toHaveBeenCalledTimes(1);
     });
-    expect((await findByTestId("nav-about")).innerHTML).toBe("About");
-    expect((await findByTestId("nav-register")).innerHTML).toBe("Register");
-    expect((await findByTestId("nav-login")).innerHTML).toBe("Log In");
+    expect((await dom.findByTestId("nav-about")).innerHTML).toBe("About");
+    expect((await dom.findByTestId("nav-register")).innerHTML).toBe("Register");
+    expect((await dom.findByTestId("nav-login")).innerHTML).toBe("Log-In");
   });
 
   it("renders a snapshot properly", () => {

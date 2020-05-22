@@ -36,36 +36,27 @@ exports[`when authenticated renders a snapshot properly 1`] = `
         >
           <a
             class="navbar-item"
+            data-testid="nav-about"
             href="/about"
           >
             About
           </a>
           <a
             class="navbar-item"
+            data-testid="nav-status"
             href="/status"
           >
-            User Status
+            Status
           </a>
         </div>
         <div
           class="navbar-end"
         >
-          <a
-            class="navbar-item"
-            href="/register"
-          >
-            Register
-          </a>
-          <a
-            class="navbar-item"
-            href="/login"
-          >
-            Log In
-          </a>
           <span
             class="navbar-item"
+            data-testid="nav-logout"
           >
-            Log Out
+            Log-Out
           </span>
         </div>
       </div>
@@ -110,15 +101,10 @@ exports[`when unauthenticated renders a snapshot properly 1`] = `
         >
           <a
             class="navbar-item"
+            data-testid="nav-about"
             href="/about"
           >
             About
-          </a>
-          <a
-            class="navbar-item"
-            href="/status"
-          >
-            User Status
           </a>
         </div>
         <div
@@ -126,21 +112,18 @@ exports[`when unauthenticated renders a snapshot properly 1`] = `
         >
           <a
             class="navbar-item"
+            data-testid="nav-register"
             href="/register"
           >
             Register
           </a>
           <a
             class="navbar-item"
+            data-testid="nav-login"
             href="/login"
           >
-            Log In
+            Log-In
           </a>
-          <span
-            class="navbar-item"
-          >
-            Log Out
-          </span>
         </div>
       </div>
     </section>

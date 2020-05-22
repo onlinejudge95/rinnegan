@@ -101,7 +101,11 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <NavBar title={this.state.title} handleLogOutUser={this.onLogOutUser} />
+        <NavBar
+          title={this.state.title}
+          handleLogOutUser={this.onLogOutUser}
+          isAuthenticated={this.isAuthenticated}
+        />
         <section className="section">
           <div className="container">
             <div className="columns">
