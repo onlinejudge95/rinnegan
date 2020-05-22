@@ -35,7 +35,7 @@ class User(db.Model):
             "exp": datetime.datetime.utcnow()
             + datetime.timedelta(seconds=time_to_live),
             "iat": datetime.datetime.utcnow(),
-            "sub": 1,
+            "sub": user_id,
         }
         return jwt.encode(
             payload=payload,

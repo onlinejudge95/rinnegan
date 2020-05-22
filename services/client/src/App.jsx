@@ -7,6 +7,7 @@ import About from "./components/About";
 import NavBar from "./components/NavBar";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
+import UserStatus from "./components/UserStatus";
 
 class App extends React.Component {
   state = {
@@ -100,7 +101,11 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <NavBar title={this.state.title} handleLogOutUser={this.onLogOutUser} />
+        <NavBar
+          title={this.state.title}
+          handleLogOutUser={this.onLogOutUser}
+          isAuthenticated={this.isAuthenticated}
+        />
         <section className="section">
           <div className="container">
             <div className="columns">
@@ -144,6 +149,18 @@ class App extends React.Component {
                         <LoginForm
                           isAuthenticated={this.isAuthenticated}
                           handleLoginFormSubmit={this.onLoginFormSubmit}
+                        />
+                      );
+                    }}
+                    exact
+                  />
+                  <Route
+                    path="/status"
+                    render={() => {
+                      return (
+                        <UserStatus
+                          accessToken={this.state.accessToken}
+                          isAuthenticated={this.isAuthenticated}
                         />
                       );
                     }}
