@@ -6,13 +6,13 @@ WORKDIR /usr/src/app
 
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
-COPY package*.json ./
+COPY ./services/client/package*.json ./
 
 RUN npm ci
 
 RUN npm install react-scripts@3.4.0
 
-COPY . .
+COPY ./services/client .
 
 RUN npm run build
 
@@ -27,13 +27,13 @@ WORKDIR /usr/src/app
 RUN apk update && \
     apk add --no-cache build-base=0.5-r1 postgresql-dev=12.2-r0 libffi-dev=3.2.1-r6
 
-COPY ./Pipfile ./
+COPY ./services/server/Pipfile ./
 
 RUN pip install pipenv==2018.11.26 && \
     pipenv lock --requirements > ./requirements.txt && \
     pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels --requirement ./requirements.txt
 
-##############################################################################
+# ##############################################################################
 
 FROM nginx:stable-alpine as production
 
@@ -42,9 +42,8 @@ LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 WORKDIR /usr/src/app
 
 RUN apk update && \
-    apk add --no-cache --virtual build-deps \
-    openssl-dev libffi-dev gcc python3-dev musl-dev \
-    postgresql-dev netcat-openbsd
+    apk add --no-cache openssl-dev=1.1.1g-r0 libffi-dev=3.2.1-r6 gcc=9.2.0-r4 python3-dev=3.8.2-r0 musl-dev=1.1.24-r2 \
+    postgresql-dev=12.2-r0 netcat-openbsd=1.130-r1
 
 RUN python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
