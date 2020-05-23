@@ -54,7 +54,7 @@ RUN python3 -m ensurepip && \
 
 COPY --from=build-client /usr/src/app/build /usr/share/nginx/html
 COPY --from=build-server /usr/src/app/wheels /wheels
-COPY ./services/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./services/nginx/prod.conf /etc/nginx/conf.d/default.conf
 
 RUN pip install --no-cache-dir /wheels/*
 
