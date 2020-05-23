@@ -13,9 +13,6 @@ build:server:
   except:
     refs:
       - master
-    changes:
-      - "*/**.md"
-      - "*/**.html"
   services:
     - docker:dind
   variables:
@@ -37,9 +34,6 @@ build:client:
   except:
     refs:
       - master
-    changes:
-      - "*/**.md"
-      - "*/**.html"
   services:
     - docker:dind
   variables:
@@ -65,41 +59,21 @@ build:overall:
     DOCKER_DRIVER: overlay2
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:production || true
+    - docker pull $IMAGE:overall || true
   script:
-    - docker pull $IMAGE:client || true
-    - docker pull $IMAGE:server || true
     - docker build
-      --target build-client
-      --cache-from $IMAGE:build-client
-      --tag $IMAGE:build-client
-      --file ./Dockerfile
-      "."
-    - docker build
-      --target build-server
-      --cache-from $IMAGE:build-server
-      --tag $IMAGE:build-server
-      --file ./Dockerfile
-      "."
-    - docker build
-      --target production
-      --cache-from $IMAGE:production
-      --tag $IMAGE:production
+      --cache-from $IMAGE:overall
+      --tag $IMAGE:overall
       --file ./Dockerfile
       "."
   after_script:
-    - docker push $IMAGE:build-client
-    - docker push $IMAGE:build-server
-    - docker push $IMAGE:production
+    - docker push $IMAGE:overall
 
 test:server:
   stage: test
   except:
     refs:
       - master
-    changes:
-      - "*/**.md"
-      - "*/**.html"
   image: $IMAGE:server
   services:
     - postgres:latest
@@ -127,9 +101,6 @@ test:client:
   except:
     refs:
       - master
-    changes:
-      - "*/**.md"
-      - "*/**.html"
   image: $IMAGE:client
   before_script:
     - cd /usr/src/app
@@ -143,9 +114,6 @@ deploy:staging:
   only:
     refs:
       - staging
-  except:
-    changes:
-      - "*/**.md"
   services:
     - docker:dind
   variables:
@@ -177,27 +145,14 @@ deploy:overall:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
     - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker pull $IMAGE:overall || true
   script:
-    - docker pull $IMAGE:client || true
-    - docker pull $IMAGE:server || true
-    - docker build
-      --target build-client
-      --cache-from $IMAGE:build-client
-      --tag $IMAGE:build-client
-      --file ./Dockerfile
-      "."
-    - docker build
-      --target build-server
-      --cache-from $IMAGE:build-server
-      --tag $IMAGE:build-server
-      --file ./Dockerfile
-      "."
     - docker build
       --target production
       --cache-from $IMAGE:production
       --tag $HEROKU_REGISTRY_IMAGE
       --file ./Dockerfile
       "."
-    - docker push $HEROKU_REGISTRY_IMAGE
   after_script:
+    - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
