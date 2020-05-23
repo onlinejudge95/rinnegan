@@ -126,7 +126,7 @@ spew = False
 #       None to signal that Python should choose one on its own.
 #
 
-daemon = True
+daemon = False
 raw_env = []
 pidfile = None
 umask = 0

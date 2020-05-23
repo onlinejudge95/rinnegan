@@ -59,9 +59,8 @@ COPY ./services/nginx/default.conf /etc/nginx/conf.d/default.conf
 RUN pip install --no-cache-dir /wheels/*
 
 COPY ./services/server .
+COPY ./bin/prod_entrypoint.sh ./
 
-RUN chmod +x entrypoint.sh
+RUN chmod +x prod_entrypoint.sh
 
-CMD ./entrypoint.sh && \
-    sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf && \
-    nginx -g 'daemon off;'
+CMD ./prod_entrypoint.sh

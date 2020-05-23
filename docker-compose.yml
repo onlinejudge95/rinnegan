@@ -62,3 +62,16 @@ services:
     build:
       context: ./services/client/
       dockerfile: Dockerfile
+
+  nginx:
+    container_name: nginx
+    image: nginx:development
+    depends_on:
+      - client
+    networks:
+      - frontend
+    ports:
+      - 80:80
+    build:
+      context: ./services/nginx/
+      dockerfile: Dockerfile
