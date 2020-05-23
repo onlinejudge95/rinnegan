@@ -35,7 +35,7 @@ services:
     networks:
       - backend
     ports:
-      - 8001:5000
+      - 5000:5000
     volumes:
       - ./services/server:/usr/src/app
       - ./services/server/logs:/var/log/gunicorn/
@@ -55,10 +55,29 @@ services:
     networks:
       - frontend
     ports:
-      - 8000:3000
+      - 3000:3000
     volumes:
       - ./services/client:/usr/src/app
+      - ./services/nginx/build:/usr/src/app/build
       - /usr/src/app/node_modules
     build:
       context: ./services/client/
+      dockerfile: Dockerfile
+
+  nginx:
+    container_name: nginx
+    image: nginx:development
+    depends_on:
+      - client
+    environment:
+      - PORT=80
+    networks:
+      - frontend
+    ports:
+      - 80:80
+    volumes:
+      - ./services/nginx/build:/usr/share/nginx/html
+      - ./services/nginx/logs:/var/logs/nginx
+    build:
+      context: ./services/nginx/
       dockerfile: Dockerfile

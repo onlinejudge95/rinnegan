@@ -16,6 +16,7 @@ enabled = true
     "Dockerfile",
     "services/client/Dockerfile",
     "services/db/Dockerfile",
+    "services/nginx/Dockerfile",
     "services/server/Dockerfile"
   ]
 

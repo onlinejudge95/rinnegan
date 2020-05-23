@@ -54,14 +54,13 @@ RUN python3 -m ensurepip && \
 
 COPY --from=build-client /usr/src/app/build /usr/share/nginx/html
 COPY --from=build-server /usr/src/app/wheels /wheels
-COPY ./services/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./services/nginx/prod.conf /etc/nginx/conf.d/default.conf
 
 RUN pip install --no-cache-dir /wheels/*
 
 COPY ./services/server .
+COPY ./bin/prod_entrypoint.sh ./
 
-RUN chmod +x entrypoint.sh
+RUN chmod +x prod_entrypoint.sh
 
-CMD ./entrypoint.sh && \
-    sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf && \
-    nginx -g 'daemon off;'
+CMD ./prod_entrypoint.sh
