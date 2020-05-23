@@ -13,9 +13,6 @@ build:server:
   except:
     refs:
       - master
-    changes:
-      - "*/**.md"
-      - "*/**.html"
   services:
     - docker:dind
   variables:
@@ -37,9 +34,6 @@ build:client:
   except:
     refs:
       - master
-    changes:
-      - "*/**.md"
-      - "*/**.html"
   services:
     - docker:dind
   variables:
@@ -57,14 +51,29 @@ build:client:
   after_script:
     - docker push $IMAGE:client
 
+build:overall:
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:overall || true
+  script:
+    - docker build
+      --cache-from $IMAGE:overall
+      --tag $IMAGE:overall
+      --file ./Dockerfile
+      "."
+  after_script:
+    - docker push $IMAGE:overall
+
 test:server:
   stage: test
   except:
     refs:
       - master
-    changes:
-      - "*/**.md"
-      - "*/**.html"
   image: $IMAGE:server
   services:
     - postgres:latest
@@ -92,9 +101,6 @@ test:client:
   except:
     refs:
       - master
-    changes:
-      - "*/**.md"
-      - "*/**.html"
   image: $IMAGE:client
   before_script:
     - cd /usr/src/app
@@ -108,9 +114,6 @@ deploy:staging:
   only:
     refs:
       - staging
-  except:
-    changes:
-      - "*/**.md"
   services:
     - docker:dind
   variables:
@@ -119,13 +122,37 @@ deploy:staging:
     HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
   before_script:
     - apk add --no-cache curl
+    - chmod +x ./bin/deploy.sh
     - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
   script:
     - docker build
       --tag $HEROKU_REGISTRY_IMAGE
       --file ./services/server/Dockerfile
       ./services/server
-    - chmod +x ./bin/deploy.sh
     - docker push $HEROKU_REGISTRY_IMAGE
   after_script:
+    - ./bin/deploy.sh
+
+deploy:overall:
+  stage: deploy
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    HEROKU_APP_NAME: rinnegan-staging
+    HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
+  before_script:
+    - apk add --no-cache curl
+    - chmod +x ./bin/deploy.sh
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker pull $IMAGE:overall || true
+  script:
+    - docker build
+      --target production
+      --cache-from $IMAGE:production
+      --tag $HEROKU_REGISTRY_IMAGE
+      --file ./Dockerfile
+      "."
+  after_script:
+    - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
