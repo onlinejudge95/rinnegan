@@ -149,8 +149,7 @@ deploy:staging:
     - docker pull $IMAGE:overall || true
   script:
     - docker build
-      --target production
-      --cache-from $IMAGE:production
+      --cache-from $IMAGE:overall
       --tag $HEROKU_REGISTRY_IMAGE
       --file ./Dockerfile
       "."
