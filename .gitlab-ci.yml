@@ -149,8 +149,33 @@ deploy:staging:
     - docker pull $IMAGE:overall || true
   script:
     - docker build
-      --target production
-      --cache-from $IMAGE:production
+      --cache-from $IMAGE:overall
+      --tag $HEROKU_REGISTRY_IMAGE
+      --file ./Dockerfile
+      "."
+  after_script:
+    - docker push $HEROKU_REGISTRY_IMAGE
+    - ./bin/deploy.sh
+
+deploy:production:
+  stage: deploy
+  only:
+    refs:
+      - master
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    HEROKU_APP_NAME: rinnegan-production
+    HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
+  before_script:
+    - apk add --no-cache curl
+    - chmod +x ./bin/deploy.sh
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker pull $IMAGE:overall || true
+  script:
+    - docker build
+      --cache-from $IMAGE:overall
       --tag $HEROKU_REGISTRY_IMAGE
       --file ./Dockerfile
       "."
