@@ -1,14 +1,28 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import axios from "axios";
+import Modal from "react-modal";
 import UserList from "./components/UserList";
-import AddUser from "./components/AddUser";
 import About from "./components/About";
 import NavBar from "./components/NavBar";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
 import UserStatus from "./components/UserStatus";
 import Message from "./components/Message";
+import AddUser from "./components/AddUser";
+
+Modal.setAppElement(document.getElementById("root"));
+
+const modalStyles = {
+  content: {
+    top: "0",
+    left: "0",
+    right: "0",
+    bottom: "0",
+    border: 0,
+    background: "transparent",
+  },
+};
 
 class App extends React.Component {
   state = {
@@ -17,6 +31,7 @@ class App extends React.Component {
     accessToken: null,
     messageText: null,
     messageType: null,
+    showModal: false,
   };
 
   componentDidMount() {
@@ -36,6 +51,7 @@ class App extends React.Component {
       .then((response) => {
         this.getUsers();
         this.setState({ username: "", email: "" });
+        this.handleCloseModal();
         this.createMessage("success", "User added.");
       })
       .catch((err) => {
@@ -57,6 +73,25 @@ class App extends React.Component {
       });
   };
 
+  removeUser = (user_id) => {
+    const headers = {
+      Accept: "application/json",
+    };
+
+    axios
+      .delete(`${process.env.REACT_APP_USERS_SERVICE_URL}/users/${user_id}`, {
+        headers,
+      })
+      .then((response) => {
+        this.getUsers();
+        this.createMessage("success", "User removed.");
+      })
+      .catch((err) => {
+        console.log(err);
+        this.createMessage("danger", "Something went wrong.");
+      });
+  };
+
   onRegisterFormSubmit = (data) => {
     const headers = {
       Accept: "application/json",
@@ -69,6 +104,7 @@ class App extends React.Component {
       })
       .then((response) => {
         console.log(response.data);
+        this.getUsers();
         this.createMessage("success", "You have registered successfully.");
       })
       .catch((err) => {
@@ -130,6 +166,14 @@ class App extends React.Component {
     this.setState({ messageText: null, messageType: null });
   };
 
+  handleOpenModal = () => {
+    this.setState({ showModal: true });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ showModal: false });
+  };
+
   render() {
     return (
       <div>
@@ -158,12 +202,44 @@ class App extends React.Component {
                       return (
                         <div>
                           <h1 className="title is-1">Sentimental</h1>
-                          <hr />
-                          <br />
-                          <AddUser addUser={this.addUser} />
                           <br />
                           <br />
-                          <UserList users={this.state.users} />
+                          {this.isAuthenticated() && (
+                            <button
+                              onClick={this.handleOpenModal}
+                              className="button is-primary"
+                            >
+                              Add User
+                            </button>
+                          )}
+                          <br />
+                          <br />
+                          <Modal
+                            isOpen={this.state.showModal}
+                            style={modalStyles}
+                          >
+                            <div className="modal is-active">
+                              <div className="modal-background" />
+                              <div className="modal-card">
+                                <header className="modal-card-head">
+                                  <p className="modal-card-title">Add User</p>
+                                  <button
+                                    className="delete"
+                                    aria-label="close"
+                                    onClick={this.handleCloseModal}
+                                  />
+                                </header>
+                                <section className="modal-card-body">
+                                  <AddUser addUser={this.addUser} />
+                                </section>
+                              </div>
+                            </div>
+                          </Modal>
+                          <UserList
+                            users={this.state.users}
+                            removeUser={this.removeUser}
+                            isAuthenticated={this.isAuthenticated}
+                          />
                         </div>
                       );
                     }}
