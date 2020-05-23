@@ -57,6 +57,41 @@ build:client:
   after_script:
     - docker push $IMAGE:client
 
+build:overall:
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:production || true
+  script:
+    - docker pull $IMAGE:client || true
+    - docker pull $IMAGE:server || true
+    - docker build
+      --target build-client
+      --cache-from $IMAGE:build-client
+      --tag $IMAGE:build-client
+      --file ./Dockerfile
+      "."
+    - docker build
+      --target build-server
+      --cache-from $IMAGE:build-server
+      --tag $IMAGE:build-server
+      --file ./Dockerfile
+      "."
+    - docker build
+      --target production
+      --cache-from $IMAGE:production
+      --tag $IMAGE:production
+      --file ./Dockerfile
+      "."
+  after_script:
+    - docker push $IMAGE:build-client
+    - docker push $IMAGE:build-server
+    - docker push $IMAGE:production
+
 test:server:
   stage: test
   except:
@@ -119,13 +154,50 @@ deploy:staging:
     HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
   before_script:
     - apk add --no-cache curl
+    - chmod +x ./bin/deploy.sh
     - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
   script:
     - docker build
       --tag $HEROKU_REGISTRY_IMAGE
       --file ./services/server/Dockerfile
       ./services/server
+    - docker push $HEROKU_REGISTRY_IMAGE
+  after_script:
+    - ./bin/deploy.sh
+
+deploy:overall:
+  stage: deploy
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    HEROKU_APP_NAME: rinnegan-staging
+    HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
+  before_script:
+    - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+  script:
+    - docker pull $IMAGE:client || true
+    - docker pull $IMAGE:server || true
+    - docker build
+      --target build-client
+      --cache-from $IMAGE:build-client
+      --tag $IMAGE:build-client
+      --file ./Dockerfile
+      "."
+    - docker build
+      --target build-server
+      --cache-from $IMAGE:build-server
+      --tag $IMAGE:build-server
+      --file ./Dockerfile
+      "."
+    - docker build
+      --target production
+      --cache-from $IMAGE:production
+      --tag $HEROKU_REGISTRY_IMAGE
+      --file ./Dockerfile
+      "."
     - docker push $HEROKU_REGISTRY_IMAGE
   after_script:
     - ./bin/deploy.sh
