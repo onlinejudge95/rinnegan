@@ -7,7 +7,7 @@ afterEach(cleanup);
 
 it("renders about", () => {
   const dom = render(<About />);
-  expect(dom.getByText("About section")).toHaveClass("content");
+  expect(dom.getByText("Sentimental")).toHaveClass("title is-1");
 });
 
 it("renders", () => {

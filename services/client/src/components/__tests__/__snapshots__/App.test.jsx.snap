@@ -33,17 +33,6 @@ exports[`renders 1`] = `
           class="navbar-menu"
         >
           <div
-            class="navbar-start"
-          >
-            <a
-              class="navbar-item"
-              data-testid="nav-about"
-              href="/about"
-            >
-              About
-            </a>
-          </div>
-          <div
             class="navbar-end"
           >
             <a
@@ -78,32 +67,50 @@ exports[`renders 1`] = `
           >
             <br />
             <div>
-              <h1
-                class="title is-1"
-              >
-                Sentimental
-              </h1>
-              <br />
-              <br />
               <br />
               <br />
               <div>
-                <table
-                  class="table is-hoverable is-fullwidth"
+                <h1
+                  class="title is-1"
                 >
-                  <thead>
-                    <tr>
-                      <th>
-                        Email
-                      </th>
-                      <th>
-                        Username
-                      </th>
-                      <th />
-                    </tr>
-                  </thead>
-                  <tbody />
-                </table>
+                  Sentimental
+                </h1>
+                <hr />
+                <br />
+                <p
+                  class="content"
+                >
+                  With the advent of Machine Learning, the filed of sentiment analysis has become somewhat trivial. You can find pre-made solutions to find sentiment of a word in a given text. We built upon this functionality and made this system.
+                </p>
+                <p
+                  class="content"
+                >
+                  Sentimental is a platform where a user can come and serach for a 
+                  <strong>
+                    sentiment analysis
+                  </strong>
+                   on a given 
+                  <strong>
+                    keyword
+                  </strong>
+                  . After he has finalized his choice, he will be shown the analysis for that word by choosing the corpus from
+                  <strong>
+                    one or more of the social media platorms
+                  </strong>
+                  . Currently we support the following platforms to fetch data from
+                </p>
+                <ul
+                  class="content"
+                >
+                  <li>
+                    Twitter
+                  </li>
+                </ul>
+                <p
+                  class="content"
+                >
+                  As and when our infrastructure grows we will be using other platforms to include more diverse sentiments
+                </p>
               </div>
             </div>
           </div>

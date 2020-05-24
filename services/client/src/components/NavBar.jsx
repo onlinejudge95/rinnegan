@@ -10,12 +10,6 @@ const titleStyle = {
 const Navbar = (props) => {
   let menu = (
     <div className="navbar-menu">
-      <div className="navbar-start">
-        <Link to="/about" className="navbar-item" data-testid="nav-about">
-          About
-        </Link>
-      </div>
-
       <div className="navbar-end">
         <Link to="/register" className="navbar-item" data-testid="nav-register">
           Register

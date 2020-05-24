@@ -50,7 +50,6 @@ describe("when unauthenticated", () => {
     await wait(() => {
       expect(mockProps.isAuthenticated).toHaveBeenCalledTimes(1);
     });
-    expect((await dom.findByTestId("nav-about")).innerHTML).toBe("About");
     expect((await dom.findByTestId("nav-register")).innerHTML).toBe("Register");
     expect((await dom.findByTestId("nav-login")).innerHTML).toBe("Log-In");
   });

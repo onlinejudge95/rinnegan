@@ -201,9 +201,6 @@ class App extends React.Component {
                     render={() => {
                       return (
                         <div>
-                          <h1 className="title is-1">Sentimental</h1>
-                          <br />
-                          <br />
                           {this.isAuthenticated() && (
                             <button
                               onClick={this.handleOpenModal}
@@ -235,16 +232,11 @@ class App extends React.Component {
                               </div>
                             </div>
                           </Modal>
-                          <UserList
-                            users={this.state.users}
-                            removeUser={this.removeUser}
-                            isAuthenticated={this.isAuthenticated}
-                          />
+                          <About />
                         </div>
                       );
                     }}
                   />
-                  <Route path="/about" component={About} exact />
                   <Route
                     path="/register"
                     render={() => {
