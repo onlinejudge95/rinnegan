@@ -1,28 +1,12 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import axios from "axios";
-import Modal from "react-modal";
-import UserList from "./components/UserList";
 import About from "./components/About";
 import NavBar from "./components/NavBar";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
-import UserStatus from "./components/UserStatus";
+import UserProfile from "./components/UserProfile";
 import Message from "./components/Message";
-import AddUser from "./components/AddUser";
-
-Modal.setAppElement(document.getElementById("root"));
-
-const modalStyles = {
-  content: {
-    top: "0",
-    left: "0",
-    right: "0",
-    bottom: "0",
-    border: 0,
-    background: "transparent",
-  },
-};
 
 class App extends React.Component {
   state = {
@@ -195,17 +179,7 @@ class App extends React.Component {
               <div className="column is-half">
                 <br />
                 <Switch>
-                  <Route
-                    path="/"
-                    exact
-                    render={() => {
-                      return (
-                        <div>
-                          <About />
-                        </div>
-                      );
-                    }}
-                  />
+                  <Route path="/" component={About} exact />
                   <Route
                     path="/register"
                     render={() => {
@@ -231,10 +205,10 @@ class App extends React.Component {
                     exact
                   />
                   <Route
-                    path="/status"
+                    path="/profile"
                     render={() => {
                       return (
-                        <UserStatus
+                        <UserProfile
                           accessToken={this.state.accessToken}
                           isAuthenticated={this.isAuthenticated}
                         />

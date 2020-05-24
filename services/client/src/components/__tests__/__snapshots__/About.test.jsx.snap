@@ -32,17 +32,22 @@ exports[`renders 1`] = `
       </strong>
       . Currently we support the following platforms to fetch data from
     </p>
-    <ul
-      class="content"
+    <div
+      class="list is-hoverable"
     >
-      <li>
+      <a
+        class="list-item"
+        href="https://twitter.com"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         Twitter
-      </li>
-    </ul>
+      </a>
+    </div>
     <p
       class="content"
     >
-      As and when our infrastructure grows we will be using other platforms to include more diverse sentiments
+      As and when our infrastructure grows we will be using other platforms to include more diverse sentiments.
     </p>
   </div>
 </DocumentFragment>

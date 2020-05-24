@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import PropTypes from "prop-types";
 
-class UserStatus extends React.Component {
+class UserProfile extends React.Component {
   state = { email: "", username: "" };
 
   componentDidMount() {
@@ -52,10 +52,10 @@ class UserStatus extends React.Component {
   }
 }
 
-UserStatus.propTypes = {
+UserProfile.propTypes = {
   // eslint-disable-next-line
   accssToken: PropTypes.string,
   isAuthenticated: PropTypes.func.isRequired,
 };
 
-export default UserStatus;
+export default UserProfile;

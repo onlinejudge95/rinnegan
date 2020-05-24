@@ -21,7 +21,14 @@ const About = () => {
         support the following platforms to fetch data from
       </p>
       <div className="list is-hoverable">
-        <a className="list-item">Twitter</a>
+        <a
+          className="list-item"
+          href="https://twitter.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Twitter
+        </a>
       </div>
       <p className="content">
         As and when our infrastructure grows we will be using other platforms to
