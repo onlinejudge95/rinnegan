@@ -180,7 +180,7 @@ deploy-staging:client:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
-    HEROKU_APP_NAME: rinnegan-client-development
+    HEROKU_APP_NAME: rinnegan-client-staging
     HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
   before_script:
     - apk add --no-cache curl
@@ -227,12 +227,12 @@ deploy-production:client:
   stage: deploy-production
   only:
     refs:
-      - /^client*$/i
+      - master
   services:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
-    HEROKU_APP_NAME: rinnegan-client-development
+    HEROKU_APP_NAME: rinnegan-client-production
     HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
   before_script:
     - apk add --no-cache curl
