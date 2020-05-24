@@ -51,46 +51,6 @@ build:client:
   after_script:
     - docker push $IMAGE:client
 
-# build:nginx:
-#   stage: build
-#   except:
-#     refs:
-#       - master
-#   services:
-#     - docker:dind
-#   before_script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-#     - docker pull $IMAGE:nginx || true
-#   script:
-#     - docker build
-#       --cache-from $IMAGE:nginx
-#       --tag $IMAGE:nginx
-#       --file ./services/nginx/Dockerfile
-#       ./services/nginx
-#   after_script:
-#     - docker push $IMAGE:nginx
-
-# build:overall:
-#   stage: build
-#   except:
-#     refs:
-#       - master
-#   services:
-#     - docker:dind
-#   variables:
-#     DOCKER_DRIVER: overlay2
-#   before_script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-#     - docker pull $IMAGE:overall || true
-#   script:
-#     - docker build
-#       --cache-from $IMAGE:overall
-#       --tag $IMAGE:overall
-#       --file ./Dockerfile
-#       "."
-#   after_script:
-#     - docker push $IMAGE:overall
-
 test:server:
   stage: test
   except:
@@ -137,6 +97,9 @@ deploy:server-development:
     refs:
       - master
       - staging
+  only:
+    changes:
+      - services/server/**/*
   services:
     - docker:dind
   variables:
