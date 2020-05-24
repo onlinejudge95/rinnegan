@@ -121,9 +121,10 @@ deploy-development:server:
 
 deploy-development:client:
   stage: deploy-development
-  only:
+  except:
     refs:
-      - /^client*$/i
+      - master
+      - staging
   services:
     - docker:dind
   variables:
