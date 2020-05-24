@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  app:
+    container_name: app
+    image: app:development
+    env_file:
+      - ./services/nginx/.env
+    ports:
+      - 80:80
+    build:
+      context: .
+      dockerfile: Dockerfile
