@@ -201,37 +201,6 @@ class App extends React.Component {
                     render={() => {
                       return (
                         <div>
-                          {this.isAuthenticated() && (
-                            <button
-                              onClick={this.handleOpenModal}
-                              className="button is-primary"
-                            >
-                              Add User
-                            </button>
-                          )}
-                          <br />
-                          <br />
-                          <Modal
-                            isOpen={this.state.showModal}
-                            style={modalStyles}
-                          >
-                            <div className="modal is-active">
-                              <div className="modal-background" />
-                              <div className="modal-card">
-                                <header className="modal-card-head">
-                                  <p className="modal-card-title">Add User</p>
-                                  <button
-                                    className="delete"
-                                    aria-label="close"
-                                    onClick={this.handleCloseModal}
-                                  />
-                                </header>
-                                <section className="modal-card-body">
-                                  <AddUser addUser={this.addUser} />
-                                </section>
-                              </div>
-                            </div>
-                          </Modal>
                           <About />
                         </div>
                       );

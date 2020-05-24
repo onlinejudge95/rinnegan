@@ -25,11 +25,8 @@ const Navbar = (props) => {
     menu = (
       <div className="navbar-menu">
         <div className="navbar-start">
-          <Link to="/about" className="navbar-item" data-testid="nav-about">
-            About
-          </Link>
           <Link to="/status" className="navbar-item" data-testid="nav-status">
-            Status
+            Profile
           </Link>
         </div>
 
