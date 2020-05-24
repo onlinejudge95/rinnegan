@@ -17,7 +17,7 @@ class UserProfile extends React.Component {
       "Content-Type": "application/json",
     };
     return axios
-      .get(`${process.env.REACT_APP_USERS_SERVICE_URL}/auth/status`, {
+      .get(`${process.env.REACT_APP_USERS_SERVICE_URL}/auth/profile`, {
         headers,
       })
       .then((response) => {

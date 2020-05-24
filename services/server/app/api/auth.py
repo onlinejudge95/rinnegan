@@ -131,7 +131,7 @@ class Status(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
-            auth_namespace.abort(403, "Token required to fetch the status")
+            auth_namespace.abort(403, "Token required to fetch the profile")
 
         try:
             access_token = auth_header.split()[1]
@@ -147,4 +147,4 @@ class Status(Resource):
 auth_namespace.add_resource(Register, "/register")
 auth_namespace.add_resource(Login, "/login")
 auth_namespace.add_resource(Refresh, "/refresh")
-auth_namespace.add_resource(Status, "/status")
+auth_namespace.add_resource(Status, "/profile")
