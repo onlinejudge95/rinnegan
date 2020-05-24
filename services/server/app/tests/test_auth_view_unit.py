@@ -443,8 +443,8 @@ def test_refresh_token_invalid_header(test_app):
     assert "define Content-Type header" in data["message"]
 
 
-# Test user status passes
-def test_user_status(test_app, monkeypatch):
+# Test user profile passes
+def test_user_profile(test_app, monkeypatch):
     class MockUser(dict):
         def __init__(self, *args, **kwargs):
             super(MockUser, self).__init__(*args, **kwargs)
@@ -470,7 +470,7 @@ def test_user_status(test_app, monkeypatch):
     monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
     client = test_app.test_client()
     response = client.get(
-        "/auth/status",
+        "/auth/profile",
         headers={
             "Accept": "application/json",
             "Authorization": "Bearer access_token",
@@ -485,8 +485,8 @@ def test_user_status(test_app, monkeypatch):
     assert "password" not in data.keys()
 
 
-# Test user status fails due to invalid access token
-def test_user_status_invalid_token(test_app, monkeypatch):
+# Test user profile fails due to invalid access token
+def test_user_profile_invalid_token(test_app, monkeypatch):
     class MockUser(dict):
         def __init__(self, *args, **kwargs):
             super(MockUser, self).__init__(*args, **kwargs)
@@ -512,7 +512,7 @@ def test_user_status_invalid_token(test_app, monkeypatch):
     monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
     client = test_app.test_client()
     response = client.get(
-        "/auth/status",
+        "/auth/profile",
         headers={
             "Accept": "application/json",
             "Authorization": "Bearer invalid_token",
@@ -525,10 +525,10 @@ def test_user_status_invalid_token(test_app, monkeypatch):
     assert "Invalid token" in data["message"]
 
 
-# Test user status fails due to invalid headers
-def test_user_status_invalid_header(test_app):
+# Test user profile fails due to invalid headers
+def test_user_profile_invalid_header(test_app):
     client = test_app.test_client()
-    response = client.get("/auth/status")
+    response = client.get("/auth/profile")
     assert response.status_code == 415
 
     data = response.get_json()

@@ -22,8 +22,7 @@ describe("when authenticated", () => {
     await wait(() => {
       expect(mockProps.isAuthenticated).toHaveBeenCalledTimes(1);
     });
-    expect((await dom.findByTestId("nav-about")).innerHTML).toBe("About");
-    expect((await dom.findByTestId("nav-status")).innerHTML).toBe("Status");
+    expect((await dom.findByTestId("nav-profile")).innerHTML).toBe("Profile");
     expect((await dom.findByTestId("nav-logout")).innerHTML).toBe("Log-Out");
   });
 
@@ -50,7 +49,6 @@ describe("when unauthenticated", () => {
     await wait(() => {
       expect(mockProps.isAuthenticated).toHaveBeenCalledTimes(1);
     });
-    expect((await dom.findByTestId("nav-about")).innerHTML).toBe("About");
     expect((await dom.findByTestId("nav-register")).innerHTML).toBe("Register");
     expect((await dom.findByTestId("nav-login")).innerHTML).toBe("Log-In");
   });

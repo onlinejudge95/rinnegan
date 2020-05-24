@@ -1,28 +1,12 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import axios from "axios";
-import Modal from "react-modal";
-import UserList from "./components/UserList";
 import About from "./components/About";
 import NavBar from "./components/NavBar";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
-import UserStatus from "./components/UserStatus";
+import UserProfile from "./components/UserProfile";
 import Message from "./components/Message";
-import AddUser from "./components/AddUser";
-
-Modal.setAppElement(document.getElementById("root"));
-
-const modalStyles = {
-  content: {
-    top: "0",
-    left: "0",
-    right: "0",
-    bottom: "0",
-    border: 0,
-    background: "transparent",
-  },
-};
 
 class App extends React.Component {
   state = {
@@ -37,28 +21,6 @@ class App extends React.Component {
   componentDidMount() {
     this.getUsers();
   }
-
-  addUser = (data) => {
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
-
-    axios
-      .post(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`, data, {
-        headers,
-      })
-      .then((response) => {
-        this.getUsers();
-        this.setState({ username: "", email: "" });
-        this.handleCloseModal();
-        this.createMessage("success", "User added.");
-      })
-      .catch((err) => {
-        console.log(err);
-        this.createMessage("danger", "That user already exists.");
-      });
-  };
 
   getUsers = () => {
     const headers = { Accept: "application/json" };
@@ -195,56 +157,7 @@ class App extends React.Component {
               <div className="column is-half">
                 <br />
                 <Switch>
-                  <Route
-                    path="/"
-                    exact
-                    render={() => {
-                      return (
-                        <div>
-                          <h1 className="title is-1">Sentimental</h1>
-                          <br />
-                          <br />
-                          {this.isAuthenticated() && (
-                            <button
-                              onClick={this.handleOpenModal}
-                              className="button is-primary"
-                            >
-                              Add User
-                            </button>
-                          )}
-                          <br />
-                          <br />
-                          <Modal
-                            isOpen={this.state.showModal}
-                            style={modalStyles}
-                          >
-                            <div className="modal is-active">
-                              <div className="modal-background" />
-                              <div className="modal-card">
-                                <header className="modal-card-head">
-                                  <p className="modal-card-title">Add User</p>
-                                  <button
-                                    className="delete"
-                                    aria-label="close"
-                                    onClick={this.handleCloseModal}
-                                  />
-                                </header>
-                                <section className="modal-card-body">
-                                  <AddUser addUser={this.addUser} />
-                                </section>
-                              </div>
-                            </div>
-                          </Modal>
-                          <UserList
-                            users={this.state.users}
-                            removeUser={this.removeUser}
-                            isAuthenticated={this.isAuthenticated}
-                          />
-                        </div>
-                      );
-                    }}
-                  />
-                  <Route path="/about" component={About} exact />
+                  <Route path="/" component={About} exact />
                   <Route
                     path="/register"
                     render={() => {
@@ -270,10 +183,10 @@ class App extends React.Component {
                     exact
                   />
                   <Route
-                    path="/status"
+                    path="/profile"
                     render={() => {
                       return (
-                        <UserStatus
+                        <UserProfile
                           accessToken={this.state.accessToken}
                           isAuthenticated={this.isAuthenticated}
                         />

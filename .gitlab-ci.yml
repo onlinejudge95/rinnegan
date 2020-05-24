@@ -3,7 +3,9 @@ image: docker:stable
 stages:
   - build
   - test
-  - deploy
+  - deploy-development
+  - deploy-staging
+  - deploy-production
 
 variables:
   IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
@@ -51,46 +53,6 @@ build:client:
   after_script:
     - docker push $IMAGE:client
 
-build:nginx:
-  stage: build
-  except:
-    refs:
-      - master
-  services:
-    - docker:dind
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:nginx || true
-  script:
-    - docker build
-      --cache-from $IMAGE:nginx
-      --tag $IMAGE:nginx
-      --file ./services/nginx/Dockerfile
-      ./services/nginx
-  after_script:
-    - docker push $IMAGE:nginx
-
-build:overall:
-  stage: build
-  except:
-    refs:
-      - master
-  services:
-    - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay2
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:overall || true
-  script:
-    - docker build
-      --cache-from $IMAGE:overall
-      --tag $IMAGE:overall
-      --file ./Dockerfile
-      "."
-  after_script:
-    - docker push $IMAGE:overall
-
 test:server:
   stage: test
   except:
@@ -131,8 +93,60 @@ test:client:
     - npm run lint
     - npm run test
 
-deploy:staging:
-  stage: deploy
+deploy-development:server:
+  stage: deploy-development
+  only:
+    refs:
+      - /^server*$/i
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    HEROKU_APP_NAME: rinnegan-server-development
+    HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
+  before_script:
+    - apk add --no-cache curl
+    - chmod +x ./bin/deploy.sh
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker pull $IMAGE:server || true
+  script:
+    - docker build
+      --cache-from $IMAGE:server
+      --tag $HEROKU_REGISTRY_IMAGE
+      --file ./services/server/Dockerfile
+      ./services/server
+  after_script:
+    - docker push $HEROKU_REGISTRY_IMAGE
+    - ./bin/deploy.sh
+
+deploy-development:client:
+  stage: deploy-development
+  only:
+    refs:
+      - /^client*$/i
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    HEROKU_APP_NAME: rinnegan-client-development
+    HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
+  before_script:
+    - apk add --no-cache curl
+    - chmod +x ./bin/deploy.sh
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker pull $IMAGE:client || true
+  script:
+    - docker build
+      --cache-from $IMAGE:client
+      --tag $HEROKU_REGISTRY_IMAGE
+      --file ./services/client/Dockerfile
+      ./services/client
+  after_script:
+    - docker push $HEROKU_REGISTRY_IMAGE
+    - ./bin/deploy.sh
+
+deploy-staging:server:
+  stage: deploy-staging
   only:
     refs:
       - staging
@@ -140,25 +154,51 @@ deploy:staging:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
-    HEROKU_APP_NAME: rinnegan-staging
+    HEROKU_APP_NAME: rinnegan-server-staging
     HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
   before_script:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
     - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-    - docker pull $IMAGE:overall || true
+    - docker pull $IMAGE:server || true
   script:
     - docker build
-      --cache-from $IMAGE:overall
+      --cache-from $IMAGE:server
       --tag $HEROKU_REGISTRY_IMAGE
-      --file ./Dockerfile
-      "."
+      --file ./services/server/Dockerfile
+      ./services/server
   after_script:
     - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
 
-deploy:production:
-  stage: deploy
+deploy-staging:client:
+  stage: deploy-staging
+  only:
+    refs:
+      - /^client*$/i
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    HEROKU_APP_NAME: rinnegan-client-development
+    HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
+  before_script:
+    - apk add --no-cache curl
+    - chmod +x ./bin/deploy.sh
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker pull $IMAGE:client || true
+  script:
+    - docker build
+      --cache-from $IMAGE:client
+      --tag $HEROKU_REGISTRY_IMAGE
+      --file ./services/client/Dockerfile
+      ./services/client
+  after_script:
+    - docker push $HEROKU_REGISTRY_IMAGE
+    - ./bin/deploy.sh
+
+deploy-production:server:
+  stage: deploy-production
   only:
     refs:
       - master
@@ -166,19 +206,45 @@ deploy:production:
     - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
-    HEROKU_APP_NAME: rinnegan-production
+    HEROKU_APP_NAME: rinnegan-server-production
     HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
   before_script:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
     - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-    - docker pull $IMAGE:overall || true
+    - docker pull $IMAGE:server || true
   script:
     - docker build
-      --cache-from $IMAGE:overall
+      --cache-from $IMAGE:server
       --tag $HEROKU_REGISTRY_IMAGE
-      --file ./Dockerfile
-      "."
+      --file ./services/server/Dockerfile
+      ./services/server
+  after_script:
+    - docker push $HEROKU_REGISTRY_IMAGE
+    - ./bin/deploy.sh
+
+deploy-production:client:
+  stage: deploy-production
+  only:
+    refs:
+      - /^client*$/i
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    HEROKU_APP_NAME: rinnegan-client-development
+    HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/web
+  before_script:
+    - apk add --no-cache curl
+    - chmod +x ./bin/deploy.sh
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker pull $IMAGE:client || true
+  script:
+    - docker build
+      --cache-from $IMAGE:client
+      --tag $HEROKU_REGISTRY_IMAGE
+      --file ./services/client/Dockerfile
+      ./services/client
   after_script:
     - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh

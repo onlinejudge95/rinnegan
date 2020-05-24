@@ -36,17 +36,10 @@ exports[`when authenticated renders a snapshot properly 1`] = `
         >
           <a
             class="navbar-item"
-            data-testid="nav-about"
-            href="/about"
+            data-testid="nav-profile"
+            href="/profile"
           >
-            About
-          </a>
-          <a
-            class="navbar-item"
-            data-testid="nav-status"
-            href="/status"
-          >
-            Status
+            Profile
           </a>
         </div>
         <div
@@ -96,17 +89,6 @@ exports[`when unauthenticated renders a snapshot properly 1`] = `
       <div
         class="navbar-menu"
       >
-        <div
-          class="navbar-start"
-        >
-          <a
-            class="navbar-item"
-            data-testid="nav-about"
-            href="/about"
-          >
-            About
-          </a>
-        </div>
         <div
           class="navbar-end"
         >

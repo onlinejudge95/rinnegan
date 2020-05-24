@@ -51,7 +51,7 @@ services:
       - server
     environment:
       - NODE_ENV=development
-      - REACT_APP_USERS_SERVICE_URL=http://localhost:8001
+      - REACT_APP_USERS_SERVICE_URL=http://localhost:5000
     networks:
       - frontend
     ports:

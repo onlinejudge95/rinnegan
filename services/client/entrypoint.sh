@@ -1,4 +1,6 @@
 #!/bin/sh
 
 npm run build
-npm start
+
+# To make the container up and running for tests
+npm run start

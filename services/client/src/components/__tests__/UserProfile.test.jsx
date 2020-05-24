@@ -2,8 +2,7 @@ import React from "react";
 import { render, cleanup, wait } from "@testing-library/react";
 import axios from "axios";
 
-import UserStatus from "../UserStatus";
-import { Route } from "react-router-dom";
+import UserProfile from "../UserProfile";
 
 afterEach(cleanup);
 
@@ -22,7 +21,7 @@ const mockProps = {
 };
 
 it("renders properly when authenticated", async () => {
-  const dom = render(<UserStatus {...mockProps} />);
+  const dom = render(<UserProfile {...mockProps} />);
 
   await wait(() => {
     expect(axios.get).toHaveBeenCalledTimes(1);
@@ -35,7 +34,7 @@ it("renders properly when authenticated", async () => {
 });
 
 it("renders", async () => {
-  const dom = renderWithRouter(<UserStatus {...mockProps} />);
+  const dom = renderWithRouter(<UserProfile {...mockProps} />);
 
   await wait(() => {
     expect(axios.get).toHaveBeenCalled();
