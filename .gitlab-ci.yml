@@ -175,7 +175,7 @@ deploy-staging:client:
   stage: deploy-staging
   only:
     refs:
-      - /^client*$/i
+      - staging
   services:
     - docker:dind
   variables:
