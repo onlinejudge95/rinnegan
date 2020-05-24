@@ -9,7 +9,7 @@ else
     echo "${DIR} exists\n"
 fi
 
-if [ $FLASK_ENV == "production" ]; then
+if [ $STAGE != "local" ]; then
     flask db upgrade
 fi
 
