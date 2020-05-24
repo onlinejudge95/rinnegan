@@ -22,28 +22,6 @@ class App extends React.Component {
     this.getUsers();
   }
 
-  addUser = (data) => {
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
-
-    axios
-      .post(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`, data, {
-        headers,
-      })
-      .then((response) => {
-        this.getUsers();
-        this.setState({ username: "", email: "" });
-        this.handleCloseModal();
-        this.createMessage("success", "User added.");
-      })
-      .catch((err) => {
-        console.log(err);
-        this.createMessage("danger", "That user already exists.");
-      });
-  };
-
   getUsers = () => {
     const headers = { Accept: "application/json" };
 
