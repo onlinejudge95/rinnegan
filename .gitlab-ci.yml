@@ -98,8 +98,6 @@ deploy-development:server:
   only:
     refs:
       - /^server*$/i
-    changes:
-      - services/server/**/*
   services:
     - docker:dind
   variables:
@@ -126,8 +124,6 @@ deploy-development:client:
   only:
     refs:
       - /^client*$/i
-    changes:
-      - services/client/**/*
   services:
     - docker:dind
   variables:
@@ -154,8 +150,6 @@ deploy-staging:server:
   only:
     refs:
       - staging
-    changes:
-      - services/server/**/*
   services:
     - docker:dind
   variables:
@@ -182,8 +176,6 @@ deploy-staging:client:
   only:
     refs:
       - /^client*$/i
-    changes:
-      - services/client/**/*
   services:
     - docker:dind
   variables:
@@ -210,8 +202,6 @@ deploy-production:server:
   only:
     refs:
       - master
-    changes:
-      - services/server/**/*
   services:
     - docker:dind
   variables:
@@ -238,8 +228,6 @@ deploy-production:client:
   only:
     refs:
       - /^client*$/i
-    changes:
-      - services/client/**/*
   services:
     - docker:dind
   variables:
