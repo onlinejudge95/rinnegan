@@ -25,7 +25,7 @@ const About = () => {
       </div>
       <p className="content">
         As and when our infrastructure grows we will be using other platforms to
-        include more diverse sentiments
+        include more diverse sentiments.
       </p>
     </div>
   );
