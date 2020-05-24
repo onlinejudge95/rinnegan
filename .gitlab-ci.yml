@@ -93,10 +93,11 @@ test:client:
 
 deploy:server-development:
   stage: deploy
-  except:
+  only:
     refs:
-      - master
-      - staging
+      - /^server*$/i
+    changes:
+      - services/server/**/*
   services:
     - docker:dind
   variables:
@@ -123,6 +124,8 @@ deploy:server-staging:
   only:
     refs:
       - staging
+    changes:
+      - services/server/**/*
   services:
     - docker:dind
   variables:
@@ -149,6 +152,8 @@ deploy:server-production:
   only:
     refs:
       - master
+    changes:
+      - services/server/**/*
   services:
     - docker:dind
   variables:
