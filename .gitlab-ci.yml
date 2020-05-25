@@ -95,9 +95,10 @@ test:client:
 
 deploy-development:server:
   stage: deploy-development
-  only:
+  except:
     refs:
-      - /^server*$/i
+      - master
+      - staging
   services:
     - docker:dind
   variables:
