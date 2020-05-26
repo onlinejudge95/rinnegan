@@ -125,8 +125,28 @@ def test_get_users(test_app, test_database, add_user):
         email="test_user_two@mail.com",
         password="test_password_two",
     )
+
     client = test_app.test_client()
-    response = client.get("/users", headers={"Accept": "application/json"})
+
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {
+                "username": "test_user_one",
+                "email": "test_user_one@mail.com",
+                "password": "test_password_one",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
+    client = test_app.test_client()
+    response = client.get("/users", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"})
 
     assert response.status_code == 200
 
@@ -147,8 +167,25 @@ def test_single_user(test_app, test_database, add_user):
     user = add_user("test_user", "test_user@mail.com", "test_password")
     client = test_app.test_client()
 
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
     response = client.get(
-        f"/users/{user.id}", headers={"Accept": "application/json"}
+        f"/users/{user.id}", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
     )
     assert response.status_code == 200
 
@@ -160,10 +197,28 @@ def test_single_user(test_app, test_database, add_user):
 
 
 # Test fetching single user fails due to incorrect id
-def test_single_user_invalid_id(test_app, test_database):
+def test_single_user_invalid_id(test_app, test_database, add_user):
+    user = add_user("test_user", "test_user@mail.com", "test_password")
     client = test_app.test_client()
 
-    response = client.get("/users/1", headers={"Accept": "application/json"})
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
+    response = client.get("/users/2", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"})
     assert response.status_code == 404
 
     data = response.get_json()
@@ -175,18 +230,53 @@ def test_remove_user(test_app, test_database, add_user):
     user = add_user("test_user", "test_user@mail.com", "test_password")
     client = test_app.test_client()
 
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
     response = client.delete(
-        f"/users/{user.id}", headers={"Accept": "application/json"}
+        f"/users/{user.id}", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
     )
     assert response.status_code == 204
 
 
 # Test removing a user fails due to invalid id
 def test_remove_user_invalid_id(test_app, test_database, add_user):
+    add_user("test_user", "test_user@mail.com", "test_password")
     client = test_app.test_client()
 
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
     response = client.delete(
-        "/users/1", headers={"Accept": "application/json"}
+        "/users/2", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
     )
     assert response.status_code == 404
 
@@ -200,6 +290,23 @@ def test_update_user(test_app, test_database, add_user):
 
     client = test_app.test_client()
 
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
     response = client.put(
         f"/users/{user.id}",
         data=json.dumps(
@@ -210,6 +317,7 @@ def test_update_user(test_app, test_database, add_user):
         ),
         headers={
             "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
         },
     )
@@ -245,7 +353,27 @@ def test_update_user_empty_data(test_app, test_database, add_user):
 
 # Test update a user fails due to invalid id
 def test_update_user_invalid_id(test_app, test_database, add_user):
+    user = add_user("test_user", "test_user@mail.com", "test_password")
+
     client = test_app.test_client()
+
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {
+                "username": "test_user",
+                "email": "test_user@mail.com",
+                "password": "test_password",
+            }
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    data = response.get_json()
+    access_token = data["access_token"]
+
     response = client.put(
         "/users/10",
         data=json.dumps(
@@ -256,6 +384,7 @@ def test_update_user_invalid_id(test_app, test_database, add_user):
         ),
         headers={
             "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
         },
     )

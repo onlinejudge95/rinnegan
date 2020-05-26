@@ -177,6 +177,7 @@ def test_refresh_token(test_app, test_database, add_user):
     )
     data = response.get_json()
     refresh_token = data["refresh_token"]
+    access_token = data["access_token"]
 
     response = client.post(
         "/auth/refresh",
@@ -190,8 +191,9 @@ def test_refresh_token(test_app, test_database, add_user):
 
     data = response.get_json()
     assert data["refresh_token"]
-    assert data["access_token"]
     assert refresh_token != data["refresh_token"]
+    assert data["access_token"]
+    assert access_token != data["access_token"]
 
 
 # Test refresh token fails due to expired token

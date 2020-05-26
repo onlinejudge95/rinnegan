@@ -68,7 +68,7 @@ class Refresh(Resource):
     @staticmethod
     @auth_namespace.marshal_with(user_tokens)
     @auth_namespace.expect(refresh, validate=True)
-    @auth_namespace.response(200, "Successfully logged the user in")
+    @auth_namespace.response(200, "Successfully refreshed the tokens")
     @auth_namespace.response(401, "Invalid token. Please log in again.")
     def post():
         request_data = request.get_json()
