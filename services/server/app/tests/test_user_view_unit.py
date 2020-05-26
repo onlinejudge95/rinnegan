@@ -4,16 +4,16 @@ import json
 
 # Test user creation passes
 def test_add_user(test_app, monkeypatch):
-    class MockDict(dict):
+    class MockUser(dict):
         def __init__(self, *args, **kwargs):
-            super(MockDict, self).__init__(*args, **kwargs)
+            super(MockUser, self).__init__(*args, **kwargs)
             self.__dict__ = self
 
     def mock_get_user_by_email(email):
         return None
 
     def mock_add_user(username, email, password):
-        mock_user = MockDict()
+        mock_user = MockUser()
         mock_user.update(
             {
                 "id": 1,
@@ -88,9 +88,9 @@ def test_add_user_invalid_data(test_app):
 
 # Test user creation fails due to duplicate entry
 def test_add_user_duplicate_email(test_app, monkeypatch):
-    class MockDict(dict):
+    class MockUser(dict):
         def __init__(self, *args, **kwargs):
-            super(MockDict, self).__init__(*args, **kwargs)
+            super(MockUser, self).__init__(*args, **kwargs)
             self.__dict__ = self
 
     def mock_get_user_by_email(email):
@@ -100,7 +100,7 @@ def test_add_user_duplicate_email(test_app, monkeypatch):
         return True
 
     def mock_add_user(username, email, password):
-        mock_user = MockDict()
+        mock_user = MockUser()
         mock_user.update(
             {
                 "id": 1,
@@ -171,6 +171,15 @@ def test_add_user_invalid_header(test_app):
 
 # Test fetching user list passes
 def test_get_users(test_app, monkeypatch):
+    class MockToken(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockToken, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
     def mock_get_all_users():
         return [
             {
@@ -185,12 +194,19 @@ def test_get_users(test_app, monkeypatch):
             },
         ]
 
+    monkeypatch.setattr(app.api.users.views, "Token", MockToken)
     monkeypatch.setattr(
         app.api.users.views, "get_all_users", mock_get_all_users
     )
 
     client = test_app.test_client()
-    response = client.get("/users", headers={"Accept": "application/json"})
+    response = client.get(
+        "/users",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
 
     assert response.status_code == 200
 
@@ -208,6 +224,15 @@ def test_get_users(test_app, monkeypatch):
 
 # Test fetching single user passes
 def test_single_user(test_app, monkeypatch):
+    class MockToken(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockToken, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
     def mock_get_user_by_id(user_id):
         return {
             "id": 1,
@@ -215,13 +240,21 @@ def test_single_user(test_app, monkeypatch):
             "email": "test_user@mail.com",
         }
 
+    monkeypatch.setattr(app.api.users.views, "Token", MockToken)
+
     monkeypatch.setattr(
         app.api.users.views, "get_user_by_id", mock_get_user_by_id
     )
 
     client = test_app.test_client()
 
-    response = client.get("/users/1", headers={"Accept": "application/json"})
+    response = client.get(
+        "/users/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
     assert response.status_code == 200
 
     data = response.get_json()
@@ -233,8 +266,19 @@ def test_single_user(test_app, monkeypatch):
 
 # Test fetching single user fails due to incorrect id
 def test_single_user_invalid_id(test_app, monkeypatch):
+    class MockToken(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockToken, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
     def mock_get_user_by_id(user_id):
         return None
+
+    monkeypatch.setattr(app.api.users.views, "Token", MockToken)
 
     monkeypatch.setattr(
         app.api.users.views, "get_user_by_id", mock_get_user_by_id
@@ -242,7 +286,13 @@ def test_single_user_invalid_id(test_app, monkeypatch):
 
     client = test_app.test_client()
 
-    response = client.get("/users/1", headers={"Accept": "application/json"})
+    response = client.get(
+        "/users/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
     assert response.status_code == 404
 
     data = response.get_json()
@@ -251,13 +301,22 @@ def test_single_user_invalid_id(test_app, monkeypatch):
 
 # Test removing a user passes
 def test_remove_user(test_app, monkeypatch):
-    class MockDict(dict):
+    class MockToken(dict):
         def __init__(self, *args, **kwargs):
-            super(MockDict, self).__init__(*args, **kwargs)
+            super(MockToken, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
+    class MockUser(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockUser, self).__init__(*args, **kwargs)
             self.__dict__ = self
 
     def mock_get_user_by_id(user_id):
-        mock_user = MockDict()
+        mock_user = MockUser()
         mock_user.update(
             {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
         )
@@ -265,6 +324,8 @@ def test_remove_user(test_app, monkeypatch):
 
     def mock_remove_user(user):
         return True
+
+    monkeypatch.setattr(app.api.users.views, "Token", MockToken)
 
     monkeypatch.setattr(
         app.api.users.views, "get_user_by_id", mock_get_user_by_id
@@ -274,15 +335,30 @@ def test_remove_user(test_app, monkeypatch):
     client = test_app.test_client()
 
     response = client.delete(
-        "/users/1", headers={"Accept": "application/json"}
+        "/users/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
     )
     assert response.status_code == 204
 
 
 # Test removing a user fails due to invalid id
 def test_remove_user_invalid_id(test_app, monkeypatch):
+    class MockToken(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockToken, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
     def mock_get_user_by_id(user_id):
         return None
+
+    monkeypatch.setattr(app.api.users.views, "Token", MockToken)
 
     monkeypatch.setattr(
         app.api.users.views, "get_user_by_id", mock_get_user_by_id
@@ -291,7 +367,11 @@ def test_remove_user_invalid_id(test_app, monkeypatch):
     client = test_app.test_client()
 
     response = client.delete(
-        "/users/1", headers={"Accept": "application/json"}
+        "/users/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
     )
     assert response.status_code == 404
 
@@ -301,22 +381,33 @@ def test_remove_user_invalid_id(test_app, monkeypatch):
 
 # Test update a user passes
 def test_update_user(test_app, monkeypatch):
-    class MockDict(dict):
+    class MockToken(dict):
         def __init__(self, *args, **kwargs):
-            super(MockDict, self).__init__(*args, **kwargs)
+            super(MockToken, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
+    class MockUser(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockUser, self).__init__(*args, **kwargs)
             self.__dict__ = self
 
     def mock_get_user_by_id(user_id):
-        mock_user = MockDict()
+        mock_user = MockUser()
         mock_user.update(
             {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
         )
         return mock_user
 
     def mock_update_user(user, username, email):
-        mock_user = MockDict()
+        mock_user = MockUser()
         mock_user.update({"id": 1, "username": username, "email": email})
         return mock_user
+
+    monkeypatch.setattr(app.api.users.views, "Token", MockToken)
 
     monkeypatch.setattr(
         app.api.users.views, "get_user_by_id", mock_get_user_by_id
@@ -335,6 +426,7 @@ def test_update_user(test_app, monkeypatch):
         ),
         headers={
             "Accept": "application/json",
+            "Authorization": "Bearer access_token",
             "Content-Type": "application/json",
         },
     )
@@ -349,20 +441,20 @@ def test_update_user(test_app, monkeypatch):
 
 # Test update a user fails due to empty data
 def test_update_user_empty_data(test_app, monkeypatch):
-    class MockDict(dict):
+    class MockUser(dict):
         def __init__(self, *args, **kwargs):
-            super(MockDict, self).__init__(*args, **kwargs)
+            super(MockUser, self).__init__(*args, **kwargs)
             self.__dict__ = self
 
     def mock_get_user_by_id(user_id):
-        mock_user = MockDict()
+        mock_user = MockUser()
         mock_user.update(
             {"id": 1, "username": "test_user", "email": "test_user@mail.com"}
         )
         return mock_user
 
     def mock_update_user(user, username, email):
-        mock_user = MockDict()
+        mock_user = MockUser()
         mock_user.update({"id": 1, "username": username, "email": email})
         return mock_user
 
@@ -390,8 +482,19 @@ def test_update_user_empty_data(test_app, monkeypatch):
 
 # Test update a user fails due to invalid id
 def test_update_user_invalid_id(test_app, monkeypatch):
+    class MockToken(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockToken, self).__init__(*args, **kwargs)
+            self.__dict__ = self
+
+        @staticmethod
+        def decode_token(token):
+            return 1
+
     def mock_get_user_by_id(user_id):
         return None
+
+    monkeypatch.setattr(app.api.users.views, "Token", MockToken)
 
     monkeypatch.setattr(
         app.api.users.views, "get_user_by_id", mock_get_user_by_id
@@ -408,6 +511,7 @@ def test_update_user_invalid_id(test_app, monkeypatch):
         ),
         headers={
             "Accept": "application/json",
+            "Authorization": "Bearer access_token",
             "Content-Type": "application/json",
         },
     )

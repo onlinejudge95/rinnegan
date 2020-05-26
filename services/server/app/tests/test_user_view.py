@@ -146,7 +146,13 @@ def test_get_users(test_app, test_database, add_user):
     access_token = data["access_token"]
 
     client = test_app.test_client()
-    response = client.get("/users", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"})
+    response = client.get(
+        "/users",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        },
+    )
 
     assert response.status_code == 200
 
@@ -185,7 +191,11 @@ def test_single_user(test_app, test_database, add_user):
     access_token = data["access_token"]
 
     response = client.get(
-        f"/users/{user.id}", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
+        f"/users/{user.id}",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        },
     )
     assert response.status_code == 200
 
@@ -198,7 +208,7 @@ def test_single_user(test_app, test_database, add_user):
 
 # Test fetching single user fails due to incorrect id
 def test_single_user_invalid_id(test_app, test_database, add_user):
-    user = add_user("test_user", "test_user@mail.com", "test_password")
+    add_user("test_user", "test_user@mail.com", "test_password")
     client = test_app.test_client()
 
     response = client.post(
@@ -218,7 +228,13 @@ def test_single_user_invalid_id(test_app, test_database, add_user):
     data = response.get_json()
     access_token = data["access_token"]
 
-    response = client.get("/users/2", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"})
+    response = client.get(
+        "/users/2",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        },
+    )
     assert response.status_code == 404
 
     data = response.get_json()
@@ -248,7 +264,11 @@ def test_remove_user(test_app, test_database, add_user):
     access_token = data["access_token"]
 
     response = client.delete(
-        f"/users/{user.id}", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
+        f"/users/{user.id}",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        },
     )
     assert response.status_code == 204
 
@@ -276,7 +296,11 @@ def test_remove_user_invalid_id(test_app, test_database, add_user):
     access_token = data["access_token"]
 
     response = client.delete(
-        "/users/2", headers={"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
+        "/users/2",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        },
     )
     assert response.status_code == 404
 
@@ -353,7 +377,7 @@ def test_update_user_empty_data(test_app, test_database, add_user):
 
 # Test update a user fails due to invalid id
 def test_update_user_invalid_id(test_app, test_database, add_user):
-    user = add_user("test_user", "test_user@mail.com", "test_password")
+    add_user("test_user", "test_user@mail.com", "test_password")
 
     client = test_app.test_client()
 
