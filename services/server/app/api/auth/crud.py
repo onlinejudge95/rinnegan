@@ -28,3 +28,7 @@ def update_token(refresh_token, user_id):
     )
     db.session.commit()
     return token
+
+
+def get_user_id_by_token(token):
+    return Token.decode_token(token)

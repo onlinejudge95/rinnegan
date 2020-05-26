@@ -693,6 +693,16 @@ def test_update_user_invalid_headers(test_app, test_database, add_user):
     data = response.get_json()
     assert "define Content-Type header" in data["message"]
 
+    response = client.post(
+        "/users",
+        data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Content-Type": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "supported is application/json" in data["message"]
+
 
 # Test update a user fails due to missing token
 def test_update_user_missing_token(test_app, test_database, add_user):

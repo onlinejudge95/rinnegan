@@ -1,4 +1,4 @@
-from app.api.auth.models import Token
+from app.api.auth.crud import get_user_id_by_token
 from app.api.auth.serializers import parser
 from app.api.users.crud import add_user
 from app.api.users.crud import get_all_users
@@ -53,7 +53,7 @@ class UsersList(Resource):
             users_namespace.abort(403, "Token required to fetch the user list")
 
         try:
-            Token.decode_token(auth_header.split()[1])
+            get_user_id_by_token(auth_header.split()[1])
             return get_all_users(), 200
         except jwt.ExpiredSignatureError:
             users_namespace.abort(401, "Token expired. Please log in again.")
@@ -73,7 +73,7 @@ class UsersDetail(Resource):
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
-            Token.decode_token(auth_header.split()[1])
+            get_user_id_by_token(auth_header.split()[1])
 
             user = get_user_by_id(user_id)
 
@@ -96,7 +96,7 @@ class UsersDetail(Resource):
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
-            Token.decode_token(auth_header.split()[1])
+            get_user_id_by_token(auth_header.split()[1])
 
             user = get_user_by_id(user_id)
 
@@ -124,7 +124,7 @@ class UsersDetail(Resource):
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
-            Token.decode_token(auth_header.split()[1])
+            get_user_id_by_token(auth_header.split()[1])
 
             request_data = request.get_json()
 
