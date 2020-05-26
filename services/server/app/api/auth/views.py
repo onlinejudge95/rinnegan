@@ -55,14 +55,6 @@ class Login(Resource):
                 404, f"User with email {email} does not exists"
             )
         token = add_token(user.id)
-        # response = {
-        #     "access_token": user.encode_token(user.id, "access").decode(
-        #         "utf-8"
-        #     ),
-        #     "refresh_token": user.encode_token(user.id, "refresh").decode(
-        #         "utf-8"
-        #     ),
-        # }
         return token, 200
 
 
@@ -77,13 +69,10 @@ class Refresh(Resource):
         refresh_token = request_data.get("refresh_token")
 
         try:
-            user_id = User.decode_token(refresh_token)
+            user_id = Token.decode_token(refresh_token)
             user = get_user_by_id(user_id)
-            response = {
-                "access_token": user.encode_token(user.id, "access"),
-                "refresh_token": user.encode_token(user.id, "refresh"),
-            }
-            return response, 200
+            token = add_token(user.id)
+            return token, 200
         except jwt.ExpiredSignatureError:
             auth_namespace.abort(401, "Token expired. Please log in again.")
         except jwt.InvalidTokenError:
