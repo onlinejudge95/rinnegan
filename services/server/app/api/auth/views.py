@@ -4,13 +4,11 @@ from app.api.auth.models import Token
 from app.api.auth.serializers import auth_namespace
 from app.api.auth.serializers import fetch_registered_user
 from app.api.auth.serializers import login_user
-from app.api.auth.serializers import parser
 from app.api.auth.serializers import refresh
 from app.api.auth.serializers import register_user
 from app.api.auth.serializers import user_tokens
 from app.api.users.crud import add_user
 from app.api.users.crud import get_user_by_email
-from app.api.users.crud import get_user_by_id
 from flask import request
 from flask_restx import Resource
 
@@ -76,32 +74,8 @@ class Refresh(Resource):
 
         try:
             user_id = Token.decode_token(refresh_token)
-            user = get_user_by_id(user_id)
-            token = update_token(refresh_token, user.id)
+            token = update_token(refresh_token, user_id)
             return token, 200
-        except jwt.ExpiredSignatureError:
-            auth_namespace.abort(401, "Token expired. Please log in again.")
-        except jwt.InvalidTokenError:
-            auth_namespace.abort(401, "Invalid token. Please log in again.")
-
-
-class Profile(Resource):
-    @staticmethod
-    @auth_namespace.marshal_with(fetch_registered_user)
-    @auth_namespace.expect(parser)
-    @auth_namespace.response(200, "Successfully got the user profile")
-    @auth_namespace.response(401, "Invalid token. Please log in again.")
-    def get():
-        auth_header = request.headers.get("Authorization")
-
-        if not auth_header:
-            auth_namespace.abort(403, "Token required to fetch the profile")
-
-        try:
-            access_token = auth_header.split()[1]
-            user_id = Token.decode_token(access_token)
-            user = get_user_by_id(user_id)
-            return user, 200
         except jwt.ExpiredSignatureError:
             auth_namespace.abort(401, "Token expired. Please log in again.")
         except jwt.InvalidTokenError:
@@ -111,4 +85,3 @@ class Profile(Resource):
 auth_namespace.add_resource(Register, "/register")
 auth_namespace.add_resource(Login, "/login")
 auth_namespace.add_resource(Refresh, "/refresh")
-auth_namespace.add_resource(Profile, "/profile")
