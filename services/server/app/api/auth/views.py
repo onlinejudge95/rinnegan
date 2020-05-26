@@ -1,6 +1,6 @@
 from app.api.auth.crud import add_token
+from app.api.auth.crud import get_user_id_by_token
 from app.api.auth.crud import update_token
-from app.api.auth.models import Token
 from app.api.auth.serializers import auth_namespace
 from app.api.auth.serializers import fetch_registered_user
 from app.api.auth.serializers import login_user
@@ -73,7 +73,7 @@ class Refresh(Resource):
         refresh_token = request_data.get("refresh_token")
 
         try:
-            user_id = Token.decode_token(refresh_token)
+            user_id = get_user_id_by_token(refresh_token)
             token = update_token(refresh_token, user_id)
             return token, 200
         except jwt.ExpiredSignatureError:
