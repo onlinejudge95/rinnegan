@@ -1,4 +1,4 @@
-import app.api.auth
+import app.api.auth.views
 import json
 import jwt
 
@@ -487,14 +487,19 @@ def test_user_profile(test_app, monkeypatch):
 
 # Test user profile fails due to invalid access token
 def test_user_profile_invalid_token(test_app, monkeypatch):
-    class MockUser(dict):
+    class MockToken(dict):
         def __init__(self, *args, **kwargs):
-            super(MockUser, self).__init__(*args, **kwargs)
+            super(MockToken, self).__init__(*args, **kwargs)
             self.__dict__ = self
 
         @staticmethod
         def decode_token(token):
-            raise jwt.InvalidTokenError()
+            return jwt.InvalidTokenError()
+
+    class MockUser(dict):
+        def __init__(self, *args, **kwargs):
+            super(MockUser, self).__init__(*args, **kwargs)
+            self.__dict__ = self
 
     def mock_get_user_by_id(user_id):
         mock_user = MockUser()
@@ -508,8 +513,10 @@ def test_user_profile_invalid_token(test_app, monkeypatch):
         )
         return mock_user
 
-    monkeypatch.setattr(app.api.auth, "User", MockUser)
-    monkeypatch.setattr(app.api.auth, "get_user_by_id", mock_get_user_by_id)
+    monkeypatch.setattr(app.api.auth.views, "Token", MockToken)
+    monkeypatch.setattr(
+        app.api.auth.views, "get_user_by_id", mock_get_user_by_id
+    )
     client = test_app.test_client()
     response = client.get(
         "/auth/profile",

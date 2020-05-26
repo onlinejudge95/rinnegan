@@ -85,11 +85,11 @@ class Refresh(Resource):
             auth_namespace.abort(401, "Invalid token. Please log in again.")
 
 
-class Status(Resource):
+class Profile(Resource):
     @staticmethod
     @auth_namespace.marshal_with(fetch_registered_user)
     @auth_namespace.expect(parser)
-    @auth_namespace.response(200, "Successfully got the user status")
+    @auth_namespace.response(200, "Successfully got the user profile")
     @auth_namespace.response(401, "Invalid token. Please log in again.")
     def get():
         auth_header = request.headers.get("Authorization")
@@ -111,4 +111,4 @@ class Status(Resource):
 auth_namespace.add_resource(Register, "/register")
 auth_namespace.add_resource(Login, "/login")
 auth_namespace.add_resource(Refresh, "/refresh")
-auth_namespace.add_resource(Status, "/profile")
+auth_namespace.add_resource(Profile, "/profile")
