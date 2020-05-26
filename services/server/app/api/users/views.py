@@ -1,3 +1,4 @@
+from app.api.auth.models import Token
 from app.api.auth.serializers import parser
 from app.api.users.crud import add_user
 from app.api.users.crud import get_all_users
@@ -9,13 +10,13 @@ from app.api.users.serializers import user_readable
 from app.api.users.serializers import user_writable
 from app.api.users.serializers import users_namespace
 from flask import request
-from flask_cors import cross_origin
 from flask_restx import Resource
+
+import jwt
 
 
 class UsersList(Resource):
     @staticmethod
-    @cross_origin()
     @users_namespace.expect(user_writable, validate=True)
     @users_namespace.response(201, "Successfully added the user")
     @users_namespace.response(
@@ -46,7 +47,18 @@ class UsersList(Resource):
     @users_namespace.expect(parser, validate=True)
     @users_namespace.marshal_with(user_readable, as_list=True)
     def get():
-        return get_all_users(), 200
+        auth_header = request.headers.get("Authorization")
+
+        if not auth_header:
+            users_namespace.abort(403, "Token required to fetch the user list")
+
+        try:
+            Token.decode_token(auth_header.split()[1])
+            return get_all_users(), 200
+        except jwt.ExpiredSignatureError:
+            users_namespace.abort(401, "Token expired. Please log in again.")
+        except jwt.InvalidTokenError:
+            users_namespace.abort(401, "Invalid token. Please log in again.")
 
 
 class UsersDetail(Resource):
@@ -55,43 +67,81 @@ class UsersDetail(Resource):
     @users_namespace.marshal_with(user_readable)
     @users_namespace.response(404, "User <user_id> does not exist")
     def get(user_id):
-        user = get_user_by_id(user_id)
+        auth_header = request.headers.get("Authorization")
 
-        if not user:
-            users_namespace.abort(404, f"User {user_id} does not exist")
+        if not auth_header:
+            users_namespace.abort(403, "Token required to fetch the user")
 
-        return user, 200
+        try:
+            Token.decode_token(auth_header.split()[1])
+
+            user = get_user_by_id(user_id)
+
+            if not user:
+                users_namespace.abort(404, f"User {user_id} does not exist")
+
+            return user, 200
+        except jwt.ExpiredSignatureError:
+            users_namespace.abort(401, "Token expired. Please log in again.")
+        except jwt.InvalidTokenError:
+            users_namespace.abort(401, "Invalid token. Please log in again.")
 
     @staticmethod
     @users_namespace.expect(parser, validate=True)
     @users_namespace.response(404, "User <user_id> does not exist")
     def delete(user_id):
-        user = get_user_by_id(user_id)
+        auth_header = request.headers.get("Authorization")
 
-        if not user:
-            users_namespace.abort(404, f"User {user_id} does not exist")
+        if not auth_header:
+            users_namespace.abort(403, "Token required to fetch the user")
 
-        remove_user(user)
-        return dict(), 204
+        try:
+            Token.decode_token(auth_header.split()[1])
+
+            user = get_user_by_id(user_id)
+
+            if not user:
+                users_namespace.abort(404, f"User {user_id} does not exist")
+
+            remove_user(user)
+
+            return dict(), 204
+        except jwt.ExpiredSignatureError:
+            users_namespace.abort(401, "Token expired. Please log in again.")
+        except jwt.InvalidTokenError:
+            users_namespace.abort(401, "Invalid token. Please log in again.")
 
     @staticmethod
-    @users_namespace.expect(parser, validate=True)
     @users_namespace.expect(user_readable, validate=True)
+    # TODO Use multiple expect blocks in swagger UI
+    # @users_namespace.expect(parser)
     @users_namespace.marshal_with(user_readable)
     @users_namespace.response(404, "User <user_id> does not exist")
     def put(user_id):
-        request_data = request.get_json()
+        auth_header = request.headers.get("Authorization")
 
-        user = get_user_by_id(user_id)
+        if not auth_header:
+            users_namespace.abort(403, "Token required to fetch the user")
 
-        if not user:
-            users_namespace.abort(404, f"User {user_id} does not exist")
+        try:
+            Token.decode_token(auth_header.split()[1])
 
-        updated_user = update_user(
-            user, request_data["username"], request_data["email"]
-        )
+            request_data = request.get_json()
 
-        return updated_user, 200
+            user = get_user_by_id(user_id)
+
+            if not user:
+                users_namespace.abort(404, f"User {user_id} does not exist")
+
+            updated_user = update_user(
+                user, request_data["username"], request_data["email"]
+            )
+
+            return updated_user, 200
+        except jwt.ExpiredSignatureError:
+            users_namespace.abort(401, "Token expired. Please log in again.")
+        except jwt.InvalidTokenError:
+            users_namespace.abort(401, "Invalid token. Please log in again.")
 
 
 users_namespace.add_resource(UsersList, "")
