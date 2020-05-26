@@ -20,9 +20,11 @@ def add_token(user_id):
     return token
 
 
-def update_token(token, token_value, token_type, active):
-    token.token = token_value
-    token.token_type = token_type
-    token.active = active
+def update_token(refresh_token, user_id):
+    token = Token.query.filter_by(refresh_token=refresh_token).first()
+    token.access_token = Token.encode_token(user_id, "access").decode("utf-8")
+    token.refresh_token = Token.encode_token(user_id, "refresh").decode(
+        "utf-8"
+    )
     db.session.commit()
     return token

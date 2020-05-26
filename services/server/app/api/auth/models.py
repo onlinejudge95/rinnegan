@@ -15,7 +15,7 @@ class Token(db.Model):
     def __init__(self, access_token, refresh_token):
         self.access_token = access_token
         self.refresh_token = refresh_token
-    
+
     @staticmethod
     def encode_token(user_id, token_type):
         config = current_app.config

@@ -1,15 +1,16 @@
+from app.api.auth.serializers import parser
 from app.api.users.crud import add_user
 from app.api.users.crud import get_all_users
 from app.api.users.crud import get_user_by_email
 from app.api.users.crud import get_user_by_id
 from app.api.users.crud import remove_user
 from app.api.users.crud import update_user
+from app.api.users.serializers import user_readable
+from app.api.users.serializers import user_writable
+from app.api.users.serializers import users_namespace
 from flask import request
 from flask_cors import cross_origin
 from flask_restx import Resource
-from app.api.users.serializers import users_namespace, user_readable, user_writable
-from app.api.auth.serializers import parser
-
 
 
 class UsersList(Resource):

@@ -1,12 +1,18 @@
+from app.api.auth.crud import add_token
+from app.api.auth.crud import update_token
+from app.api.auth.models import Token
+from app.api.auth.serializers import auth_namespace
+from app.api.auth.serializers import fetch_registered_user
+from app.api.auth.serializers import login_user
+from app.api.auth.serializers import parser
+from app.api.auth.serializers import refresh
+from app.api.auth.serializers import register_user
+from app.api.auth.serializers import user_tokens
 from app.api.users.crud import add_user
 from app.api.users.crud import get_user_by_email
 from app.api.users.crud import get_user_by_id
-from app.api.auth.crud import add_token
-from app.api.users.models import User
-from app.api.auth.models import Token
 from flask import request
 from flask_restx import Resource
-from app.api.auth.serializers import auth_namespace, fetch_registered_user, register_user, user_tokens, login_user, refresh, parser
 
 import jwt
 
@@ -71,7 +77,7 @@ class Refresh(Resource):
         try:
             user_id = Token.decode_token(refresh_token)
             user = get_user_by_id(user_id)
-            token = add_token(user.id)
+            token = update_token(refresh_token, user.id)
             return token, 200
         except jwt.ExpiredSignatureError:
             auth_namespace.abort(401, "Token expired. Please log in again.")
@@ -93,7 +99,7 @@ class Status(Resource):
 
         try:
             access_token = auth_header.split()[1]
-            user_id = User.decode_token(access_token)
+            user_id = Token.decode_token(access_token)
             user = get_user_by_id(user_id)
             return user, 200
         except jwt.ExpiredSignatureError:

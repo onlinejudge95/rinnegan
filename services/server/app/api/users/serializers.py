@@ -1,6 +1,5 @@
-
-from flask_restx import Namespace
 from flask_restx import fields
+from flask_restx import Namespace
 
 
 users_namespace = Namespace("users")
