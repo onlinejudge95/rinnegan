@@ -1,4 +1,4 @@
-from app.api.auth import auth_namespace
+from app.api.auth.views import auth_namespace
 from app.api.health import health_namespace
 from app.api.users.views import users_namespace
 from flask_restx import Api

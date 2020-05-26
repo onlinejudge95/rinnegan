@@ -53,7 +53,6 @@ class UserProfile extends React.Component {
 }
 
 UserProfile.propTypes = {
-  // eslint-disable-next-line
   accssToken: PropTypes.string,
   isAuthenticated: PropTypes.func.isRequired,
 };

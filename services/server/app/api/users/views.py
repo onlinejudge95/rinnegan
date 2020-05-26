@@ -6,25 +6,10 @@ from app.api.users.crud import remove_user
 from app.api.users.crud import update_user
 from flask import request
 from flask_cors import cross_origin
-from flask_restx import fields
-from flask_restx import Namespace
 from flask_restx import Resource
+from app.api.users.serializers import users_namespace, user_readable, user_writable
+from app.api.auth.serializers import parser
 
-
-users_namespace = Namespace("users")
-
-user_readable = users_namespace.model(
-    "Existing-User",
-    {
-        "id": fields.Integer(readOnly=True),
-        "username": fields.String(required=True),
-        "email": fields.String(required=True),
-    },
-)
-
-user_writable = users_namespace.inherit(
-    "New-User", user_readable, {"password": fields.String(required=True)},
-)
 
 
 class UsersList(Resource):
@@ -57,6 +42,7 @@ class UsersList(Resource):
         return response, 201
 
     @staticmethod
+    @users_namespace.expect(parser, validate=True)
     @users_namespace.marshal_with(user_readable, as_list=True)
     def get():
         return get_all_users(), 200
@@ -64,6 +50,7 @@ class UsersList(Resource):
 
 class UsersDetail(Resource):
     @staticmethod
+    @users_namespace.expect(parser, validate=True)
     @users_namespace.marshal_with(user_readable)
     @users_namespace.response(404, "User <user_id> does not exist")
     def get(user_id):
@@ -75,6 +62,7 @@ class UsersDetail(Resource):
         return user, 200
 
     @staticmethod
+    @users_namespace.expect(parser, validate=True)
     @users_namespace.response(404, "User <user_id> does not exist")
     def delete(user_id):
         user = get_user_by_id(user_id)
@@ -86,6 +74,7 @@ class UsersDetail(Resource):
         return dict(), 204
 
     @staticmethod
+    @users_namespace.expect(parser, validate=True)
     @users_namespace.expect(user_readable, validate=True)
     @users_namespace.marshal_with(user_readable)
     @users_namespace.response(404, "User <user_id> does not exist")

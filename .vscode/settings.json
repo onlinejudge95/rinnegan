@@ -1,7 +1,5 @@
 {
   "files.autoSave": "off",
   "files.insertFinalNewline": true,
-  "python.formatting.provider": "black",
-  "python.formatting.blackArgs": ["--config", "services/server/pyproject.toml"],
   "python.pythonPath": "~/.local/share/virtualenvs/server-09dqBIel"
 }
