@@ -11,8 +11,10 @@ def remove_token(token):
     db.session.commit()
 
 
-def add_token(token, token_type):
-    token = Token(token=token, token_type=token_type)
+def add_token(user_id):
+    access_token = Token.encode_token(user_id, "access").decode("utf-8")
+    refresh_token = Token.encode_token(user_id, "refresh").decode("utf-8")
+    token = Token(access_token=access_token, refresh_token=refresh_token)
     db.session.add(token)
     db.session.commit()
     return token

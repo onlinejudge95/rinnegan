@@ -1,7 +1,9 @@
 from app.api.users.crud import add_user
 from app.api.users.crud import get_user_by_email
 from app.api.users.crud import get_user_by_id
+from app.api.auth.crud import add_token
 from app.api.users.models import User
+from app.api.auth.models import Token
 from flask import request
 from flask_restx import Resource
 from app.api.auth.serializers import auth_namespace, fetch_registered_user, register_user, user_tokens, login_user, refresh, parser
@@ -52,15 +54,16 @@ class Login(Resource):
             auth_namespace.abort(
                 404, f"User with email {email} does not exists"
             )
-        response = {
-            "access_token": user.encode_token(user.id, "access").decode(
-                "utf-8"
-            ),
-            "refresh_token": user.encode_token(user.id, "refresh").decode(
-                "utf-8"
-            ),
-        }
-        return response, 200
+        token = add_token(user.id)
+        # response = {
+        #     "access_token": user.encode_token(user.id, "access").decode(
+        #         "utf-8"
+        #     ),
+        #     "refresh_token": user.encode_token(user.id, "refresh").decode(
+        #         "utf-8"
+        #     ),
+        # }
+        return token, 200
 
 
 class Refresh(Resource):

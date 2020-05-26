@@ -9,16 +9,15 @@ class Token(db.Model):
     __tablename__ = "tokens"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    token = db.Column(db.String(128), nullable=False)
-    token_type = db.Column(db.String(10), nullable=False)
-    active = db.Column(db.Boolean())
+    access_token = db.Column(db.String(200), nullable=False)
+    refresh_token = db.Column(db.String(200), nullable=False)
 
-    def __init__(self, token, token_type):
-        self.token = token
-        self.token_type = token_type
-        self.active = True
+    def __init__(self, access_token, refresh_token):
+        self.access_token = access_token
+        self.refresh_token = refresh_token
     
-    def encode_token(self, user_id, token_type):
+    @staticmethod
+    def encode_token(user_id, token_type):
         config = current_app.config
         time_to_live = (
             config.get("ACCESS_TOKEN_EXPIRATION")

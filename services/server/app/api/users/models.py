@@ -2,6 +2,7 @@ from app import bcrypt
 from app import db
 from app.api.users.admin import UserAdminView
 
+from flask import current_app
 import os
 
 
