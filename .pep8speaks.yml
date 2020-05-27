@@ -6,7 +6,7 @@ flake8:
   max-line-length: 79
   statistics: True
   exclude:
-    - services/server/migrations
+    - services/server/migrations/*
   ignore:
     - W503
 
