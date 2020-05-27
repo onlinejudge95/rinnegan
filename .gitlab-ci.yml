@@ -108,15 +108,11 @@ deploy-development:server:
   before_script:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
-    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-    - docker pull $IMAGE:server-latest || true
   script:
-    - docker build
-      --cache-from $IMAGE:server-latest
-      --tag $HEROKU_REGISTRY_IMAGE
-      --file ./services/server/Dockerfile
-      ./services/server
-  after_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:server-latest || true
+    - docker tag $IMAGE:server-latest $HEROKU_REGISTRY_IMAGE
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
     - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
 
@@ -135,15 +131,11 @@ deploy-development:client:
   before_script:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
-    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-    - docker pull $IMAGE:client-latest || true
   script:
-    - docker build
-      --cache-from $IMAGE:client-latest
-      --tag $HEROKU_REGISTRY_IMAGE
-      --file ./services/client/Dockerfile
-      ./services/client
-  after_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:client-latest || true
+    - docker tag $IMAGE:client-latest $HEROKU_REGISTRY_IMAGE
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
     - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
 
@@ -161,15 +153,13 @@ deploy-staging:server:
   before_script:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
-    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-    - docker pull $IMAGE:server-staging || true
   script:
-    - docker build
-      --cache-from $IMAGE:server-staging
-      --tag $HEROKU_REGISTRY_IMAGE
-      --file ./services/server/Dockerfile
-      ./services/server
-  after_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:server-latest || true
+    - docker tag $IMAGE:server-latest $IMAGE:server-staging
+    - docker push $IMAGE:server-staging
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker tag $IMAGE:server-latest $HEROKU_REGISTRY_IMAGE
     - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
 
@@ -187,15 +177,13 @@ deploy-staging:client:
   before_script:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
-    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-    - docker pull $IMAGE:client-staging || true
   script:
-    - docker build
-      --cache-from $IMAGE:client-staging
-      --tag $HEROKU_REGISTRY_IMAGE
-      --file ./services/client/Dockerfile
-      ./services/client
-  after_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:client-latest || true
+    - docker tag $IMAGE:client-latest $IMAGE:client-staging
+    - docker push $IMAGE:client-staging
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker tag $IMAGE:client-latest $HEROKU_REGISTRY_IMAGE
     - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
 
@@ -213,17 +201,18 @@ deploy-production:server:
   before_script:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
-    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-    - docker pull $IMAGE:server || true
   script:
-    - docker build
-      --cache-from $IMAGE:server
-      --tag $HEROKU_REGISTRY_IMAGE
-      --file ./services/server/Dockerfile
-      ./services/server
-  after_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:server-latest || true
+    - docker tag $IMAGE:server-latest $IMAGE:server-staging
+    - docker push $IMAGE:server-staging
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker tag $IMAGE:server-latest $HEROKU_REGISTRY_IMAGE
     - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
+    - docker tag $IMAGE:server-staging $IMAGE:server
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u $DOCKERHUB_USERNAME --password-stdin
+    - docker push $IMAGE:server
 
 deploy-production:client:
   stage: deploy-production
@@ -239,14 +228,15 @@ deploy-production:client:
   before_script:
     - apk add --no-cache curl
     - chmod +x ./bin/deploy.sh
-    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
-    - docker pull $IMAGE:client || true
   script:
-    - docker build
-      --cache-from $IMAGE:client
-      --tag $HEROKU_REGISTRY_IMAGE
-      --file ./services/client/Dockerfile
-      ./services/client
-  after_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker pull $IMAGE:client-latest || true
+    - docker tag $IMAGE:client-latest $IMAGE:client-staging
+    - docker push $IMAGE:client-staging
+    - docker login -u _ -p $HEROKU_AUTH_TOKEN registry.heroku.com
+    - docker tag $IMAGE:client-latest $HEROKU_REGISTRY_IMAGE
     - docker push $HEROKU_REGISTRY_IMAGE
     - ./bin/deploy.sh
+    - docker tag $IMAGE:client-staging $IMAGE:client
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u $DOCKERHUB_USERNAME --password-stdin
+    - docker push $IMAGE:client
