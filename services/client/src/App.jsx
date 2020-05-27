@@ -65,7 +65,6 @@ class App extends React.Component {
         headers,
       })
       .then((response) => {
-        console.log(response.data);
         this.getUsers();
         this.createMessage("success", "You have registered successfully.");
       })

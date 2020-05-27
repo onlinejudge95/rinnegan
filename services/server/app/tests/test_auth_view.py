@@ -94,7 +94,7 @@ def test_user_registration_duplicate_entry(test_app, test_database, add_user):
 def test_user_registration_invalid_header(test_app, test_database):
     client = test_app.test_client()
     response = client.post(
-        "/users",
+        "/auth/register",
         data=json.dumps({"email": "test_user@email.com"}),
         headers={"Accept": "application/json"},
     )
@@ -102,6 +102,16 @@ def test_user_registration_invalid_header(test_app, test_database):
 
     data = response.get_json()
     assert "define Content-Type header" in data["message"]
+
+    response = client.post(
+        "/auth/register",
+        data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Content-Type": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "supported is application/json" in data["message"]
 
 
 # Test user login passes
@@ -159,6 +169,16 @@ def test_user_login_invalid_header(test_app, test_database):
     data = response.get_json()
     assert "define Content-Type header" in data["message"]
 
+    response = client.post(
+        "/auth/login",
+        data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Content-Type": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "supported is application/json" in data["message"]
+
 
 # Test refresh token passes
 def test_refresh_token(test_app, test_database, add_user):
@@ -191,7 +211,6 @@ def test_refresh_token(test_app, test_database, add_user):
     data = response.get_json()
     assert data["refresh_token"]
     assert data["access_token"]
-    assert refresh_token != data["refresh_token"]
 
 
 # Test refresh token fails due to expired token
@@ -232,7 +251,7 @@ def test_refresh_token_invalid(test_app, test_database):
     client = test_app.test_client()
     response = client.post(
         "/auth/refresh",
-        data=json.dumps({"refresh_token": "refresh_token"}),
+        data=json.dumps({"refresh_token": "invalid_token"}),
         headers={
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -257,126 +276,12 @@ def test_refresh_token_invalid_header(test_app):
     data = response.get_json()
     assert "define Content-Type header" in data["message"]
 
-
-# Test user profile passes
-def test_user_profile(test_app, test_database, add_user):
-    add_user("test_user", "test_user@mail.com", "test_password")
-    client = test_app.test_client()
     response = client.post(
-        "/auth/login",
-        data=json.dumps(
-            {"email": "test_user@mail.com", "password": "test_password"}
-        ),
-        headers={
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
+        "/auth/refresh",
+        data=json.dumps({"email": "test_user@email.com"}),
+        headers={"Content-Type": "application/json"},
     )
-    data = response.get_json()
-    access_token = data["access_token"]
-
-    response = client.get(
-        "/auth/profile",
-        headers={
-            "Accept": "application/json",
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
-        },
-    )
-    assert response.status_code == 200
-
-    data = response.get_json()
-    assert data["username"] == "test_user"
-    assert data["email"] == "test_user@mail.com"
-    assert "password" not in data.keys()
-
-
-# Test user profile fails due to invalid access token
-def test_user_profile_invalid_token(test_app, test_database):
-    client = test_app.test_client()
-    response = client.get(
-        "/auth/profile",
-        headers={
-            "Accept": "application/json",
-            "Authorization": "Bearer invalid_token",
-            "Content-Type": "application/json",
-        },
-    )
-    assert response.status_code == 401
-
-    data = response.get_json()
-    assert "Invalid token" in data["message"]
-
-
-# Test user profile fails due to expired token
-def test_user_profile_expired(test_app, test_database, add_user):
-    add_user("test_user", "test_user@mail.com", "test_password")
-    test_app.config["ACCESS_TOKEN_EXPIRATION"] = -1
-
-    client = test_app.test_client()
-    response = client.post(
-        "/auth/login",
-        data=json.dumps(
-            {"email": "test_user@mail.com", "password": "test_password"}
-        ),
-        headers={
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-    )
-    data = response.get_json()
-    access_token = data["access_token"]
-
-    response = client.get(
-        "/auth/profile",
-        headers={
-            "Accept": "application/json",
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
-        },
-    )
-    assert response.status_code == 401
-
-    data = response.get_json()
-    assert "Token expired" in data["message"]
-
-
-# Test user profile fails due to missing token
-def test_user_profile_missing_token(test_app, test_database, add_user):
-    add_user("test_user", "test_user@mail.com", "test_password")
-    test_app.config["ACCESS_TOKEN_EXPIRATION"] = -1
-
-    client = test_app.test_client()
-    response = client.post(
-        "/auth/login",
-        data=json.dumps(
-            {"email": "test_user@mail.com", "password": "test_password"}
-        ),
-        headers={
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-    )
-    data = response.get_json()
-
-    response = client.get(
-        "/auth/profile",
-        headers={
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-    )
-    assert response.status_code == 403
-
-    data = response.get_json()
-    assert "Token required" in data["message"]
-
-
-# Test user profile fails due to invalid headers
-def test_user_profile_invalid_header(test_app):
-    client = test_app.test_client()
-    response = client.get("/auth/profile")
     assert response.status_code == 415
 
     data = response.get_json()
-    assert "content type supported is application/json" in data["message"]
+    assert "supported is application/json" in data["message"]

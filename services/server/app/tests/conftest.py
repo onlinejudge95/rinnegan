@@ -6,7 +6,7 @@ import os
 import pytest
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def test_app():
     app = create_app("testing")
     with app.app_context():
