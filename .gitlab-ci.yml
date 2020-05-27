@@ -212,6 +212,7 @@ deploy-production:server:
     - ./bin/deploy.sh
     - docker tag $IMAGE:server-staging $IMAGE:server
     - echo "$DOCKERHUB_PASSWORD" | docker login -u $DOCKERHUB_USERNAME --password-stdin
+    - docker tag $IMAGE:server-latest $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:server
     - docker push $IMAGE:server
 
 deploy-production:client:
@@ -239,4 +240,5 @@ deploy-production:client:
     - ./bin/deploy.sh
     - docker tag $IMAGE:client-staging $IMAGE:client
     - echo "$DOCKERHUB_PASSWORD" | docker login -u $DOCKERHUB_USERNAME --password-stdin
+    - docker tag $IMAGE:client-latest $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:client
     - docker push $IMAGE:client
