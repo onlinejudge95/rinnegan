@@ -80,19 +80,6 @@ test:server:
   after_script:
     - bash <(curl -s https://codecov.io/bash)
 
-test:client:
-  stage: test
-  except:
-    refs:
-      - master
-  image: $IMAGE:client-latest
-  before_script:
-    - cd /usr/src/app
-  script:
-    - npm run prettier:check
-    - npm run lint
-    - npm run test
-
 deploy-development:server:
   stage: deploy-development
   except:
