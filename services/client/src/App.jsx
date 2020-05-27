@@ -26,7 +26,7 @@ class App extends React.Component {
     const headers = { Accept: "application/json" };
 
     axios
-      .get(`${process.env.REACT_APP_USERS_SERVICE_URL}/users`, { headers })
+      .get(`${process.env.REACT_APP_SERVER_URL}/users`, { headers })
       .then((response) => {
         this.setState({ users: response.data });
       })
@@ -41,7 +41,7 @@ class App extends React.Component {
     };
 
     axios
-      .delete(`${process.env.REACT_APP_USERS_SERVICE_URL}/users/${user_id}`, {
+      .delete(`${process.env.REACT_APP_SERVER_URL}/users/${user_id}`, {
         headers,
       })
       .then((response) => {
@@ -61,7 +61,7 @@ class App extends React.Component {
     };
 
     axios
-      .post(`${process.env.REACT_APP_USERS_SERVICE_URL}/auth/register`, data, {
+      .post(`${process.env.REACT_APP_SERVER_URL}/auth/register`, data, {
         headers,
       })
       .then((response) => {
@@ -81,7 +81,7 @@ class App extends React.Component {
     };
 
     axios
-      .post(`${process.env.REACT_APP_USERS_SERVICE_URL}/auth/login`, data, {
+      .post(`${process.env.REACT_APP_SERVER_URL}/auth/login`, data, {
         headers,
       })
       .then((response) => {
