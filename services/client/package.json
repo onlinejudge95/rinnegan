@@ -21,7 +21,7 @@
     "lint": "eslint 'src/**/*.js*'",
     "prettier:check": "prettier --check 'src/**/*.{js,jsx,json}'",
     "prettier:write": "prettier --write 'src/**/*.{js,jsx,json}'",
-    "test": "react-scripts test",
+    "test": "react-scripts test  --watchAll false",
     "coverage": "react-scripts test --coverage --watchAll false",
     "eject": "react-scripts eject"
   },
