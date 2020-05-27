@@ -58,7 +58,6 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./services/client:/usr/src/app
       - /usr/src/app/node_modules
     build:
       context: ./services/client/
