@@ -53,7 +53,7 @@ class UserProfile extends React.Component {
 }
 
 UserProfile.propTypes = {
-  accssToken: PropTypes.string,
+  accessToken: PropTypes.string,
   isAuthenticated: PropTypes.func.isRequired,
 };
 
