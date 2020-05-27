@@ -1,5 +1,23 @@
 version: 1
 update_configs:
+  # Keep server Dockerfile up to date as soon as
+  # new versions are published to the dockerhub.
+  - package_manager: "docker"
+    directory: "/services/server"
+    update_schedule: "weekly"
+    target_branch: "staging"
+    default_reviewers:
+      - "onlinejudge95"
+    default_assignees:
+      - "dependabot"
+    default_labels:
+      - "dependencies"
+      - "dependabot"
+      - "server"
+    allowed_updates:
+      - match:
+          update_type: "security"
+
   # Keep Pipfile.lock up to date as soon as
   # new versions are published to the pypi
   - package_manager: "python"
@@ -32,24 +50,6 @@ update_configs:
       - "dependencies"
       - "dependabot"
       - "client"
-    allowed_updates:
-      - match:
-          update_type: "security"
-
-  # Keep server Dockerfile up to date as soon as
-  # new versions are published to the dockerhub.
-  - package_manager: "docker"
-    directory: "/services/server"
-    update_schedule: "weekly"
-    target_branch: "staging"
-    default_reviewers:
-      - "onlinejudge95"
-    default_assignees:
-      - "dependabot"
-    default_labels:
-      - "dependencies"
-      - "dependabot"
-      - "server"
     allowed_updates:
       - match:
           update_type: "security"
