@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-FROM node:14.4.0-alpine
-=======
 FROM node:14.3.0-alpine as builder
->>>>>>> Fixes server url naming
 
 LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
@@ -17,11 +13,11 @@ RUN npm ci && \
 
 COPY . .
 
-RUN npm run build
-
 RUN npm run prettier:check && \
     npm run lint & \
     npm run test
+
+RUN npm run build
 
 ##############################################################################
 
