@@ -2,15 +2,6 @@ from app import db
 from app.api.auth.models import Token
 
 
-def get_token_by_id(token_id):
-    return Token.query.get(token_id)
-
-
-def remove_token(token):
-    db.session.delete(token)
-    db.session.commit()
-
-
 def add_token(user_id):
     access_token = Token.encode_token(user_id, "access").decode("utf-8")
     refresh_token = Token.encode_token(user_id, "refresh").decode("utf-8")
