@@ -33,4 +33,4 @@ COPY --from=builder /usr/src/builder/entrypoint.sh ./
 
 RUN chmod +x ./entrypoint.sh
 
-CMD [ "./entrypoint.sh" ]
+ENTRYPOINT [ "./entrypoint.sh" ]
