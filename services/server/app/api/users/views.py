@@ -29,7 +29,7 @@ class UsersList(Resource):
     def post():
         request_data = request.get_json()
         email = request_data["email"]
-        response = dict()
+        response = {}
 
         user_exists = get_user_by_email(email)
         if user_exists:
@@ -124,7 +124,7 @@ class UsersDetail(Resource):
 
             remove_user(user)
 
-            return dict(), 204
+            return {}, 204
         except jwt.ExpiredSignatureError:
             logger.error(f"Auth-token {auth_header.split()[1]} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
