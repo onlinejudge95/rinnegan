@@ -21,7 +21,7 @@ class Health(Resource):
                 health = fp.read().strip()
                 logger.info("Health check passing")
                 return json.dumps({"health": health}), 200
-        except IOError as e:
+        except IOError:
             logger.error("Health check fails", exc_info=True)
             return json.dumps({"health": health}), 404
 

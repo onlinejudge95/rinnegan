@@ -86,10 +86,10 @@ class Refresh(Resource):
             logger.info(f"Refreshed token for user with id {user_id}")
             return token, 200
         except jwt.ExpiredSignatureError:
-            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
+            logger.error(f"Auth-token {refresh_token} has expired")
             auth_namespace.abort(401, "Token expired. Please log in again.")
         except jwt.InvalidTokenError:
-            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
+            logger.error(f"Auth-token {refresh_token} is invalid")
             auth_namespace.abort(401, "Invalid token. Please log in again.")
 
 

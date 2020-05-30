@@ -8,11 +8,11 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-import os
-import yaml
+import coloredlogs
 import logging
 import logging.config
-import coloredlogs
+import os
+import yaml
 
 
 admin = Admin(template_mode="bootstrap3")
@@ -34,6 +34,7 @@ def setup_logging():
             exit(1)
         else:
             logging.info("Logging setup finished successfully")
+
 
 def create_app(environemnt):
     setup_logging()
