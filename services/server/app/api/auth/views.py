@@ -13,6 +13,10 @@ from flask import request
 from flask_restx import Resource
 
 import jwt
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class Register(Resource):
@@ -29,6 +33,7 @@ class Register(Resource):
 
         user_exists = get_user_by_email(email)
         if user_exists:
+            logger.debug(f"User with email {email} exists")
             auth_namespace.abort(
                 400, f"Sorry.The provided email {email} is already registered"
             )
@@ -38,6 +43,7 @@ class Register(Resource):
             request_data["email"],
             request_data["password"],
         )
+        logger.debug(f"User with email {email} added successfully")
         return user, 201
 
 
@@ -55,10 +61,12 @@ class Login(Resource):
 
         user = get_user_by_email(email)
         if not user:
+            logger.debug(f"User with email {email} does not exists")
             auth_namespace.abort(
                 404, f"User with email {email} does not exists"
             )
         token = add_token(user.id)
+        logger.debug(f"User with email {email} logged in successfully")
         return token, 200
 
 
@@ -75,10 +83,13 @@ class Refresh(Resource):
         try:
             user_id = get_user_id_by_token(refresh_token)
             token = update_token(refresh_token, user_id)
+            logger.debug(f"Refreshed token for user with id {user_id}")
             return token, 200
         except jwt.ExpiredSignatureError:
+            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
             auth_namespace.abort(401, "Token expired. Please log in again.")
         except jwt.InvalidTokenError:
+            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
             auth_namespace.abort(401, "Invalid token. Please log in again.")
 
 
