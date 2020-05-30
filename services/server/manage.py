@@ -8,16 +8,19 @@ import yaml
 
 
 def setup_logging():
-    with open("/usr/src/app/logging.yml", "r") as fp:
-        try:
+    try:
+        with open("/usr/src/app/logging.yml", "r") as fp:
             config_dict = yaml.safe_load(fp.read())
             logging.config.dictConfig(config_dict)
             coloredlogs.install()
-        except Exception as e:
-            print(e)
-            print("There is an error in the logging configuration")
-        else:
-            logging.info("Logging setup finished successfully")
+    except yaml.constructor.ConstructorError as e:
+        print(e)
+        print("YML file for configuring the logger is invalid")
+    except IOError as e:
+        print(e)
+        print("Unable to read config file")
+    else:
+        logging.info("Logging setup finished successfully")
 
 
 setup_logging()
