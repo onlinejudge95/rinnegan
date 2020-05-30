@@ -11,7 +11,8 @@ def setup_logging():
     """
     Function to setup logging.
 
-    Reads the configuration from a .yml file, initialises the logger with that configuration.
+    Reads the configuration from a .yml file.
+    Initialises the logger with thatconfiguration.
     Installs coloredlogs to display logs in color format
     """
     try:
