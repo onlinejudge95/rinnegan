@@ -5,7 +5,7 @@ test_patterns = [
     "*/__tests__/**"
 ]
 
-exclude_patterns = ["migrations/**"]
+exclude_patterns = ["services/server/migrations/**"]
 
 [[analyzers]]
 name = "docker"

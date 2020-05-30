@@ -549,7 +549,7 @@ def test_update_user_invalid_id(test_app, monkeypatch):
 
 
 # Test update a user fails due to invalid headers
-def test_update_user_invalid_headers(test_app, monkeypatch):
+def test_update_user_invalid_headers(test_app):
     client = test_app.test_client()
     response = client.put(
         "/users",
