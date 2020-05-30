@@ -134,7 +134,7 @@ class UsersDetail(Resource):
 
     @staticmethod
     @users_namespace.expect(user_readable, validate=True)
-    # TODO Use multiple expect blocks in swagger UI
+    # Use multiple expect blocks in swagger UI
     # @users_namespace.expect(parser)
     @users_namespace.marshal_with(user_readable)
     @users_namespace.response(404, "User <user_id> does not exist")
