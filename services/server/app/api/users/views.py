@@ -13,6 +13,10 @@ from flask import request
 from flask_restx import Resource
 
 import jwt
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class UsersList(Resource):
@@ -29,6 +33,7 @@ class UsersList(Resource):
 
         user_exists = get_user_by_email(email)
         if user_exists:
+            logger.info(f"User with email {email} exists")
             response[
                 "message"
             ] = f"Sorry.The provided email {email} is already registered"
@@ -41,6 +46,7 @@ class UsersList(Resource):
         )
         response["id"] = user.id
         response["message"] = f"{request_data['email']} was added"
+        logger.info(f"User with email {email} added successfully")
         return response, 201
 
     @staticmethod
@@ -50,14 +56,17 @@ class UsersList(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
+            logger.info(f"Authorization header not found in {request}")
             users_namespace.abort(403, "Token required to fetch the user list")
 
         try:
             get_user_id_by_token(auth_header.split()[1])
             return get_all_users(), 200
         except jwt.ExpiredSignatureError:
+            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
         except jwt.InvalidTokenError:
+            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
             users_namespace.abort(401, "Invalid token. Please log in again.")
 
 
@@ -70,6 +79,7 @@ class UsersDetail(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
+            logger.info(f"Authorization header not found in {request}")
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
@@ -78,12 +88,17 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
+                logger.info(
+                    f"Invalid user_id for token {auth_header.split()[1]}"
+                )
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             return user, 200
         except jwt.ExpiredSignatureError:
+            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
         except jwt.InvalidTokenError:
+            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
             users_namespace.abort(401, "Invalid token. Please log in again.")
 
     @staticmethod
@@ -93,6 +108,7 @@ class UsersDetail(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
+            logger.info(f"Authorization header not found in {request}")
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
@@ -101,14 +117,19 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
+                logger.info(
+                    f"Invalid user_id for token {auth_header.split()[1]}"
+                )
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             remove_user(user)
 
             return dict(), 204
         except jwt.ExpiredSignatureError:
+            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
         except jwt.InvalidTokenError:
+            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
             users_namespace.abort(401, "Invalid token. Please log in again.")
 
     @staticmethod
@@ -121,6 +142,7 @@ class UsersDetail(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
+            logger.info(f"Authorization header not found in {request}")
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
@@ -131,6 +153,9 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
+                logger.info(
+                    f"Invalid user_id for token {auth_header.split()[1]}"
+                )
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             updated_user = update_user(
@@ -139,8 +164,10 @@ class UsersDetail(Resource):
 
             return updated_user, 200
         except jwt.ExpiredSignatureError:
+            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
         except jwt.InvalidTokenError:
+            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
             users_namespace.abort(401, "Invalid token. Please log in again.")
 
 
