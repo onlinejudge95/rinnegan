@@ -8,6 +8,12 @@ import yaml
 
 
 def setup_logging():
+    """
+    Function to setup logging.
+
+    Reads the configuration from a .yml file, initialises the logger with that configuration.
+    Installs coloredlogs to display logs in color format
+    """
     try:
         with open("/usr/src/app/logging.yml", "r") as fp:
             config_dict = yaml.safe_load(fp.read())
