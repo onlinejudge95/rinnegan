@@ -31,7 +31,6 @@ def setup_logging():
         except Exception as e:
             print(e)
             print("There is an error in the logging configuration")
-            exit(1)
         else:
             logging.info("Logging setup finished successfully")
 
