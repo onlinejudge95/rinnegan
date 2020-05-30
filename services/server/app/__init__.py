@@ -9,6 +9,10 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 import os
+import yaml
+import logging
+import logging.config
+import coloredlogs
 
 
 admin = Admin(template_mode="bootstrap3")
@@ -18,7 +22,22 @@ bcrypt = Bcrypt()
 migrate = Migrate()
 
 
+def setup_logging():
+    with open("/usr/src/app/logging.yml", "r") as fp:
+        try:
+            config_dict = yaml.safe_load(fp.read())
+            logging.config.dictConfig(config_dict)
+            coloredlogs.install()
+        except Exception as e:
+            print(e)
+            print("There is an error in the logging configuration")
+            exit(1)
+        else:
+            logging.info("Logging setup finished successfully")
+
 def create_app(environemnt):
+    setup_logging()
+
     app = Flask(__name__)
     app.config.from_object(cfg_map[environemnt])
 
