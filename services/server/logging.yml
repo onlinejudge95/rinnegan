@@ -1,0 +1,40 @@
+version: 1
+
+loggers:
+  server.access:
+    level: DEBUG
+    handlers:
+      - access_handler
+    propagate: no
+
+  server.error:
+    level: ERROR
+    handlers:
+      - error_handler
+    propagate: yes
+
+handlers:
+  access_handler:
+    class: logging.handlers.TimedRotatingFileHandler
+    formatter: access_formatter
+    filename: /var/log/server/access/server.log
+    when: D
+    backupCount: 1
+    encoding: utf8
+    utc: True
+
+  error_handler:
+    class: logging.handlers.TimedRotatingFileHandler
+    formatter: error_formatter
+    filename: /var/log/server/error/server.log
+    when: D
+    backupCount: 1
+    encoding: utf8
+    utc: True
+
+formatters:
+  access_formatter:
+    format: "%[(asctime)s]-[%(process)d]-[%(filename)s]-[%(levelname)s]-[%(message)s]"
+
+  error_formatter:
+    format: "%[(asctime)s]-[%(process)d]-[%(filename)s]-[%(funcName)s]-[%(levelname)s]-[%(lineno)d]-[%(message)s]"
