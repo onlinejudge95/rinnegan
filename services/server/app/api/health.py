@@ -19,7 +19,7 @@ class Health(Resource):
         try:
             with open(app.config["HEALTHCHECK_FILE_PATH"], "r") as fp:
                 health = fp.read().strip()
-                logger.debug("Health check passing")
+                logger.info("Health check passing")
                 return json.dumps({"health": health}), 200
         except IOError as e:
             logger.error("Health check fails", exc_info=True)

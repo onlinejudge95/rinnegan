@@ -33,7 +33,7 @@ class UsersList(Resource):
 
         user_exists = get_user_by_email(email)
         if user_exists:
-            logger.debug(f"User with email {email} exists")
+            logger.info(f"User with email {email} exists")
             response[
                 "message"
             ] = f"Sorry.The provided email {email} is already registered"
@@ -46,7 +46,7 @@ class UsersList(Resource):
         )
         response["id"] = user.id
         response["message"] = f"{request_data['email']} was added"
-        logger.debug(f"User with email {email} added successfully")
+        logger.info(f"User with email {email} added successfully")
         return response, 201
 
     @staticmethod
@@ -56,7 +56,7 @@ class UsersList(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
-            logger.debug(f"Authorization header not found in {request}")
+            logger.info(f"Authorization header not found in {request}")
             users_namespace.abort(403, "Token required to fetch the user list")
 
         try:
@@ -79,7 +79,7 @@ class UsersDetail(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
-            logger.debug(f"Authorization header not found in {request}")
+            logger.info(f"Authorization header not found in {request}")
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
@@ -88,7 +88,7 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.debug(f"User ID for given token {auth_header.split()[1]} is invalid")
+                logger.info(f"User ID for given token {auth_header.split()[1]} is invalid")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             return user, 200
@@ -106,7 +106,7 @@ class UsersDetail(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
-            logger.debug(f"Authorization header not found in {request}")
+            logger.info(f"Authorization header not found in {request}")
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
@@ -115,7 +115,7 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.debug(f"User ID for given token {auth_header.split()[1]} is invalid")
+                logger.info(f"User ID for given token {auth_header.split()[1]} is invalid")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             remove_user(user)
@@ -138,7 +138,7 @@ class UsersDetail(Resource):
         auth_header = request.headers.get("Authorization")
 
         if not auth_header:
-            logger.debug(f"Authorization header not found in {request}")
+            logger.info(f"Authorization header not found in {request}")
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
@@ -149,7 +149,7 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.debug(f"User ID for given token {auth_header.split()[1]} is invalid")
+                logger.info(f"User ID for given token {auth_header.split()[1]} is invalid")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             updated_user = update_user(
