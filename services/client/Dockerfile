@@ -15,9 +15,9 @@ COPY . .
 
 RUN npm run build
 
-RUN npm run prettier:check && \
-    npm run lint & \
-    npm run test
+# RUN npm run prettier:check && \
+#     npm run lint && \
+#     npm run test
 
 ##############################################################################
 
