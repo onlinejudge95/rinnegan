@@ -1,16 +1,21 @@
 import React from "react";
-import { Button, Divider, Form, Input } from "semantic-ui-react";
+import {
+  Button,
+  Divider,
+  Header,
+  Form,
+  Input,
+  Container,
+} from "semantic-ui-react";
 
 const RegisterUser = () => {
   return (
     <main className="content">
-      <div className="ui container">
+      <Container>
         <div class="ui relaxed divided padded full grid">
           <div class="row">
             <div class="column">
-              <h1 class="ui header">
-                <div class="content">Sign-Up</div>
-              </h1>
+              <Header as="h1">Sign-Up</Header>
             </div>
           </div>
           <Divider />
@@ -36,7 +41,7 @@ const RegisterUser = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </main>
   );
 };
