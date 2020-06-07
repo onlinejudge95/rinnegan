@@ -55,7 +55,7 @@ const ShowUser = () => {
                   icon
                   labelPosition="left"
                 >
-                  Edit
+                  Update
                   <Icon name="edit" />
                 </Button>
                 <Button.Or />
