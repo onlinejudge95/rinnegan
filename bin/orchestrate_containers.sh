@@ -1,4 +1,5 @@
-#!/bin/zsh
+#!/bin/sh
 
-sudo docker-compose up --build --detach
-docker-compose logs --follow
+sudo docker-compose build --compress --force-rm --parallel
+sudo docker-compose up --detach --remove-orphans
+sudo docker-compose logs --follow

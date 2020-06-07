@@ -19,6 +19,20 @@ migrate = Migrate()
 
 
 def create_app(environemnt):
+    """
+    App factory for the server.
+
+    Instantiates a Flask object.
+    Configures the app according to the environment.
+    Initializes the extensions.
+    Adds the middleware to check headers.
+    Returns the app instance.
+
+    :param: environment
+        Environemnt to configure the server to
+    :returns:
+        Instance of the flask app
+    """
     app = Flask(__name__)
     app.config.from_object(cfg_map[environemnt])
 

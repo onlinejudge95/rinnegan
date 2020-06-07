@@ -7,8 +7,6 @@ verify_ssl = true
 black = "==19.10b0"
 flake8 = "==3.8.2"
 isort = "==4.3.21"
-pytest = "==5.4.3"
-pytest-cov = "==2.9.0"
 
 [packages]
 flask-restx = "==0.2.0"
@@ -22,6 +20,8 @@ Flask-Admin = "==1.5.6"
 Flask-Bcrypt = "==0.7.1"
 Flask-Cors = "==3.0.8"
 PyJWT = "==1.7.1"
+pytest = "==5.4.3"
+pytest-cov = "==2.9.0"
 PyYAML = "==5.3.1"
 coloredlogs = "==14.0"
 

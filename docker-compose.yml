@@ -51,33 +51,14 @@ services:
       - server
     environment:
       - NODE_ENV=development
-      - REACT_APP_USERS_SERVICE_URL=http://localhost:5000
-    networks:
-      - frontend
-    ports:
-      - 3000:3000
-    volumes:
-      - ./services/client:/usr/src/app
-      - ./services/nginx/build:/usr/src/app/build
-      - /usr/src/app/node_modules
-    build:
-      context: ./services/client/
-      dockerfile: Dockerfile
-
-  nginx:
-    container_name: nginx
-    image: nginx:development
-    depends_on:
-      - client
-    environment:
       - PORT=80
+      - REACT_APP_SERVER_URL=http://localhost:5000
     networks:
       - frontend
     ports:
       - 80:80
     volumes:
-      - ./services/nginx/build:/usr/share/nginx/html
-      - ./services/nginx/logs:/var/logs/nginx
+      - /usr/src/app/node_modules
     build:
-      context: ./services/nginx/
+      context: ./services/client/
       dockerfile: Dockerfile

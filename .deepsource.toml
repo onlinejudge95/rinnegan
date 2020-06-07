@@ -5,7 +5,7 @@ test_patterns = [
     "*/__tests__/**"
 ]
 
-exclude_patterns = ["migrations/**"]
+exclude_patterns = ["services/server/migrations/**"]
 
 [[analyzers]]
 name = "docker"
@@ -13,10 +13,8 @@ enabled = true
 
   [analyzers.meta]
   dockerfile_paths = [
-    "Dockerfile",
     "services/client/Dockerfile",
     "services/db/Dockerfile",
-    "services/nginx/Dockerfile",
     "services/server/Dockerfile"
   ]
 
@@ -24,3 +22,10 @@ enabled = true
     "registry.hub.docker.com",
     "registry.gitlab.com"
   ]
+
+[[analyzers]]
+name = "python"
+enabled = true
+dependency_file_paths = [
+  "services/server/Pipfile"
+]

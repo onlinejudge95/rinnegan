@@ -1,19 +1,36 @@
-FROM node:14.4.0-alpine
+FROM node:14.3.0-alpine as builder
+
+LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
+
+WORKDIR /usr/src/builder
+
+ENV PATH /usr/src/builder/node_modules/.bin:$PATH
+
+COPY package*.json ./
+
+RUN npm ci && \
+    npm install react-scripts@3.4.0
+
+COPY . .
+
+RUN npm run build
+
+# RUN npm run prettier:check && \
+#     npm run lint && \
+#     npm run test
+
+##############################################################################
+
+FROM nginx:stable-alpine
 
 LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
 WORKDIR /usr/src/app
 
-ENV PATH /usr/src/app/node_modules/.bin:$PATH
+COPY --from=builder /usr/src/builder/build /usr/share/nginx/html
+COPY --from=builder /usr/src/builder/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /usr/src/builder/entrypoint.sh ./
 
-COPY package*.json ./
+RUN chmod +x ./entrypoint.sh
 
-RUN npm ci
-
-RUN npm install react-scripts@3.4.0
-
-COPY . .
-
-RUN chmod +x entrypoint.sh
-
-CMD ["./entrypoint.sh"]
+ENTRYPOINT [ "./entrypoint.sh" ]

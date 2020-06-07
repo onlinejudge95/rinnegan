@@ -1,83 +1,29 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import "./NavBar.css";
+import { Icon, Menu } from "semantic-ui-react";
 
-const titleStyle = {
-  fontWeight: "bold",
-};
-
-const Navbar = (props) => {
-  let menu = (
-    <div className="navbar-menu">
-      <div className="navbar-end">
-        <Link to="/register" className="navbar-item" data-testid="nav-register">
-          Register
-        </Link>
-        <Link to="/login" className="navbar-item" data-testid="nav-login">
-          Log-In
-        </Link>
-      </div>
-    </div>
-  );
-
-  if (props.isAuthenticated()) {
-    menu = (
-      <div className="navbar-menu">
-        <div className="navbar-start">
-          <Link to="/profile" className="navbar-item" data-testid="nav-profile">
-            Profile
-          </Link>
-        </div>
-
-        <div className="navbar-end">
-          <span
-            onClick={props.handleLogOutUser}
-            className="navbar-item"
-            data-testid="nav-logout"
-          >
-            Log-Out
-          </span>
-        </div>
-      </div>
-    );
-  }
+const NavBar = () => {
   return (
-    <nav
-      className="navbar is-dark"
-      role="navigation"
-      aria-label="main navigation"
-    >
-      <section className="container">
-        <div className="navbar-brand">
-          <Link to="/" className="navbar-item nav-title" style={titleStyle}>
-            {props.title}
-          </Link>
-          <span
-            className="nav-toggle navbar-burger"
-            onClick={() => {
-              let toggle = document.querySelector(".nav-toggle");
-              toggle.classList.toggle("is-active");
-
-              let menu = document.querySelector(".navbar-menu");
-              menu.classList.toggle("is-active");
-            }}
-          >
-            <span />
-            <span />
-            <span />
-          </span>
-        </div>
-        {menu}
-      </section>
-    </nav>
+    <Menu size="massive" icon="labeled" inverted pointing attached>
+      <Menu.Item as={Link} to="/">
+        Rinnegan
+      </Menu.Item>
+      <Menu.Item as={Link} to="/profile">
+        <Icon name="user" />
+        Profile
+      </Menu.Item>
+      <Menu.Menu position="right">
+        <Menu.Item as={Link} to="/register">
+          <Icon name="signup" />
+          Sign-Up
+        </Menu.Item>
+        <Menu.Item as={Link} to="/login">
+          <Icon name="sign-in" />
+          Sign-In
+        </Menu.Item>
+      </Menu.Menu>
+    </Menu>
   );
 };
 
-Navbar.propTypes = {
-  title: PropTypes.string.isRequired,
-  handleLogOutUser: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.func.isRequired,
-};
-
-export default Navbar;
+export default NavBar;
