@@ -6,14 +6,14 @@ import ShowUser from "./user/ShowUser";
 import RemoveUser from "./user/RemoveUser";
 import UpdateUser from "./user/UpdateUser";
 import About from "./About";
-import Header from "./Header";
+import NavBar from "./NavBar";
 
 const App = () => {
   return (
     <div classNam="ui container">
       <BrowserRouter>
         <div>
-          <Header />
+          <NavBar />
           <Route path="/" exact component={About}></Route>
           <Route path="/register" exact component={RegisterUser}></Route>
           <Route path="/login" exact component={Loginuser}></Route>
