@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Divider,
   Header,
@@ -45,13 +46,29 @@ const ShowUser = () => {
             </div>
             <div className="eight wide column">
               <Button.Group size="massive">
-                <Button massive positive fluid icon labelPosition="left">
+                <Button
+                  as={Link}
+                  to="/update"
+                  massive
+                  positive
+                  fluid
+                  icon
+                  labelPosition="left"
+                >
                   Edit
                   <Icon name="edit" />
                 </Button>
                 <Button.Or />
-                <Button massive negative fluid icon labelPosition="right">
-                  Delete
+                <Button
+                  as={Link}
+                  to="/remove"
+                  massive
+                  negative
+                  fluid
+                  icon
+                  labelPosition="right"
+                >
+                  Remove
                   <Icon name="user delete" />
                 </Button>
               </Button.Group>
