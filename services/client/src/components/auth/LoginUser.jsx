@@ -12,15 +12,15 @@ const LoginUser = () => {
   return (
     <main className="content">
       <Container>
-        <div class="ui relaxed divided padded full grid">
-          <div class="row">
-            <div class="column">
+        <div className="ui relaxed divided padded full grid">
+          <div className="row">
+            <div className="column">
               <Header as="h1">Sign-In</Header>
             </div>
           </div>
           <Divider />
-          <div class="row">
-            <div class="eleven wide column">
+          <div className="row">
+            <div className="eleven wide column">
               <Form>
                 <Form.Field>
                   <label>Email</label>

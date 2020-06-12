@@ -5,15 +5,15 @@ const About = () => {
   return (
     <main className="content">
       <Container>
-        <div class="ui relaxed divided padded full grid">
-          <div class="row">
-            <div class="column">
+        <div className="ui relaxed divided padded full grid">
+          <div className="row">
+            <div className="column">
               <Header as="h1">Rinnegan</Header>
             </div>
           </div>
           <Divider />
-          <div class="row">
-            <div class="wide column">
+          <div className="row">
+            <div className="wide column">
               <Container>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
