@@ -37,11 +37,7 @@ const NavBar = (props) => {
     </div>
   );
   return (
-    <div
-      className="ui inverted pointing attached menu labeled icon massive stackable"
-      role="navigation"
-      aria-label="main navigation"
-    >
+    <div className="ui inverted pointing attached menu labeled icon massive stackable">
       <div className="item">
         <Link to="/">
           <i className="icon eye" />
