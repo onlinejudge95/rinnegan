@@ -1,12 +1,9 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import RegisterUser from "./auth/RegisterUser";
-import Loginuser from "./auth/LoginUser";
-import ShowUser from "./user/ShowUser";
-import RemoveUser from "./user/RemoveUser";
-import UpdateUser from "./user/UpdateUser";
-import About from "./About";
-import NavBar from "./navbar/NavBar";
+import authComponents from "./components/auth";
+import userComponents from "./components/user";
+import navBarComponents from "./components/navbar";
+import staticComponents from "./components/static";
 
 class App extends React.Component {
   onRegisterFormSubmit = () => {
@@ -18,13 +15,13 @@ class App extends React.Component {
   };
 
   isAuthenticated = () => {
-    return true;
+    return false;
   };
 
   render() {
     return (
       <div className="ui">
-        <NavBar isAuthenticated={this.isAuthenticated} />
+        <navBarComponents.NavBar isAuthenticated={this.isAuthenticated} />
         <div className="ui container">
           <div className="ui segment">
             {/* TODO:- Display Messages */}
@@ -32,31 +29,39 @@ class App extends React.Component {
               <div className="two wide column"></div>
               <div className="twelve wide column">
                 <Switch>
-                  <Route path="/" exact component={About} />
+                  <Route path="/" exact component={staticComponents.About} />
                   <Route
                     path="/register"
                     exact
                     component={() => (
-                      <RegisterUser onFormSubmit={this.onRegisterFormSubmit} />
+                      <authComponents.RegisterUser
+                        onRegisterFormSubmit={this.onRegisterFormSubmit}
+                      />
                     )}
                   />
                   <Route
                     path="/login"
                     exact
                     component={() => (
-                      <Loginuser onFormSubmit={this.onLoginFormSubmit} />
+                      <authComponents.Loginuser
+                        onLoginFormSubmit={this.onLoginFormSubmit}
+                      />
                     )}
                   />
-                  <Route path="/profile" exact component={() => <ShowUser />} />
+                  <Route
+                    path="/profile"
+                    exact
+                    component={() => <userComponents.ShowUser />}
+                  />
                   <Route
                     path="/update"
                     exact
-                    component={() => <UpdateUser />}
+                    component={() => <userComponents.UpdateUser />}
                   />
                   <Route
                     path="/remove"
                     exact
-                    component={() => <RemoveUser />}
+                    component={() => <userComponents.RemoveUser />}
                   />
                 </Switch>
               </div>
