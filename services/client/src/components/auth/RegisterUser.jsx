@@ -10,19 +10,23 @@ const RegisterUser = (props) => {
         <div className="ui divider"></div>
         <div className="row">
           <div className="eleven wide column">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac
-              libero et enim fringilla viverra non et leo. Sed vitae felis diam.
-              Duis tempus ex sit amet diam feugiat mattis. Aliquam fermentum,
-              est id fermentum blandit, nisi tortor elementum tortor, a
-              tincidunt mi dolor ut lacus. Mauris auctor, sem at dignissim
-              efficitur, justo diam pellentesque urna, sit amet ultricies leo
-              tellus ut nulla. Mauris interdum massa elit. Maecenas vel odio id
-              nulla convallis dignissim. Praesent diam orci, feugiat id gravida
-              eget, eleifend hendrerit massa. Morbi congue, nulla a dapibus
-              tempus, sem tellus iaculis nunc, et tincidunt lectus dui ut
-              mauris.
-            </p>
+            <form className="ui form">
+              <div className="field">
+                <label>Username</label>
+                <input type="text" placeholder="Enter your username" />
+              </div>
+              <div className="field">
+                <label>Email</label>
+                <input type="email" placeholder="Enter your email" />
+              </div>
+              <div className="field">
+                <label>Password</label>
+                <input type="password" placeholder="Enter your Password" />
+              </div>
+              <button class="ui green button" type="submit">
+                Submit
+              </button>
+            </form>
           </div>
         </div>
       </div>
