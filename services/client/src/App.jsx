@@ -8,23 +8,42 @@ import navBarComponents from "./components/navbar";
 import staticComponents from "./components/static";
 
 class App extends React.Component {
+  state = { accessToken: null };
+
   onRegisterFormSubmit = async (payload) => {
     const registerApiUrl = `${process.env.REACT_APP_SERVER_URL}/auth/register`;
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
     };
-    console.log(payload);
-    console.log(process.env.REACT_APP_SERVER_URL);
-    const response = await axios.post(registerApiUrl, payload, { headers });
-    console.log(response);
+    try {
+      const response = await axios.post(registerApiUrl, payload, { headers });
+      console.log(response);
+    } catch (error) {
+      console.log("User with given email already exists");
+    }
   };
 
-  onLoginFormSubmit = () => {
-    console.log("Login form submitted");
+  onLoginFormSubmit = async (payload) => {
+    const loginApiUrl = `${process.env.REACT_APP_SERVER_URL}/auth/login`;
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+    try {
+      const response = await axios.post(loginApiUrl, payload, { headers });
+      console.log(response);
+      this.setState({ accessToken: response.data.access_token });
+      window.localStorage.setItem("refreshToken", response.data.refresh_token);
+    } catch (error) {
+      console.log("Invalid credentials");
+    }
   };
 
   isAuthenticated = () => {
+    if (this.state.accessToken) {
+      return true;
+    }
     return false;
   };
 
@@ -54,8 +73,9 @@ class App extends React.Component {
                     path="/login"
                     exact
                     component={() => (
-                      <authComponents.Loginuser
+                      <authComponents.LoginUser
                         onLoginFormSubmit={this.onLoginFormSubmit}
+                        isAuthenticated={this.isAuthenticated}
                       />
                     )}
                   />

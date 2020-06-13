@@ -1,8 +1,8 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
+import { PropTypes } from "prop-types";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { PropTypes } from "prop-types";
 
 const RegisterUser = (props) => {
   if (props.isAuthenticated()) {
@@ -56,7 +56,7 @@ const RegisterUser = (props) => {
                         onChange={props.handleChange}
                       />
                       {props.errors.username && props.touched.username && (
-                        <div class="ui pointing red basic label">
+                        <div className="ui pointing red basic label">
                           {props.errors.username}
                         </div>
                       )}
@@ -73,7 +73,7 @@ const RegisterUser = (props) => {
                         onChange={props.handleChange}
                       />
                       {props.errors.email && props.touched.email && (
-                        <div class="ui pointing red basic label">
+                        <div className="ui pointing red basic label">
                           {props.errors.email}
                         </div>
                       )}
@@ -90,7 +90,7 @@ const RegisterUser = (props) => {
                         onChange={props.handleChange}
                       />
                       {props.errors.password && props.touched.password && (
-                        <div class="ui pointing red basic label">
+                        <div className="ui pointing red basic label">
                           {props.errors.password}
                         </div>
                       )}

@@ -13,7 +13,7 @@ RUN npm ci && \
 
 COPY . .
 
-RUN npm run build
+# RUN npm run build
 
 # RUN npm run prettier:check && \
 #     npm run lint && \
@@ -21,15 +21,15 @@ RUN npm run build
 
 ############################################################################
 
-FROM nginx:stable-alpine
+# FROM nginx:stable-alpine
 
-LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
+# LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
-WORKDIR /usr/src/app
+# WORKDIR /usr/src/app
 
-COPY --from=builder /usr/src/builder/build /usr/share/nginx/html
-COPY --from=builder /usr/src/builder/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /usr/src/builder/entrypoint.sh ./
+# COPY --from=builder /usr/src/builder/build /usr/share/nginx/html
+# COPY --from=builder /usr/src/builder/nginx.conf /etc/nginx/conf.d/default.conf
+# COPY --from=builder /usr/src/builder/entrypoint.sh ./
 
 RUN chmod +x ./entrypoint.sh
 
