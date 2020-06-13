@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { PropTypes } from "prop-types";
 
 const NavBar = (props) => {
   const profileMenu = (
@@ -29,10 +30,10 @@ const NavBar = (props) => {
   const authenticatedMenu = (
     <div className="right menu">
       <div className="item">
-        <Link to="/profile">
+        <span onClick={props.onLogOutClick}>
           <i className="icon sign-out" />
           Sign-Out
-        </Link>
+        </span>
       </div>
     </div>
   );
@@ -48,6 +49,11 @@ const NavBar = (props) => {
       {props.isAuthenticated() ? authenticatedMenu : unAuthenticatedMenu}
     </div>
   );
+};
+
+NavBar.propTypes = {
+  onLogOutClick: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.func.isRequired,
 };
 
 export default NavBar;

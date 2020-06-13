@@ -40,6 +40,11 @@ class App extends React.Component {
     }
   };
 
+  onLogOutClick = () => {
+    window.localStorage.removeItem("refreshToken");
+    this.setState({ accessToken: null });
+  };
+
   isAuthenticated = () => {
     if (this.state.accessToken) {
       return true;
@@ -50,7 +55,10 @@ class App extends React.Component {
   render() {
     return (
       <div className="ui">
-        <navBarComponents.NavBar isAuthenticated={this.isAuthenticated} />
+        <navBarComponents.NavBar
+          isAuthenticated={this.isAuthenticated}
+          onLogOutClick={this.onLogOutClick}
+        />
         <div className="ui container">
           <div className="ui segment">
             {/* TODO:- Display Messages */}
