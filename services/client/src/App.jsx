@@ -1,13 +1,23 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
+import axios from "axios";
+
 import authComponents from "./components/auth";
 import userComponents from "./components/user";
 import navBarComponents from "./components/navbar";
 import staticComponents from "./components/static";
 
 class App extends React.Component {
-  onRegisterFormSubmit = () => {
-    console.log("Register form submitted");
+  onRegisterFormSubmit = async (payload) => {
+    const registerApiUrl = `${process.env.REACT_APP_SERVER_URL}/auth/register`;
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+    console.log(payload);
+    console.log(process.env.REACT_APP_SERVER_URL);
+    const response = await axios.post(registerApiUrl, payload, { headers });
+    console.log(response);
   };
 
   onLoginFormSubmit = () => {
@@ -36,6 +46,7 @@ class App extends React.Component {
                     component={() => (
                       <authComponents.RegisterUser
                         onRegisterFormSubmit={this.onRegisterFormSubmit}
+                        isAuthenticated={this.isAuthenticated}
                       />
                     )}
                   />
