@@ -1,5 +1,5 @@
-#!/bin/zsh
+#!/bin/sh
 
-docker-compose down
-sudo chown -R onlinejudge95:onlinejudge95 .
-docker-compose up --build --detach
+sudo docker-compose build --compress --force-rm --parallel
+sudo docker-compose up --detach --remove-orphans
+sudo docker-compose logs --follow

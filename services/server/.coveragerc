@@ -1,0 +1,7 @@
+[run]
+omit = 
+    /usr/src/app/app/tests/*
+    /usr/src/app/migrations/*
+    /usr/src/app/manage.py
+    /usr/src/app/gunicorn.conf.py
+branch = true

@@ -1,33 +1,60 @@
-import functools
-from flask import Flask, request, abort
+from app.config import cfg_map
+from flask import abort
+from flask import Flask
+from flask import request
+from flask_admin import Admin
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from app.config import cfg_map
+import os
 
 
+admin = Admin(template_mode="bootstrap3")
 db = SQLAlchemy()
+cors = CORS()
 bcrypt = Bcrypt()
+migrate = Migrate()
 
 
 def create_app(environemnt):
+    """
+    App factory for the server.
+
+    Instantiates a Flask object.
+    Configures the app according to the environment.
+    Initializes the extensions.
+    Adds the middleware to check headers.
+    Returns the app instance.
+
+    :param: environment
+        Environemnt to configure the server to
+    :returns:
+        Instance of the flask app
+    """
     app = Flask(__name__)
     app.config.from_object(cfg_map[environemnt])
 
     db.init_app(app)
+    cors.init_app(app, resources={r"/*": {"origins": "*"}})
     bcrypt.init_app(app)
+    migrate.init_app(app, db)
 
     from app.api import api
 
     api.init_app(app)
 
-    @app.shell_context_processor
-    def ctx():
-        return {"app": app, "db": db}
+    if os.getenv("FLASK_ENV") != "production":
+        admin.init_app(app)
 
     @app.before_request
-    def check_headers(*args, **kwargs):
-        if "swagger" not in request.path:
+    def check_headers():
+        if (
+            "swagger" not in request.path
+            and "admin" not in request.path
+            and request.method != "OPTIONS"
+        ):
             accepts = request.headers.get("Accept")
             if not accepts or accepts != "application/json":
                 abort(415, "Only content type supported is application/json")
@@ -35,7 +62,8 @@ def create_app(environemnt):
                 content_type = request.headers.get("Content-Type")
                 if not content_type or content_type != "application/json":
                     abort(
-                        415, "POST & PATCH requests should define a Content-Type header"
+                        415,
+                        "POST/PUT requests should define Content-Type header",
                     )
 
     return app

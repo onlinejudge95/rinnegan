@@ -1,0 +1,66 @@
+version: 2
+
+updates:
+  - package-ecosystem: pip
+    directory: "services/server"
+    schedule:
+      interval: daily
+      timezone: Asia/Calcutta
+    assignees:
+      - "dependabot"
+    labels:
+      - "dependencies"
+      - "dependabot"
+      - "python"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "onlinejudge95"
+    target-branch: staging
+
+  - package-ecosystem: npm
+    directory: "services/client"
+    schedule:
+      interval: daily
+      timezone: Asia/Calcutta
+    assignees:
+      - "dependabot"
+    labels:
+      - "dependencies"
+      - "dependabot"
+      - "javascript"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "onlinejudge95"
+    target-branch: staging
+
+  - package-ecosystem: docker
+    directory: "/services/server"
+    schedule:
+      interval: daily
+      timezone: Asia/Calcutta
+    assignees:
+      - "dependabot"
+    labels:
+      - "dependencies"
+      - "dependabot"
+      - "server"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "onlinejudge95"
+    target-branch: staging
+
+  - package-ecosystem: docker
+    directory: "/services/client"
+    schedule:
+      interval: daily
+      timezone: Asia/Calcutta
+    assignees:
+      - "dependabot"
+    labels:
+      - "dependencies"
+      - "dependabot"
+      - "client"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "onlinejudge95"
+    target-branch: staging

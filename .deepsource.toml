@@ -1,0 +1,31 @@
+version = 1
+
+test_patterns = [
+    "*tests/**",
+    "*/__tests__/**"
+]
+
+exclude_patterns = ["services/server/migrations/**"]
+
+[[analyzers]]
+name = "docker"
+enabled = true
+
+  [analyzers.meta]
+  dockerfile_paths = [
+    "services/client/Dockerfile",
+    "services/db/Dockerfile",
+    "services/server/Dockerfile"
+  ]
+
+  trusted_registries = [
+    "registry.hub.docker.com",
+    "registry.gitlab.com"
+  ]
+
+[[analyzers]]
+name = "python"
+enabled = true
+dependency_file_paths = [
+  "services/server/Pipfile"
+]

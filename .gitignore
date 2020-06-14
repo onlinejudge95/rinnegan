@@ -1,6 +1,6 @@
 # environments
 node_modules/
-env/
+env
 .env
 
 # database
@@ -12,3 +12,13 @@ __pycache__/
 
 # editor configs
 .vscode/
+
+# logs
+services/server/logs/
+services/nginx/logs/
+
+# client test coverage
+services/client/coverage
+
+# builds
+services/nginx/build
