@@ -11,7 +11,11 @@ class Token(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     access_token = db.Column(db.String(200), nullable=False)
     refresh_token = db.Column(db.String(200), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="cascade"),
+        nullable=False,
+    )
 
     def __init__(self, access_token, refresh_token, user_id):
         self.access_token = access_token
