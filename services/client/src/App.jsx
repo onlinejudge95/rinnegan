@@ -126,7 +126,12 @@ class App extends React.Component {
                   <Route
                     path="/profile"
                     exact
-                    component={() => <userComponents.ShowUser />}
+                    component={() => (
+                      <userComponents.ShowUser
+                        user={this.state.user}
+                        isAuthenticated={this.isAuthenticated}
+                      />
+                    )}
                   />
                   <Route
                     path="/update"

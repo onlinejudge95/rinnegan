@@ -1,83 +1,67 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import {
-  Divider,
-  Header,
-  Container,
-  Card,
-  Image,
-  Icon,
-  Button,
-} from "semantic-ui-react";
+import { Redirect, Link } from "react-router-dom";
+import { PropTypes } from "prop-types";
 
-const ShowUser = () => {
+const ShowUser = (props) => {
+  if (!props.isAuthenticated()) {
+    return <Redirect to="/login" />;
+  }
+
   return (
-    <main className="content">
-      <Container>
-        <div className="ui relaxed divided padded full grid middle aligned">
-          <div className="row">
-            <div className="column">
-              <Header as="h1">Profile</Header>
+    <div className="ui container">
+      <div className="ui relaxed divided padded full grid container">
+        <div className="row">
+          <div className="ui huge header">Profile</div>
+        </div>
+        <div className="ui divider"></div>
+        <div className="row">
+          <div className="ui card fluid">
+            <div className="image">
+              <img
+                src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
+                alt={props.user.username}
+              />
+            </div>
+            <div className="content">
+              <div className="header">{props.user.username}</div>
+              <div className="meta">
+                <span className="date">Joined in 2020</span>
+              </div>
+              <div className="description">
+                Test Bot is a programmer living in Bengaluru.
+              </div>
+            </div>
+            <div className="extra content">
+              <i className="mail" />
+              {props.user.email}
             </div>
           </div>
-          <Divider />
-          <div className="row">
-            <div className="eight wide column">
-              <Card fluid>
-                <Image
-                  src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
-                  wrapped
-                  ui={false}
-                />
-                <Card.Content>
-                  <Card.Header>Test Bot</Card.Header>
-                  <Card.Meta>
-                    <span className="email">Joined in 2020</span>
-                  </Card.Meta>
-                  <Card.Description>
-                    Test Bot is a programmer living in Bengaluru.
-                  </Card.Description>
-                </Card.Content>
-                <Card.Content extra>
-                  <Icon name="mail" />
-                  onlinejudge95@gmail.com
-                </Card.Content>
-              </Card>
-            </div>
-            <div className="eight wide column">
-              <Button.Group size="massive">
-                <Button
-                  as={Link}
-                  to="/update"
-                  massive
-                  positive
-                  fluid
-                  icon
-                  labelPosition="left"
-                >
-                  Update
-                  <Icon name="edit" />
-                </Button>
-                <Button.Or />
-                <Button
-                  as={Link}
-                  to="/remove"
-                  massive
-                  negative
-                  fluid
-                  icon
-                  labelPosition="right"
-                >
-                  Remove
-                  <Icon name="user delete" />
-                </Button>
-              </Button.Group>
-            </div>
+          <div className="ui large two buttons">
+            <Link
+              to="/update"
+              className="ui labeled button massive positive icon"
+            >
+              <i className="edit" />
+              Edit
+            </Link>
+            <div className="or"></div>
+            <Link
+              to="/remove"
+              className="ui right labeled button massive negative icon"
+            >
+              <i className="user delete" />
+              Delete
+            </Link>
           </div>
         </div>
-      </Container>
-    </main>
+      </div>
+    </div>
   );
+};
+
+ShowUser.propTypes = {
+  user: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.func.isRequired,
 };
 
 export default ShowUser;
