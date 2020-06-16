@@ -34,6 +34,7 @@ services:
       - ./services/server/.env
     networks:
       - backend
+      - frontend
     ports:
       - 5000:5000
     volumes:
@@ -47,17 +48,20 @@ services:
   client:
     container_name: client
     image: client:development
+    stdin_open: true
     depends_on:
       - server
     environment:
       - NODE_ENV=development
-      - PORT=80
+      # - PORT=80
       - REACT_APP_SERVER_URL=http://localhost:5000
     networks:
       - frontend
     ports:
-      - 80:80
+      - 3000:3000
+      # - 80:80
     volumes:
+      - ./services/client/:/usr/src/builder
       - /usr/src/app/node_modules
     build:
       context: ./services/client/

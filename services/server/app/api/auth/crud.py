@@ -13,7 +13,9 @@ def add_token(user_id):
     """
     access_token = Token.encode_token(user_id, "access").decode("utf-8")
     refresh_token = Token.encode_token(user_id, "refresh").decode("utf-8")
-    token = Token(access_token=access_token, refresh_token=refresh_token)
+    token = Token(
+        access_token=access_token, refresh_token=refresh_token, user_id=user_id
+    )
     db.session.add(token)
     db.session.commit()
     return token

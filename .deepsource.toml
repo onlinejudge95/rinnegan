@@ -19,8 +19,7 @@ enabled = true
   ]
 
   trusted_registries = [
-    "registry.hub.docker.com",
-    "registry.gitlab.com"
+    "registry.hub.docker.com"
   ]
 
 [[analyzers]]

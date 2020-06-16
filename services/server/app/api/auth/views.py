@@ -66,6 +66,7 @@ class Login(Resource):
                 404, f"User with email {email} does not exists"
             )
         token = add_token(user.id)
+
         logger.info(f"User with email {email} logged in successfully")
         return token, 200
 
