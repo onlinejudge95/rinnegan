@@ -57,20 +57,35 @@ class App extends React.Component {
 
   onUpdateUserFormSubmit = async (payload) => {
     try {
-      const updateuserApiUrl = `${process.env.REACT_APP_SERVER_URL}/users/${this.state.user.id}`;
+      const updateUserApiUrl = `${process.env.REACT_APP_SERVER_URL}/users/${this.state.user.id}`;
       const headers = {
         Accept: "application/json",
         Authorization: `Bearer ${this.state.accessToken}`,
         "Content-Type": "application/json",
       };
       delete payload.password;
-      const userResponse = await axios.put(updateuserApiUrl, payload, {
+      const userResponse = await axios.put(updateUserApiUrl, payload, {
         headers,
       });
       this.setState({ user: userResponse.data });
     } catch (error) {
       console.log("Invalid credentials");
     }
+  };
+
+  onRemoveUserClick = async () => {
+    try {
+      const deleteUserApiUrl = `${process.env.REACT_APP_SERVER_URL}/users/${this.state.user.id}`;
+      const headers = {
+        Accept: "application/json",
+        Authorization: `Bearer ${this.state.accessToken}`,
+      };
+      await axios.delete(deleteUserApiUrl, {
+        headers,
+      });
+      window.localStorage.removeItem("refreshToken");
+      this.setState({ accessToken: null });
+    } catch (error) {}
   };
 
   onLogOutClick = () => {
@@ -147,6 +162,7 @@ class App extends React.Component {
                     component={() => (
                       <userComponents.ShowUser
                         user={this.state.user}
+                        onRemoveUserClick={this.onRemoveUserClick}
                         isAuthenticated={this.isAuthenticated}
                       />
                     )}
@@ -161,11 +177,6 @@ class App extends React.Component {
                         onUpdateUserFormSubmit={this.onUpdateUserFormSubmit}
                       />
                     )}
-                  />
-                  <Route
-                    path="/remove"
-                    exact
-                    component={() => <userComponents.RemoveUser />}
                   />
                 </Switch>
               </div>

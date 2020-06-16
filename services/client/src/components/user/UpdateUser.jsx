@@ -45,9 +45,9 @@ const UpdateUser = (props) => {
                   .oneOf([Yup.ref("password")], "Passwords must match"),
               })}
             >
-              {(props) => {
+              {(formikProps) => {
                 return (
-                  <form className="ui form" onSubmit={props.handleSubmit}>
+                  <form className="ui form" onSubmit={formikProps.handleSubmit}>
                     <div className="required field">
                       <label htmlFor="input-username">Username</label>
                       <input
@@ -55,15 +55,16 @@ const UpdateUser = (props) => {
                         id="input-username"
                         type="text"
                         placeholder="Enter your username"
-                        value={props.values.username}
-                        onBlur={props.handleBlur}
-                        onChange={props.handleChange}
+                        value={formikProps.values.username}
+                        onBlur={formikProps.handleBlur}
+                        onChange={formikProps.handleChange}
                       />
-                      {props.errors.username && props.touched.username && (
-                        <div className="ui pointing red basic label">
-                          {props.errors.username}
-                        </div>
-                      )}
+                      {formikProps.errors.username &&
+                        formikProps.touched.username && (
+                          <div className="ui pointing red basic label">
+                            {formikProps.errors.username}
+                          </div>
+                        )}
                     </div>
                     <div className="required field">
                       <label htmlFor="input-email">Email</label>
@@ -72,15 +73,16 @@ const UpdateUser = (props) => {
                         id="input-email"
                         type="email"
                         placeholder="Enter your email"
-                        value={props.values.email}
-                        onBlur={props.handleBlur}
-                        onChange={props.handleChange}
+                        value={formikProps.values.email}
+                        onBlur={formikProps.handleBlur}
+                        onChange={formikProps.handleChange}
                       />
-                      {props.errors.email && props.touched.email && (
-                        <div className="ui pointing red basic label">
-                          {props.errors.email}
-                        </div>
-                      )}
+                      {formikProps.errors.email &&
+                        formikProps.touched.email && (
+                          <div className="ui pointing red basic label">
+                            {formikProps.errors.email}
+                          </div>
+                        )}
                     </div>
                     <div className="field">
                       <label htmlFor="input-password">Password</label>
@@ -89,15 +91,16 @@ const UpdateUser = (props) => {
                         id="input-password"
                         type="password"
                         placeholder="Enter your Password"
-                        value={props.values.password}
-                        onBlur={props.handleBlur}
-                        onChange={props.handleChange}
+                        value={formikProps.values.password}
+                        onBlur={formikProps.handleBlur}
+                        onChange={formikProps.handleChange}
                       />
-                      {props.errors.password && props.touched.password && (
-                        <div className="ui pointing red basic label">
-                          {props.errors.password}
-                        </div>
-                      )}
+                      {formikProps.errors.password &&
+                        formikProps.touched.password && (
+                          <div className="ui pointing red basic label">
+                            {formikProps.errors.password}
+                          </div>
+                        )}
                     </div>
                     <div className="field">
                       <label htmlFor="input-password-confirm">
@@ -108,14 +111,14 @@ const UpdateUser = (props) => {
                         id="input-password-confirm"
                         type="password"
                         placeholder="Confirm your Password"
-                        value={props.values.passwordConfirm}
-                        onBlur={props.handleBlur}
-                        onChange={props.handleChange}
+                        value={formikProps.values.passwordConfirm}
+                        onBlur={formikProps.handleBlur}
+                        onChange={formikProps.handleChange}
                       />
-                      {props.errors.passwordConfirm &&
-                        props.touched.passwordConfirm && (
+                      {formikProps.errors.passwordConfirm &&
+                        formikProps.touched.passwordConfirm && (
                           <div className="ui pointing red basic label">
-                            {props.errors.passwordConfirm}
+                            {formikProps.errors.passwordConfirm}
                           </div>
                         )}
                     </div>
@@ -123,7 +126,7 @@ const UpdateUser = (props) => {
                       className="ui green button"
                       type="submit"
                       value="Submit"
-                      disabled={props.isSubmitting}
+                      disabled={formikProps.isSubmitting}
                     />
                   </form>
                 );

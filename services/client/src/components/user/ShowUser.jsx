@@ -45,13 +45,13 @@ const ShowUser = (props) => {
               Edit
             </Link>
             <div className="or"></div>
-            <Link
-              to="/remove"
+            <button
               className="ui right labeled button massive negative icon"
+              onClick={props.onRemoveUserClick}
             >
               <i className="user delete" />
               Delete
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -61,6 +61,7 @@ const ShowUser = (props) => {
 
 ShowUser.propTypes = {
   user: PropTypes.object,
+  onRemoveUserClick: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.func.isRequired,
 };
 
