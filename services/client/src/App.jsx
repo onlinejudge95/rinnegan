@@ -55,7 +55,23 @@ class App extends React.Component {
     }
   };
 
-  onUpdateUserFormSubmit = async (payload) => {};
+  onUpdateUserFormSubmit = async (payload) => {
+    try {
+      const updateuserApiUrl = `${process.env.REACT_APP_SERVER_URL}/users/${this.state.user.id}`;
+      const headers = {
+        Accept: "application/json",
+        Authorization: `Bearer ${this.state.accessToken}`,
+        "Content-Type": "application/json",
+      };
+      delete payload.password;
+      const userResponse = await axios.put(updateuserApiUrl, payload, {
+        headers,
+      });
+      this.setState({ user: userResponse.data });
+    } catch (error) {
+      console.log("Invalid credentials");
+    }
+  };
 
   onLogOutClick = () => {
     window.localStorage.removeItem("refreshToken");
