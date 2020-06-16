@@ -60,7 +60,7 @@ const ShowUser = (props) => {
 };
 
 ShowUser.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
   isAuthenticated: PropTypes.func.isRequired,
 };
 

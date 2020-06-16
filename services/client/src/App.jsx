@@ -17,12 +17,12 @@ class App extends React.Component {
   };
 
   onRegisterFormSubmit = async (payload) => {
-    const registerApiUrl = `${process.env.REACT_APP_SERVER_URL}/auth/register`;
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
     try {
+      const registerApiUrl = `${process.env.REACT_APP_SERVER_URL}/auth/register`;
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      };
       await axios.post(registerApiUrl, payload, { headers });
       this.createMessage("green", "You have registered successfully.");
     } catch (error) {
@@ -54,6 +54,8 @@ class App extends React.Component {
       console.log("Invalid credentials");
     }
   };
+
+  onUpdateUserFormSubmit = async (payload) => {};
 
   onLogOutClick = () => {
     window.localStorage.removeItem("refreshToken");
@@ -136,7 +138,13 @@ class App extends React.Component {
                   <Route
                     path="/update"
                     exact
-                    component={() => <userComponents.UpdateUser />}
+                    component={() => (
+                      <userComponents.UpdateUser
+                        user={this.state.user}
+                        isAuthenticated={this.isAuthenticated}
+                        onUpdateUserFormSubmit={this.onUpdateUserFormSubmit}
+                      />
+                    )}
                   />
                   <Route
                     path="/remove"
