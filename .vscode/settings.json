@@ -1,5 +1,4 @@
 {
   "files.autoSave": "off",
-  "files.insertFinalNewline": true,
-  "python.pipenvPath": "~/.local/share/virtualenvs/server-09dqBIel"
+  "files.insertFinalNewline": true
 }

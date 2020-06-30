@@ -22,3 +22,5 @@ services/client/coverage
 
 # builds
 services/nginx/build
+
+*.lock
