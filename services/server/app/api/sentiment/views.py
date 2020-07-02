@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 class SentimentList(Resource):
     @staticmethod
+    # @sentiment_namespace.marshal_with(fetch_registered_user)
     @sentiment_namespace.expect(sentiment_schema, validate=True)
     @sentiment_namespace.response(201, "Successfully added the user")
     @sentiment_namespace.response(

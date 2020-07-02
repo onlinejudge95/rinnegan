@@ -8,7 +8,7 @@ parser = sentiment_namespace.parser()
 parser.add_argument("Authorization", location="headers")
 
 sentiment_schema = sentiment_namespace.model(
-    "Existing-User",
+    "Sentiment",
     {
         "id": fields.Integer(readOnly=True),
         "user_id": fields.Integer(required=True),

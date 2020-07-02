@@ -2,9 +2,9 @@ from app import db
 from app.api.sentiment.models import Sentiment
 
 
-def add_user(keyword, user_id):
+def add_sentiment(keyword, user_id):
     """
-    Adds a user with given details and returns an instance of it.
+    Adds a sentiment with given details and returns an instance of it.
 
     :param: keyword
         keyword to find sentiment for
