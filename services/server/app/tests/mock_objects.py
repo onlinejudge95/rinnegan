@@ -13,6 +13,12 @@ class Token(dict):
         self.__dict__ = self
 
 
+class Sentiment(dict):
+    def __init__(self, *args, **kwargs):
+        super(Sentiment, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+
 def get_user_id_by_token(token):
     return 1
 
@@ -117,3 +123,13 @@ def update_token(token, user_id):
         }
     )
     return mock_token
+
+
+def add_sentiment(keyword, user_id):
+    mock_sentiment = Sentiment()
+    mock_sentiment.update({"id": 1, "keyword": "keyword", "user_id": 1})
+    return mock_sentiment
+
+
+def user_sentiment_quota_exhausted(user_id):
+    return True
