@@ -17,3 +17,7 @@ def add_sentiment(keyword, user_id):
     db.session.add(sentiment)
     db.session.commit()
     return sentiment
+
+
+def user_sentiment_quota_exhausted(user_id):
+    pass
