@@ -1,9 +1,9 @@
+import json
+import logging
+
 from flask import current_app as app
 from flask_restx import Namespace
 from flask_restx import Resource
-
-import json
-import logging
 
 
 logger = logging.getLogger(__name__)

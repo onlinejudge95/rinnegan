@@ -1,10 +1,11 @@
-from app import create_app
-
-import coloredlogs
 import logging
 import logging.config
 import os
+
+import coloredlogs
 import yaml
+
+from app import create_app
 
 
 def setup_logging():

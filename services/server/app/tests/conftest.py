@@ -1,9 +1,10 @@
+import os
+
+import pytest
+
 from app import create_app
 from app import db
 from app.api.users.models import User
-
-import os
-import pytest
 
 
 @pytest.fixture(scope="function")

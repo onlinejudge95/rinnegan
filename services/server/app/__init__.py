@@ -1,4 +1,5 @@
-from app.config import cfg_map
+import os
+
 from flask import abort
 from flask import Flask
 from flask import request
@@ -8,7 +9,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-import os
+from app.config import cfg_map
 
 
 admin = Admin(template_mode="bootstrap3")
