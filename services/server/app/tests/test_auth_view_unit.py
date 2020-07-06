@@ -1,7 +1,7 @@
+import json
+
 from app.api.auth import views
 from app.tests import mock_objects
-
-import json
 
 
 # Test user registration passes

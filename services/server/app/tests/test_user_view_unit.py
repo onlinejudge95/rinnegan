@@ -1,7 +1,7 @@
+import json
+
 from app.api.users import views
 from app.tests import mock_objects
-
-import json
 
 
 # Test user creation passes

@@ -1,3 +1,10 @@
+import logging
+
+import jwt
+
+from flask import request
+from flask_restx import Resource
+
 from app.api.auth.crud import get_user_id_by_token
 from app.api.auth.serializers import parser
 from app.api.users.crud import add_user
@@ -9,11 +16,6 @@ from app.api.users.crud import update_user
 from app.api.users.serializers import user_readable
 from app.api.users.serializers import user_writable
 from app.api.users.serializers import users_namespace
-from flask import request
-from flask_restx import Resource
-
-import jwt
-import logging
 
 
 logger = logging.getLogger(__name__)

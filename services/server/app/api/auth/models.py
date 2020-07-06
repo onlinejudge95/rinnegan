@@ -1,8 +1,10 @@
-from app import db
+import datetime
+
+import jwt
+
 from flask import current_app
 
-import datetime
-import jwt
+from app import db
 
 
 class Token(db.Model):
