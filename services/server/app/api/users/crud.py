@@ -39,7 +39,7 @@ def get_all_users():
     Returns the list of all users
 
     :returns:
-        List of all users
+        List of all useArs
     """
     return User.query.all()
 
@@ -84,3 +84,20 @@ def update_user(user, username, email):
     user.email = email
     db.session.commit()
     return user
+
+
+def is_user_sentiment_quota_exhausted(user_id):
+    """
+    Utility method to find if user has exhausted their
+    sentiment quota for keyword analysis
+
+    :param: user_id
+        ID of the user
+    :returns:
+        Status of quota
+    """
+    user = get_user_by_id(user_id)
+
+    print(user.sentiment_quota)
+
+    return user.sentiment_quota >= 0

@@ -15,6 +15,7 @@ class User(db.Model):
     username = db.Column(db.String(128), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(128), nullable=False)
+    sentiment_quota = db.Column(db.Integer, default=5)
 
     def __init__(self, username, email, password):
         self.username = username

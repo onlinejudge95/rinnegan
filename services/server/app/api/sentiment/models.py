@@ -1,7 +1,7 @@
+import os
+
 from app import db
 from app.api.sentiment.admin import SentimentAdminView
-
-import os
 
 
 class Sentiment(db.Model):

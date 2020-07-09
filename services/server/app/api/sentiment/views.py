@@ -1,12 +1,13 @@
-from app.api.sentiment.crud import add_sentiment
-from app.api.sentiment.crud import user_sentiment_quota_exhausted
-from app.api.sentiment.serializers import sentiment_namespace
-from app.api.sentiment.serializers import sentiment_schema
-from app.api.users.crud import get_user_by_id
+import logging
+
 from flask import request
 from flask_restx import Resource
 
-import logging
+from app.api.sentiment.crud import add_sentiment
+from app.api.sentiment.serializers import sentiment_namespace
+from app.api.sentiment.serializers import sentiment_schema
+from app.api.users.crud import get_user_by_id
+from app.api.users.crud import is_user_sentiment_quota_exhausted
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +32,7 @@ class SentimentList(Resource):
             response["message"] = "Sorry.The provided user is not registered"
             return response, 403
 
-        if not user_sentiment_quota_exhausted(user_id):
+        if not is_user_sentiment_quota_exhausted(user_id):
             sentiment = add_sentiment(keyword, user_id)
 
             response["id"] = sentiment.id

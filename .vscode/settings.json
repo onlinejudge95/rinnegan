@@ -1,7 +1,6 @@
 {
   "files.autoSave": "off",
   "files.insertFinalNewline": true,
-  "python.pythonPath": "~/.local/share/virtualenvs/rinnegan-ECfdKk8p/bin/python",
   "python.formatting.blackPath": "~/.local/share/virtualenvs/rinnegan-ECfdKk8p/bin/black",
   "python.formatting.blackArgs": [
     "--config",

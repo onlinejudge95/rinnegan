@@ -1,13 +1,18 @@
+import json
+
 from app.api.sentiment import views
 from app.tests import mock_objects
-
-import json
 
 
 # Test sentiment creation passes
 def test_add_sentiment(test_app, monkeypatch):
     monkeypatch.setattr(views, "get_user_by_id", mock_objects.get_user_by_id)
     monkeypatch.setattr(views, "add_sentiment", mock_objects.add_sentiment)
+    monkeypatch.setattr(
+        views,
+        "is_user_sentiment_quota_exhausted",
+        mock_objects.user_sentiment_quota_not_exhausted,
+    )
 
     client = test_app.test_client()
     response = client.post(
@@ -92,7 +97,7 @@ def test_add_sentiment_exceeding_quota(test_app, monkeypatch):
     monkeypatch.setattr(views, "get_user_by_id", mock_objects.get_user_by_id)
     monkeypatch.setattr(
         views,
-        "user_sentiment_quota_exhausted",
+        "is_user_sentiment_quota_exhausted",
         mock_objects.user_sentiment_quota_exhausted,
     )
     monkeypatch.setattr(views, "add_sentiment", mock_objects.add_sentiment)

@@ -133,3 +133,7 @@ def add_sentiment(keyword, user_id):
 
 def user_sentiment_quota_exhausted(user_id):
     return True
+
+
+def user_sentiment_quota_not_exhausted(user_id):
+    return False
