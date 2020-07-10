@@ -1,5 +1,6 @@
 from app import db
 from app.api.sentiment.models import Sentiment
+from app.api.users.crud import update_user_sentiment_quota
 
 
 def add_sentiment(keyword, user_id):
@@ -16,4 +17,6 @@ def add_sentiment(keyword, user_id):
     sentiment = Sentiment(keyword=keyword, user_id=user_id)
     db.session.add(sentiment)
     db.session.commit()
+
+    update_user_sentiment_quota(user_id)
     return sentiment

@@ -1,3 +1,5 @@
+from flask import current_app as app
+
 from app import db
 from app.api.users.models import User
 
@@ -98,6 +100,17 @@ def is_user_sentiment_quota_exhausted(user_id):
     """
     user = get_user_by_id(user_id)
 
-    print(user.sentiment_quota)
+    return user.sentiment_quota < app.config.get("SENTIMENT_QUOTA_LIMIT")
 
-    return user.sentiment_quota >= 0
+
+def update_user_sentiment_quota(user_id):
+    """
+    Utility method to update sentiment quota for a user
+
+    :param: user_id
+        ID of the user
+    """
+    user = get_user_by_id(user_id)
+
+    user.sentiment_quota -= 1
+    db.session.commit()
