@@ -43,3 +43,14 @@ def get_sentiment_by_id(sentiment_id):
         Sentiment with given ID
     """
     return Sentiment.query.get(sentiment_id)
+
+
+def remove_sentiment(sentiment):
+    """
+    Removes the given sentiment
+
+    :param: sentiment
+        Sentiment to be removed
+    """
+    db.session.delete(sentiment)
+    db.session.commit()

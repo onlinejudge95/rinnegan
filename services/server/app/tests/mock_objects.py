@@ -152,3 +152,7 @@ def get_sentiment_by_id(sentiment_id):
 
 def get_no_sentiment_by_id(sentiment_id):
     return None
+
+
+def remove_sentiment(sentiment):
+    return True

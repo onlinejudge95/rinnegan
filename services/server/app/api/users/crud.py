@@ -60,7 +60,7 @@ def get_user_by_id(user_id):
 
 def remove_user(user):
     """
-    REmoves the given user
+    Removes the given user
 
     :param: user
         User to be removed

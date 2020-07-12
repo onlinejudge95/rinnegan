@@ -345,3 +345,121 @@ def test_single_sentiment_invalid_token(test_app, monkeypatch):
 
     data = response.get_json()
     assert "Invalid token" in data["message"]
+
+
+# Test removing a sentiment passes
+def test_remove_sentiment(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views, "get_user_id_by_token", mock_objects.get_user_id_by_token,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_sentiment_by_id
+    )
+    monkeypatch.setattr(
+        views, "remove_sentiment", mock_objects.remove_sentiment
+    )
+
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+    assert response.status_code == 204
+
+
+# Test removing a sentiment fails due to invalid id
+def test_remove_sentiment_invalid_id(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views, "get_user_id_by_token", mock_objects.get_user_id_by_token,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_no_sentiment_by_id
+    )
+
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]
+
+
+# Test removing a sentiment fails due to missing token
+def test_remove_sentiment_missing_token(test_app):
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1", headers={"Accept": "application/json"}
+    )
+
+    assert response.status_code == 403
+
+    data = response.get_json()
+    assert "Token required" in data["message"]
+
+
+# Test removing a sentiment fails due to expired token
+def test_remove_sentiment_expired_token(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views,
+        "get_user_id_by_token",
+        mock_objects.get_expired_token_exception,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_expired_token_exception
+    )
+
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Token expired" in data["message"]
+
+
+# Test removing a sentiment fails due to invalid token
+def test_remove_sentiment_invalid_token(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views,
+        "get_user_id_by_token",
+        mock_objects.get_invalid_token_exception,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_invalid_token_exception
+    )
+
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]
