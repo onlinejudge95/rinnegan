@@ -122,3 +122,110 @@ def test_add_user_invalid_header(test_app):
 
     data = response.get_json()
     assert "supported is application/json" in data["message"]
+
+
+# Test fetching sentiment list passes
+def test_get_sentiments(test_app, test_database, add_user, login_user, add_sentiments):
+    user = add_user(
+        username="test_user_one",
+        email="test_user_one@mail.com",
+        password="test_password_one",
+    )
+    tokens = login_user(user.id)
+    add_sentiments(user_id=user.id, keyword="test_keyword_one")
+    add_sentiments(user_id=user.id, keyword="test_keyword_two")
+
+    client = test_app.test_client()
+    response = client.get(
+        "/sentiment",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {tokens.access_token}",
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+
+    assert len(data) == 2
+    assert user.id == data[0]["user_id"]
+    assert "test_keyword_one" in data[0]["keyword"]
+
+    assert user.id == data[1]["user_id"]
+    assert "test_keyword_two" in data[1]["keyword"]
+
+
+# Test fetching sentiment list fails due to missing token
+def test_get_sentiments_missing_token(test_app, test_database, add_user, login_user, add_sentiments):
+    user = add_user(
+        username="test_user_one",
+        email="test_user_one@mail.com",
+        password="test_password_one",
+    )
+    tokens = login_user(user.id)
+    add_sentiments(user_id=user.id, keyword="test_keyword_one")
+    add_sentiments(user_id=user.id, keyword="test_keyword_two")
+
+    client = test_app.test_client()
+
+    response = client.get("/sentiment", headers={"Accept": "application/json"})
+    assert response.status_code == 403
+
+    data = response.get_json()
+    assert "Token required" in data["message"]
+
+
+# Test fetching sentiment list fails due to expired token
+def test_get_sentiments_expired_token(test_app, test_database, add_user, login_user, add_sentiments):
+    user = add_user(
+        username="test_user_one",
+        email="test_user_one@mail.com",
+        password="test_password_one",
+    )
+
+    test_app.config["ACCESS_TOKEN_EXPIRATION"] = -1
+
+    tokens = login_user(user.id)
+    add_sentiments(user_id=user.id, keyword="test_keyword_one")
+    add_sentiments(user_id=user.id, keyword="test_keyword_two")
+
+    client = test_app.test_client()
+
+    response = client.get(
+        "/sentiment",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {tokens.access_token}",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Token expired" in data["message"]
+
+
+# Test fetching sentiment list fails due to invalid token
+def test_get_sentiments_invalid_token(test_app, test_database, add_user, login_user, add_sentiments):
+    user = add_user(
+        username="test_user_one",
+        email="test_user_one@mail.com",
+        password="test_password_one",
+    )
+    client = test_app.test_client()
+
+    tokens = login_user(user.id)
+    add_sentiments(user_id=user.id, keyword="test_keyword_one")
+    add_sentiments(user_id=user.id, keyword="test_keyword_two")
+
+    response = client.get(
+        "/sentiment",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]

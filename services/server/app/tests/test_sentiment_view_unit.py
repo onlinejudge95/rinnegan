@@ -117,8 +117,8 @@ def test_add_sentiment_exceeding_quota(test_app, monkeypatch):
     assert "exhausted the quota for keywords" in data["message"], data
 
 
-# Test user creation fails due to invalid content-type header
-def test_add_user_invalid_header(test_app):
+# Test sentiment creation fails due to invalid content-type header
+def test_add_sentiment_invalid_header(test_app):
     client = test_app.test_client()
     response = client.post(
         "/sentiment",
@@ -131,7 +131,7 @@ def test_add_user_invalid_header(test_app):
     assert "define Content-Type header" in data["message"]
 
     response = client.post(
-        "/users",
+        "/sentiment",
         data=json.dumps({"email": "test_user@email.com"}),
         headers={"Content-Type": "application/json"},
     )
@@ -206,7 +206,7 @@ def test_get_sentiments_expired_token(test_app, monkeypatch):
 
 
 # Test fetching sentiment list fails due to invalid token
-def test_get_users_invalid_token(test_app, monkeypatch):
+def test_get_sentiments_invalid_token(test_app, monkeypatch):
     monkeypatch.setattr(
         views,
         "get_user_id_by_token",
