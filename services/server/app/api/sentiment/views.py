@@ -11,8 +11,10 @@ from app.api.sentiment.crud import add_sentiment
 from app.api.sentiment.crud import get_all_sentiments
 from app.api.sentiment.crud import get_sentiment_by_id
 from app.api.sentiment.crud import remove_sentiment
+from app.api.sentiment.crud import update_sentiment
 from app.api.sentiment.serializers import sentiment_namespace
 from app.api.sentiment.serializers import sentiment_schema
+from app.api.sentiment.serializers import update_sentiment_schema
 from app.api.users.crud import get_user_by_id
 from app.api.users.crud import is_user_sentiment_quota_exhausted
 
@@ -111,7 +113,7 @@ class SentimentDetail(Resource):
             if not sentiment:
                 logger.info(f"Invalid sentiment_id for token {token}")
                 sentiment_namespace.abort(
-                    404, f"User {sentiment_id} does not exist"
+                    404, f"Sentiment {sentiment_id} does not exist"
                 )
 
             return sentiment, 200
@@ -155,6 +157,51 @@ class SentimentDetail(Resource):
             remove_sentiment(sentiment)
 
             return {}, 204
+        except ExpiredSignatureError:
+            logger.error(f"Auth-token {token} has expired")
+            sentiment_namespace.abort(
+                401, "Token expired. Please log in again."
+            )
+        except InvalidTokenError:
+            logger.error(f"Auth-token {token} is invalid")
+            sentiment_namespace.abort(
+                401, "Invalid token. Please log in again."
+            )
+
+    @staticmethod
+    @sentiment_namespace.expect(update_sentiment_schema, validate=True)
+    # Use multiple expect blocks in swagger UI
+    # @sentiment_namespace.expect(parser)
+    @sentiment_namespace.marshal_with(sentiment_schema)
+    @sentiment_namespace.response(
+        404, "Sentiment <sentiment_id> does not exist"
+    )
+    def put(sentiment_id):
+        auth_header = request.headers.get("Authorization")
+
+        if not auth_header:
+            logger.info(f"Authorization header not found in {request}")
+            sentiment_namespace.abort(403, "Token required to fetch the user")
+
+        try:
+            token = auth_header.split()[1]
+            get_user_id_by_token(token)
+
+            request_data = request.get_json()
+
+            sentiment = get_sentiment_by_id(sentiment_id)
+
+            if not sentiment:
+                logger.info(f"Invalid sentiment_id for token {token}")
+                sentiment_namespace.abort(
+                    404, f"Sentiment {sentiment_id} does not exist"
+                )
+
+            updated_sentiment = update_sentiment(
+                sentiment, request_data["keyword"]
+            )
+
+            return updated_sentiment, 200
         except ExpiredSignatureError:
             logger.error(f"Auth-token {token} has expired")
             sentiment_namespace.abort(

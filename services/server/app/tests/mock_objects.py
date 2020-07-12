@@ -156,3 +156,9 @@ def get_no_sentiment_by_id(sentiment_id):
 
 def remove_sentiment(sentiment):
     return True
+
+
+def update_sentiment(sentiment, keyword):
+    mock_sentiment = Sentiment()
+    mock_sentiment.update({"id": 1, "keyword": keyword, "user_id": 1})
+    return mock_sentiment

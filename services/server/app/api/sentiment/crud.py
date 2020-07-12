@@ -54,3 +54,19 @@ def remove_sentiment(sentiment):
     """
     db.session.delete(sentiment)
     db.session.commit()
+
+
+def update_sentiment(sentiment, keyword):
+    """
+    Updates a given sentiment with given details and returns an instance of it.
+
+    :param: sentiment
+        Sentiment to be updated
+    :param: keyword
+        Keyword for the sentiment analysis
+    :returns:
+        Updated sentiment
+    """
+    sentiment.keyword = keyword
+    db.session.commit()
+    return sentiment

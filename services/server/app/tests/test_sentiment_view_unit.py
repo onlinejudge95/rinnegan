@@ -463,3 +463,196 @@ def test_remove_sentiment_invalid_token(test_app, monkeypatch):
 
     data = response.get_json()
     assert "Invalid token" in data["message"]
+
+
+# Test update a sentiment passes
+def test_update_sentiment(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views, "get_user_id_by_token", mock_objects.get_user_id_by_token,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_sentiment_by_id
+    )
+    monkeypatch.setattr(
+        views, "update_sentiment", mock_objects.update_sentiment
+    )
+
+    client = test_app.test_client()
+
+    response = client.put(
+        "/sentiment/1",
+        data=json.dumps({"keyword": "test_sentiment_update"}),
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+            "Content-Type": "application/json",
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data["id"] == 1
+    assert data["user_id"] == 1
+    assert data["keyword"] == "test_sentiment_update"
+
+
+# Test update a sentiment fails due to empty data
+def test_update_sentiment_empty_data(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views, "get_user_id_by_token", mock_objects.get_user_id_by_token,
+    )
+
+    client = test_app.test_client()
+
+    response = client.put(
+        "/sentiment/1",
+        data=json.dumps({}),
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+            "Content-Type": "application/json",
+        },
+    )
+
+    assert response.status_code == 400
+
+    data = response.get_json()
+    assert "Input payload validation failed" in data["message"]
+
+
+# Test update a sentiment fails due to invalid id
+def test_update_sentiment_invalid_id(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views, "get_user_id_by_token", mock_objects.get_user_id_by_token,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_no_sentiment_by_id
+    )
+
+    client = test_app.test_client()
+    response = client.put(
+        "/sentiment/1",
+        data=json.dumps({"keyword": "test_sentiment_update"}),
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+            "Content-Type": "application/json",
+        },
+    )
+
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]
+
+
+# Test update a sentiment fails due to invalid headers
+def test_update_sentiment_invalid_headers(test_app):
+    client = test_app.test_client()
+    response = client.put(
+        "/sentiment/1",
+        data=json.dumps({"keyword": "test_sentiment_update"}),
+        headers={"Accept": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "define Content-Type header" in data["message"]
+
+    response = client.put(
+        "/sentiment/1",
+        data=json.dumps({"keyword": "test_sentiment_update"}),
+        headers={"Content-Type": "application/json"},
+    )
+    assert response.status_code == 415
+
+    data = response.get_json()
+    assert "supported is application/json" in data["message"]
+
+
+# Test update a sentiment fails due to missing token
+def test_update_sentiment_missing_token(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views, "get_user_id_by_token", mock_objects.get_user_id_by_token,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_sentiment_by_id
+    )
+
+    client = test_app.test_client()
+
+    response = client.put(
+        "/sentiment/1",
+        data=json.dumps({"keyword": "test_sentiment_update"}),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+
+    assert response.status_code == 403
+
+    data = response.get_json()
+    assert "Token required" in data["message"]
+
+
+# Test update a sentiment fails due to expired token
+def test_update_sentiment_expired_token(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views,
+        "get_user_id_by_token",
+        mock_objects.get_expired_token_exception,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_sentiment_by_id
+    )
+
+    client = test_app.test_client()
+
+    response = client.put(
+        "/sentiment/1",
+        data=json.dumps({"keyword": "test_sentiment_update"}),
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Token expired" in data["message"]
+
+
+# Test update a sentiment fails due to invalid token
+def test_update_sentiment_invalid_token(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views,
+        "get_user_id_by_token",
+        mock_objects.get_invalid_token_exception,
+    )
+
+    monkeypatch.setattr(
+        views, "get_sentiment_by_id", mock_objects.get_sentiment_by_id
+    )
+
+    client = test_app.test_client()
+
+    response = client.put(
+        "/sentiment/1",
+        data=json.dumps({"keyword": "test_sentiment_update"}),
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]

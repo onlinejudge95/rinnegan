@@ -15,3 +15,11 @@ sentiment_schema = sentiment_namespace.model(
         "keyword": fields.String(required=True),
     },
 )
+
+update_sentiment_schema = sentiment_namespace.model(
+    "Update Sentiment",
+    {
+        "id": fields.Integer(readOnly=True),
+        "keyword": fields.String(required=True),
+    },
+)
