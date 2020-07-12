@@ -20,3 +20,14 @@ def add_sentiment(keyword, user_id):
 
     update_user_sentiment_quota(user_id)
     return sentiment
+
+
+def get_all_sentiments():
+
+    """
+    Returns the list of all sentiments
+
+    :returns:
+        List of all sentiments
+    """
+    return Sentiment.query.all()

@@ -41,7 +41,7 @@ def get_all_users():
     Returns the list of all users
 
     :returns:
-        List of all useArs
+        List of all users
     """
     return User.query.all()
 

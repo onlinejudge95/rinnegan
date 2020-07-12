@@ -139,3 +139,89 @@ def test_add_user_invalid_header(test_app):
 
     data = response.get_json()
     assert "supported is application/json" in data["message"]
+
+
+# Test fetching sentiment list passes
+def test_get_sentiments(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views, "get_user_id_by_token", mock_objects.get_user_id_by_token,
+    )
+    monkeypatch.setattr(
+        views, "get_all_sentiments", mock_objects.get_all_sentiments
+    )
+
+    client = test_app.test_client()
+    response = client.get(
+        "/sentiment",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.get_json()
+
+    assert len(data) == 2
+    assert 1 == data[0]["user_id"]
+    assert "test_keyword_one" in data[0]["keyword"]
+
+    assert 1 == data[1]["user_id"]
+    assert "test_keyword_two" in data[1]["keyword"]
+
+
+# Test fetching sentiment list fails due to missing token
+def test_get_sentiments_missing_token(test_app):
+    client = test_app.test_client()
+
+    response = client.get("/sentiment", headers={"Accept": "application/json"})
+    assert response.status_code == 403
+
+    data = response.get_json()
+    assert "Token required" in data["message"]
+
+
+# Test fetching sentiment list fails due to expired token
+def test_get_sentiments_expired_token(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views,
+        "get_user_id_by_token",
+        mock_objects.get_expired_token_exception,
+    )
+
+    client = test_app.test_client()
+
+    response = client.get(
+        "/sentiment",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Token expired" in data["message"]
+
+
+# Test fetching sentiment list fails due to invalid token
+def test_get_users_invalid_token(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views,
+        "get_user_id_by_token",
+        mock_objects.get_invalid_token_exception,
+    )
+    client = test_app.test_client()
+
+    response = client.get(
+        "/sentiment",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]

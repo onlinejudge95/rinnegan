@@ -137,3 +137,10 @@ def user_sentiment_quota_exhausted(user_id):
 
 def user_sentiment_quota_not_exhausted(user_id):
     return False
+
+
+def get_all_sentiments():
+    return [
+        {"id": 1, "user_id": 1, "keyword": "test_keyword_one"},
+        {"id": 2, "user_id": 1, "keyword": "test_keyword_two"},
+    ]
