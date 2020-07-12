@@ -31,3 +31,15 @@ def get_all_sentiments():
         List of all sentiments
     """
     return Sentiment.query.all()
+
+
+def get_sentiment_by_id(sentiment_id):
+    """
+    Returns the sentiment with given id
+
+    :param: sentiment_id
+        ID of the sentiment
+    :returns:
+        Sentiment with given ID
+    """
+    return Sentiment.query.get(sentiment_id)

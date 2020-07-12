@@ -144,3 +144,11 @@ def get_all_sentiments():
         {"id": 1, "user_id": 1, "keyword": "test_keyword_one"},
         {"id": 2, "user_id": 1, "keyword": "test_keyword_two"},
     ]
+
+
+def get_sentiment_by_id(sentiment_id):
+    return {"id": 1, "user_id": 1, "keyword": "test_keyword_one"}
+
+
+def get_no_sentiment_by_id(sentiment_id):
+    return None

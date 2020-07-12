@@ -9,6 +9,7 @@ from app.api.auth.crud import get_user_id_by_token
 from app.api.auth.serializers import parser
 from app.api.sentiment.crud import add_sentiment
 from app.api.sentiment.crud import get_all_sentiments
+from app.api.sentiment.crud import get_sentiment_by_id
 from app.api.sentiment.serializers import sentiment_namespace
 from app.api.sentiment.serializers import sentiment_schema
 from app.api.users.crud import get_user_by_id
@@ -63,7 +64,7 @@ class SentimentList(Resource):
         if not auth_header:
             logger.info(f"Authorization header not found in {request}")
             sentiment_namespace.abort(
-                403, "Token required to fetch the user list"
+                403, "Token required to fetch the sentiment list"
             )
 
         try:
@@ -83,8 +84,45 @@ class SentimentList(Resource):
 
 
 class SentimentDetail(Resource):
-    pass
+    @staticmethod
+    @sentiment_namespace.expect(parser, validate=True)
+    @sentiment_namespace.marshal_with(sentiment_schema)
+    @sentiment_namespace.response(
+        404, "Sentiment <sentiment_id> does not exist"
+    )
+    def get(sentiment_id):
+        auth_header = request.headers.get("Authorization")
+
+        if not auth_header:
+            logger.info(f"Authorization header not found in {request}")
+            sentiment_namespace.abort(
+                403, "Token required to fetch the sentiment"
+            )
+
+        try:
+            token = auth_header.split()[1]
+            get_user_id_by_token(token)
+
+            sentiment = get_sentiment_by_id(sentiment_id)
+
+            if not sentiment:
+                logger.info(f"Invalid sentiment_id for token {token}")
+                sentiment_namespace.abort(
+                    404, f"User {sentiment_id} does not exist"
+                )
+
+            return sentiment, 200
+        except ExpiredSignatureError:
+            logger.error(f"Auth-token {token} has expired")
+            sentiment_namespace.abort(
+                401, "Token expired. Please log in again."
+            )
+        except InvalidTokenError:
+            logger.error(f"Auth-token {token} is invalid")
+            sentiment_namespace.abort(
+                401, "Invalid token. Please log in again."
+            )
 
 
 sentiment_namespace.add_resource(SentimentList, "")
-sentiment_namespace.add_resource(SentimentDetail, "/<int:user_id>")
+sentiment_namespace.add_resource(SentimentDetail, "/<int:sentiment_id>")
