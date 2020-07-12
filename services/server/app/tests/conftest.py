@@ -4,9 +4,9 @@ import pytest
 
 from app import create_app
 from app import db
-from app.api.users.models import User
 from app.api.auth.crud import add_token
 from app.api.sentiment.crud import add_sentiment
+from app.api.users.models import User
 
 
 @pytest.fixture(scope="function")

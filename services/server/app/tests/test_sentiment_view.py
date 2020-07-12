@@ -125,7 +125,9 @@ def test_add_user_invalid_header(test_app):
 
 
 # Test fetching sentiment list passes
-def test_get_sentiments(test_app, test_database, add_user, login_user, add_sentiments):
+def test_get_sentiments(
+    test_app, test_database, add_user, login_user, add_sentiments
+):
     user = add_user(
         username="test_user_one",
         email="test_user_one@mail.com",
@@ -157,16 +159,7 @@ def test_get_sentiments(test_app, test_database, add_user, login_user, add_senti
 
 
 # Test fetching sentiment list fails due to missing token
-def test_get_sentiments_missing_token(test_app, test_database, add_user, login_user, add_sentiments):
-    user = add_user(
-        username="test_user_one",
-        email="test_user_one@mail.com",
-        password="test_password_one",
-    )
-    tokens = login_user(user.id)
-    add_sentiments(user_id=user.id, keyword="test_keyword_one")
-    add_sentiments(user_id=user.id, keyword="test_keyword_two")
-
+def test_get_sentiments_missing_token(test_app, test_database):
     client = test_app.test_client()
 
     response = client.get("/sentiment", headers={"Accept": "application/json"})
@@ -177,7 +170,9 @@ def test_get_sentiments_missing_token(test_app, test_database, add_user, login_u
 
 
 # Test fetching sentiment list fails due to expired token
-def test_get_sentiments_expired_token(test_app, test_database, add_user, login_user, add_sentiments):
+def test_get_sentiments_expired_token(
+    test_app, test_database, add_user, login_user, add_sentiments
+):
     user = add_user(
         username="test_user_one",
         email="test_user_one@mail.com",
@@ -206,18 +201,8 @@ def test_get_sentiments_expired_token(test_app, test_database, add_user, login_u
 
 
 # Test fetching sentiment list fails due to invalid token
-def test_get_sentiments_invalid_token(test_app, test_database, add_user, login_user, add_sentiments):
-    user = add_user(
-        username="test_user_one",
-        email="test_user_one@mail.com",
-        password="test_password_one",
-    )
+def test_get_sentiments_invalid_token(test_app, test_database):
     client = test_app.test_client()
-
-    tokens = login_user(user.id)
-    add_sentiments(user_id=user.id, keyword="test_keyword_one")
-    add_sentiments(user_id=user.id, keyword="test_keyword_two")
-
     response = client.get(
         "/sentiment",
         headers={
