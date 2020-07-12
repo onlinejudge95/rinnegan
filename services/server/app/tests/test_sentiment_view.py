@@ -329,3 +329,107 @@ def test_single_sentiment_invalid_token(test_app, test_database):
 
     data = response.get_json()
     assert "Invalid token" in data["message"]
+
+
+# Test removing a sentiment passes
+def test_remove_sentiment(test_app, test_database, add_user, login_user, add_sentiments):
+    user = add_user(
+        username="test_user_one",
+        email="test_user_one@mail.com",
+        password="test_password_one",
+    )
+    tokens = login_user(user.id)
+    sentiment = add_sentiments(user_id=user.id, keyword="test_keyword_one")
+
+    client = test_app.test_client()
+
+    response = client.delete(
+        f"/sentiment/{sentiment.id}",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {tokens.access_token}",
+        },
+    )
+    assert response.status_code == 204
+
+
+# Test removing a sentiment fails due to invalid id
+def test_remove_sentiment_invalid_id(test_app, test_database, add_user, login_user):
+    user = add_user(
+        username="test_user_one",
+        email="test_user_one@mail.com",
+        password="test_password_one",
+    )
+    tokens = login_user(user.id)
+
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {tokens.access_token}",
+        },
+    )
+    assert response.status_code == 404
+
+    data = response.get_json()
+    assert "does not exist" in data["message"]
+
+
+# Test removing a sentiment fails due to missing token
+def test_remove_sentiment_missing_token(test_app):
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1", headers={"Accept": "application/json"}
+    )
+
+    assert response.status_code == 403
+
+    data = response.get_json()
+    assert "Token required" in data["message"]
+
+
+# Test removing a sentiment fails due to expired token
+def test_remove_sentiment_expired_token(test_app, test_database, add_user, login_user):
+    user = add_user(
+        username="test_user_one",
+        email="test_user_one@mail.com",
+        password="test_password_one",
+    )
+
+    test_app.config["ACCESS_TOKEN_EXPIRATION"] = -1
+
+    tokens = login_user(user.id)
+
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": f"Bearer {tokens.access_token}",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Token expired" in data["message"]
+
+
+# Test removing a sentiment fails due to invalid token
+def test_remove_sentiment_invalid_token(test_app, test_database):
+    client = test_app.test_client()
+
+    response = client.delete(
+        "/sentiment/1",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer access_token",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+    assert "Invalid token" in data["message"]

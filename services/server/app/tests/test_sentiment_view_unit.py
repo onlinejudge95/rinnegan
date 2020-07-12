@@ -372,7 +372,7 @@ def test_remove_sentiment(test_app, monkeypatch):
     assert response.status_code == 204
 
 
-# Test removing a sentiment fails due to invalid id
+# Test removing a sentiment fails due to incorrect id
 def test_remove_sentiment_invalid_id(test_app, monkeypatch):
     monkeypatch.setattr(
         views, "get_user_id_by_token", mock_objects.get_user_id_by_token,
