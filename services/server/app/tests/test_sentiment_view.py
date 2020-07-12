@@ -332,7 +332,9 @@ def test_single_sentiment_invalid_token(test_app, test_database):
 
 
 # Test removing a sentiment passes
-def test_remove_sentiment(test_app, test_database, add_user, login_user, add_sentiments):
+def test_remove_sentiment(
+    test_app, test_database, add_user, login_user, add_sentiments
+):
     user = add_user(
         username="test_user_one",
         email="test_user_one@mail.com",
@@ -354,7 +356,9 @@ def test_remove_sentiment(test_app, test_database, add_user, login_user, add_sen
 
 
 # Test removing a sentiment fails due to invalid id
-def test_remove_sentiment_invalid_id(test_app, test_database, add_user, login_user):
+def test_remove_sentiment_invalid_id(
+    test_app, test_database, add_user, login_user
+):
     user = add_user(
         username="test_user_one",
         email="test_user_one@mail.com",
@@ -392,7 +396,9 @@ def test_remove_sentiment_missing_token(test_app):
 
 
 # Test removing a sentiment fails due to expired token
-def test_remove_sentiment_expired_token(test_app, test_database, add_user, login_user):
+def test_remove_sentiment_expired_token(
+    test_app, test_database, add_user, login_user
+):
     user = add_user(
         username="test_user_one",
         email="test_user_one@mail.com",
