@@ -42,9 +42,7 @@ class UsersList(Resource):
             return response, 400
 
         user = add_user(
-            request_data["username"],
-            email,
-            request_data["password"],
+            request_data["username"], email, request_data["password"],
         )
         response["id"] = user.id
         response["message"] = f"{email} was added"
@@ -95,9 +93,7 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.info(
-                    f"Invalid user_id for token {token}"
-                )
+                logger.info(f"Invalid user_id for token {token}")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             return user, 200
@@ -126,9 +122,7 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.info(
-                    f"Invalid user_id for token {token}"
-                )
+                logger.info(f"Invalid user_id for token {token}")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             remove_user(user)
@@ -164,9 +158,7 @@ class UsersDetail(Resource):
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.info(
-                    f"Invalid user_id for token {token}"
-                )
+                logger.info(f"Invalid user_id for token {token}")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             updated_user = update_user(
