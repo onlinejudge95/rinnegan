@@ -3,7 +3,6 @@ import os
 from flask import abort
 from flask import Flask
 from flask import request
-from flask_admin import Admin
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -12,7 +11,6 @@ from flask_sqlalchemy import SQLAlchemy
 from app.config import cfg_map
 
 
-admin = Admin(template_mode="bootstrap3")
 db = SQLAlchemy()
 cors = CORS()
 bcrypt = Bcrypt()
@@ -45,9 +43,6 @@ def create_app(environemnt):
     from app.api import api
 
     api.init_app(app)
-
-    if os.getenv("FLASK_ENV") != "production":
-        admin.init_app(app)
 
     @app.before_request
     def check_headers():
