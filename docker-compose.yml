@@ -53,13 +53,11 @@ services:
       - server
     environment:
       - NODE_ENV=development
-      # - PORT=80
       - REACT_APP_SERVER_URL=http://localhost:5000
     networks:
       - frontend
     ports:
       - 3000:3000
-      # - 80:80
     volumes:
       - ./services/client/:/usr/src/builder
       - /usr/src/app/node_modules

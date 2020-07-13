@@ -4,6 +4,8 @@ import pytest
 
 from app import create_app
 from app import db
+from app.api.auth.crud import add_token
+from app.api.sentiment.crud import add_sentiment
 from app.api.users.models import User
 
 
@@ -43,6 +45,22 @@ def remove_user():
         db.session.commit()
 
     return _remove_user
+
+
+@pytest.fixture(scope="function")
+def login_user():
+    def _login_user(user_id):
+        return add_token(user_id)
+
+    return _login_user
+
+
+@pytest.fixture(scope="function")
+def add_sentiments():
+    def _add_sentiments(user_id, keyword):
+        return add_sentiment(keyword, user_id)
+
+    return _add_sentiments
 
 
 @pytest.fixture(scope="module")

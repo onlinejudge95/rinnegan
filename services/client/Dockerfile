@@ -8,8 +8,7 @@ ENV PATH /usr/src/builder/node_modules/.bin:$PATH
 
 COPY package*.json ./
 
-RUN npm ci && \
-    npm install react-scripts@3.4.0
+RUN npm install
 
 COPY . .
 
