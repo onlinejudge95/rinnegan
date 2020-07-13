@@ -6,10 +6,9 @@ from app import create_app
 from app import db
 from app.api.auth.crud import add_token as add_token_service
 from app.api.users.crud import add_user as add_user_service
-from app.api.users.crud import remove_user as get_user_by_id_service
+from app.api.users.crud import get_user_by_id as get_user_by_id_service
 from app.api.users.crud import remove_user as remove_user_service
 from app.api.sentiment.crud import add_sentiment as add_sentiment_service
-from app.api.users.models import User
 
 
 @pytest.fixture(scope="function")
