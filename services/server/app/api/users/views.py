@@ -1,7 +1,5 @@
 import logging
 
-import jwt
-
 from flask import request
 from flask_restx import Resource
 from jwt import ExpiredSignatureError
