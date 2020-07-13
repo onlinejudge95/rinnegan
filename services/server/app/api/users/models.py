@@ -1,10 +1,7 @@
-import os
-
 from flask import current_app
 
 from app import bcrypt
 from app import db
-from app.api.users.admin import UserAdminView
 
 
 class User(db.Model):
@@ -23,9 +20,3 @@ class User(db.Model):
         self.password = bcrypt.generate_password_hash(
             password, current_app.config.get("BCRYPT_LOG_ROUNDS")
         ).decode()
-
-
-if os.getenv("FLASK_ENV") != "production":
-    from app import admin
-
-    admin.add_view(UserAdminView(User, db.session))

@@ -1,9 +1,9 @@
 import logging
 
-import jwt
-
 from flask import request
 from flask_restx import Resource
+from jwt import ExpiredSignatureError
+from jwt import InvalidTokenError
 
 from app.api.auth.crud import add_token
 from app.api.auth.crud import get_user_id_by_token
@@ -42,7 +42,7 @@ class Register(Resource):
 
         user = add_user(
             request_data["username"],
-            request_data["email"],
+            email,
             request_data["password"],
         )
         logger.info(f"User with email {email} added successfully")
@@ -88,10 +88,10 @@ class Refresh(Resource):
             token = update_token(refresh_token, user_id)
             logger.info(f"Refreshed token for user with id {user_id}")
             return token, 200
-        except jwt.ExpiredSignatureError:
+        except ExpiredSignatureError:
             logger.error(f"Auth-token {refresh_token} has expired")
             auth_namespace.abort(401, "Token expired. Please log in again.")
-        except jwt.InvalidTokenError:
+        except InvalidTokenError:
             logger.error(f"Auth-token {refresh_token} is invalid")
             auth_namespace.abort(401, "Invalid token. Please log in again.")
 
