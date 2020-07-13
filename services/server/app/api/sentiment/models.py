@@ -1,7 +1,4 @@
-import os
-
 from app import db
-from app.api.sentiment.admin import SentimentAdminView
 
 
 class Sentiment(db.Model):
@@ -19,9 +16,3 @@ class Sentiment(db.Model):
     def __init__(self, keyword, user_id):
         self.keyword = keyword
         self.user_id = user_id
-
-
-if os.getenv("FLASK_ENV") != "production":
-    from app import admin
-
-    admin.add_view(SentimentAdminView(Sentiment, db.session))
