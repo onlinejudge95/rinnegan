@@ -1,8 +1,8 @@
-"""Adds sentiment quota in user model
+"""Final set of migrations
 
-Revision ID: 005
-Revises: 004
-Create Date: 2020-07-09 13:28:16.797583
+Revision ID: 001
+Revises: 
+Create Date: 2020-07-16 05:38:08.496614
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '005'
-down_revision = '004'
+revision = '001'
+down_revision = None
 branch_labels = None
 depends_on = None
 

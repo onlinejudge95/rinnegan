@@ -10,26 +10,26 @@ networks:
     name: sentimental-frontend
 
 services:
-  database:
-    container_name: database
-    image: database:development
+  postgre:
+    container_name: postgre
+    image: postgre:development
     env_file:
-      - ./services/db/.env
+      - ./services/postgre/.env
     expose:
       - 5432
     networks:
       - backend
     volumes:
-      - ./services/db/data:/var/lib/postgresql/data/
+      - ./services/postgre/data:/var/lib/postgresql/data/
     build:
-      context: ./services/db/
+      context: ./services/postgre/
       dockerfile: Dockerfile
 
   server:
     container_name: server
     image: server:development
     depends_on:
-      - database
+      - postgre
     env_file:
       - ./services/server/.env
     networks:

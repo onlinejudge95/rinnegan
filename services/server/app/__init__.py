@@ -42,6 +42,10 @@ def create_app(environemnt):
 
     api.init_app(app)
 
+    from app.api.auth.models import Token  # noqa: F401
+    from app.api.sentiment.models import Sentiment  # noqa: F401
+    from app.api.users.models import User  # noqa: F401
+
     @app.before_request
     def check_headers():
         if (
