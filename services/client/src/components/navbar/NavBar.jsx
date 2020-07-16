@@ -11,6 +11,14 @@ const NavBar = (props) => {
       </Link>
     </div>
   );
+  const keywordMenu = (
+    <div className="item">
+      <Link to="/keyword">
+        <i className="icon newspaper" />
+        Sentiments
+      </Link>
+    </div>
+  );
   const unAuthenticatedMenu = (
     <div className="right menu">
       <div className="item">
@@ -46,6 +54,7 @@ const NavBar = (props) => {
         </Link>
       </div>
       {props.isAuthenticated() ? profileMenu : null}
+      {props.isAuthenticated() ? keywordMenu : null}
       {props.isAuthenticated() ? authenticatedMenu : unAuthenticatedMenu}
     </div>
   );

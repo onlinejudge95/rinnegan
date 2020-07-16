@@ -5,6 +5,7 @@ import axios from "axios";
 import authComponents from "./components/auth";
 import userComponents from "./components/user";
 import navBarComponents from "./components/navbar";
+import keyWordComponents from "./components/keyword";
 import About from "./components/About";
 import Message from "./components/Message";
 
@@ -115,6 +116,21 @@ class App extends React.Component {
     this.setState({ messageText: null, messageType: null });
   };
 
+  onAddKeywordFormSubmit = async () => {
+    // try {
+    //   const deleteUserApiUrl = `${process.env.REACT_APP_SERVER_URL}/users/${this.state.user.id}`;
+    //   const headers = {
+    //     Accept: "application/json",
+    //     Authorization: `Bearer ${this.state.accessToken}`,
+    //   };
+    //   await axios.delete(deleteUserApiUrl, {
+    //     headers,
+    //   });
+    //   window.localStorage.removeItem("refreshToken");
+    //   this.setState({ accessToken: null });
+    // } catch (error) {}
+  };
+
   render() {
     return (
       <div className="ui">
@@ -175,6 +191,17 @@ class App extends React.Component {
                         user={this.state.user}
                         isAuthenticated={this.isAuthenticated}
                         onUpdateUserFormSubmit={this.onUpdateUserFormSubmit}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/keyword/new"
+                    exact
+                    component={() => (
+                      <keyWordComponents.CreateKeyword
+                        user={this.state.user}
+                        isAuthenticated={this.isAuthenticated}
+                        onAddKeywordFormSubmit={this.onAddKeywordFormSubmit}
                       />
                     )}
                   />
