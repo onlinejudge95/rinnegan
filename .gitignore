@@ -10,15 +10,14 @@ services/db/data/
 __pycache__/
 .pytest_cache/
 
-# editor configs
-.vscode/
-
 # logs
 services/server/logs/
-services/nginx/logs/
 
 # client test coverage
 services/client/coverage
 
-# builds
-services/nginx/build
+# clinet
+services/client/package-lock.json
+
+# server
+services/server/Pipfile.lock
