@@ -13,7 +13,7 @@ const ShowUser = (props) => {
         <div className="row">
           <div className="ui huge header">Profile</div>
         </div>
-        <div className="ui divider"></div>
+        <div className="ui divider" />
         <div className="row">
           <div className="ui card fluid">
             <div className="image">
@@ -44,10 +44,10 @@ const ShowUser = (props) => {
               <i className="edit" />
               Edit
             </Link>
-            <div className="or"></div>
+            <div className="or" />
             <button
               className="ui right labeled button massive negative icon"
-              onClick={props.onRemoveUserClick}
+              onClick={props.handleRemoveUserClick}
             >
               <i className="user delete" />
               Delete
@@ -61,7 +61,7 @@ const ShowUser = (props) => {
 
 ShowUser.propTypes = {
   user: PropTypes.object,
-  onRemoveUserClick: PropTypes.func.isRequired,
+  handleRemoveUserClick: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.func.isRequired,
 };
 

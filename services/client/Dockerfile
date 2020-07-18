@@ -8,15 +8,15 @@ ENV PATH /usr/src/builder/node_modules/.bin:$PATH
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install -g react-scripts@3.4.1 && \
+    npm install
 
 COPY . .
 
 # RUN npm run build
 
 # RUN npm run prettier:check && \
-#     npm run lint && \
-#     npm run test
+#     npm run lint
 
 ############################################################################
 

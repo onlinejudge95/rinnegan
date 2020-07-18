@@ -16,7 +16,7 @@ services/server/logs/
 # client test coverage
 services/client/coverage
 
-# clinet
+# client
 services/client/package-lock.json
 
 # server

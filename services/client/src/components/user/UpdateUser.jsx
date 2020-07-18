@@ -15,7 +15,7 @@ const UpdateUser = (props) => {
         <div className="row">
           <div className="ui huge header">Update</div>
         </div>
-        <div className="ui divider"></div>
+        <div className="ui divider" />
         <div className="row">
           <div className="eleven wide column">
             <Formik
@@ -25,7 +25,7 @@ const UpdateUser = (props) => {
                 password: props.user.password,
               }}
               onSubmit={(values, { setSubmitting, resetForm }) => {
-                props.onUpdateUserFormSubmit(values);
+                props.handleUpdateUserFormSubmit(values);
                 resetForm();
                 setSubmitting(false);
               }}
@@ -141,7 +141,7 @@ const UpdateUser = (props) => {
 
 UpdateUser.propTypes = {
   user: PropTypes.object,
-  onUpdateUserFormSubmit: PropTypes.func.isRequired,
+  handleUpdateUserFormSubmit: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.func.isRequired,
 };
 

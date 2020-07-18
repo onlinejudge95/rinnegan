@@ -38,7 +38,7 @@ const NavBar = (props) => {
   const authenticatedMenu = (
     <div className="right menu">
       <div className="item">
-        <span onClick={props.onLogOutClick}>
+        <span onClick={props.handleLogOutClick}>
           <i className="icon sign-out" />
           Sign-Out
         </span>
@@ -61,7 +61,7 @@ const NavBar = (props) => {
 };
 
 NavBar.propTypes = {
-  onLogOutClick: PropTypes.func.isRequired,
+  handleLogOutClick: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.func.isRequired,
 };
 

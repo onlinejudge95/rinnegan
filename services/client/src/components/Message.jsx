@@ -5,7 +5,7 @@ const Message = (props) => {
   console.log(props);
   return (
     <div className={`ui floating massive message ${props.messageType}`}>
-      <i class="close icon" onClick={props.removeMessage()}></i>
+      <i className="close icon" onClick={props.removeMessage()} />
       <p>{props.messageText}</p>
     </div>
   );

@@ -117,18 +117,7 @@ class App extends React.Component {
   };
 
   onAddKeywordFormSubmit = async () => {
-    // try {
-    //   const deleteUserApiUrl = `${process.env.REACT_APP_SERVER_URL}/users/${this.state.user.id}`;
-    //   const headers = {
-    //     Accept: "application/json",
-    //     Authorization: `Bearer ${this.state.accessToken}`,
-    //   };
-    //   await axios.delete(deleteUserApiUrl, {
-    //     headers,
-    //   });
-    //   window.localStorage.removeItem("refreshToken");
-    //   this.setState({ accessToken: null });
-    // } catch (error) {}
+    console.log("Hello");
   };
 
   render() {
@@ -136,7 +125,7 @@ class App extends React.Component {
       <div className="ui">
         <navBarComponents.NavBar
           isAuthenticated={this.isAuthenticated}
-          onLogOutClick={this.onLogOutClick}
+          handleLogOutClick={this.onLogOutClick}
         />
         <div className="ui container">
           <div className="ui segment">
@@ -148,7 +137,7 @@ class App extends React.Component {
               />
             )}
             <div className="ui grid">
-              <div className="two wide column"></div>
+              <div className="two wide column" />
               <div className="twelve wide column">
                 <Switch>
                   <Route path="/" exact component={About} />
@@ -157,7 +146,7 @@ class App extends React.Component {
                     exact
                     component={() => (
                       <authComponents.RegisterUser
-                        onRegisterFormSubmit={this.onRegisterFormSubmit}
+                        handleRegisterFormSubmit={this.onRegisterFormSubmit}
                         isAuthenticated={this.isAuthenticated}
                       />
                     )}
@@ -167,7 +156,7 @@ class App extends React.Component {
                     exact
                     component={() => (
                       <authComponents.LoginUser
-                        onLoginFormSubmit={this.onLoginFormSubmit}
+                        handleLoginFormSubmit={this.onLoginFormSubmit}
                         isAuthenticated={this.isAuthenticated}
                       />
                     )}
@@ -178,7 +167,7 @@ class App extends React.Component {
                     component={() => (
                       <userComponents.ShowUser
                         user={this.state.user}
-                        onRemoveUserClick={this.onRemoveUserClick}
+                        handleRemoveUserClick={this.onRemoveUserClick}
                         isAuthenticated={this.isAuthenticated}
                       />
                     )}
@@ -190,7 +179,17 @@ class App extends React.Component {
                       <userComponents.UpdateUser
                         user={this.state.user}
                         isAuthenticated={this.isAuthenticated}
-                        onUpdateUserFormSubmit={this.onUpdateUserFormSubmit}
+                        handleUpdateUserFormSubmit={this.onUpdateUserFormSubmit}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/keyword"
+                    exact
+                    component={() => (
+                      <keyWordComponents.ShowKeywords
+                        user={this.state.user}
+                        isAuthenticated={this.isAuthenticated}
                       />
                     )}
                   />
@@ -201,13 +200,13 @@ class App extends React.Component {
                       <keyWordComponents.CreateKeyword
                         user={this.state.user}
                         isAuthenticated={this.isAuthenticated}
-                        onAddKeywordFormSubmit={this.onAddKeywordFormSubmit}
+                        handleAddKeywordFormSubmit={this.onAddKeywordFormSubmit}
                       />
                     )}
                   />
                 </Switch>
               </div>
-              <div className="two wide column"></div>
+              <div className="two wide column" />
             </div>
           </div>
         </div>
