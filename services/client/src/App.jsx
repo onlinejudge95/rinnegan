@@ -187,23 +187,21 @@ class App extends React.Component {
                     path="/keyword"
                     exact
                     component={() => (
-                      <keyWordComponents.ShowKeywords
-                        user={this.state.user}
+                      <keyWordComponents.KeywordList
                         isAuthenticated={this.isAuthenticated}
                       />
                     )}
                   />
-                  <Route
+                  {/* <Route
                     path="/keyword/new"
                     exact
                     component={() => (
                       <keyWordComponents.CreateKeyword
-                        user={this.state.user}
                         isAuthenticated={this.isAuthenticated}
                         handleAddKeywordFormSubmit={this.onAddKeywordFormSubmit}
                       />
                     )}
-                  />
+                  /> */}
                 </Switch>
               </div>
               <div className="two wide column" />

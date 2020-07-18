@@ -1,9 +1,7 @@
-import CreateKeyword from "./CreateKeyword";
-import ShowKeywords from "./ShowKeywords";
+import KeywordList from "./KeywordList";
 
 const keyWordComponents = {
-  CreateKeyword,
-  ShowKeywords,
+  KeywordList,
 };
 
 export default keyWordComponents;
