@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import { PropTypes } from "prop-types";
 
 const KeywordList = (props) => {
@@ -27,7 +27,9 @@ const KeywordList = (props) => {
                   </div>
                 </div>
                 <i className="icon newspaper big middle aligned" />
-                <div className="content">Keyword1</div>
+                <div className="content">
+                  <Link to="/keyword/1">Keyword1</Link>
+                </div>
               </div>
               <div className="item">
                 <div className="right floated content">
@@ -36,7 +38,9 @@ const KeywordList = (props) => {
                   </div>
                 </div>
                 <i className="icon newspaper big middle aligned" />
-                <div className="content">Keyword2</div>
+                <div className="content">
+                  <Link to="/keyword/1">Keyword2</Link>
+                </div>
               </div>
               <div className="item">
                 <div className="right floated content">
@@ -45,7 +49,9 @@ const KeywordList = (props) => {
                   </div>
                 </div>
                 <i className="icon newspaper big middle aligned" />
-                <div className="content">Keyword3</div>
+                <div className="content">
+                  <Link to="/keyword/1">Keyword3</Link>
+                </div>
               </div>
             </div>
           </div>

@@ -192,16 +192,15 @@ class App extends React.Component {
                       />
                     )}
                   />
-                  {/* <Route
-                    path="/keyword/new"
+                  <Route
+                    path="/keyword/1"
                     exact
                     component={() => (
-                      <keyWordComponents.CreateKeyword
+                      <keyWordComponents.KeywordDetail
                         isAuthenticated={this.isAuthenticated}
-                        handleAddKeywordFormSubmit={this.onAddKeywordFormSubmit}
                       />
                     )}
-                  /> */}
+                  />
                 </Switch>
               </div>
               <div className="two wide column" />
