@@ -1,4 +1,4 @@
-FROM python:3.8.4-alpine as builder
+FROM python:3.8.5-alpine as builder
 
 LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
@@ -23,7 +23,7 @@ RUN black --check --config /usr/src/app/pyproject.toml /usr/src/app && \
 
 ##############################################################################
 
-FROM python:3.8.4-alpine
+FROM python:3.8.5-alpine
 
 WORKDIR /usr/src/app
 
