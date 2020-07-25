@@ -15,13 +15,13 @@ const LoginUser = (props) => {
         <div className="row">
           <div className="ui huge header">Sign-In</div>
         </div>
-        <div className="ui divider"></div>
+        <div className="ui divider" />
         <div className="row">
           <div className="eleven wide column">
             <Formik
               initialValues={{ email: "", password: "" }}
               onSubmit={(values, { setSubmitting, resetForm }) => {
-                props.onLoginFormSubmit(values);
+                props.handleLoginFormSubmit(values);
                 resetForm();
                 setSubmitting(false);
               }}
@@ -89,7 +89,7 @@ const LoginUser = (props) => {
 };
 
 LoginUser.propTypes = {
-  onLoginFormSubmit: PropTypes.func.isRequired,
+  handleLoginFormSubmit: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.func.isRequired,
 };
 

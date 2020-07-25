@@ -7,10 +7,10 @@ The current image size for database is `152MB` and is tagged as `postgres:develo
 
 ## Setup
 
-1. Create a file named `/services/db/.env` using `/services/db/.env.example` as a template.
-2. Edit your local db credentials in `/services/db/.env`
-3. Edit `/services/db/db.sql` to rename the databases used for development and testing.
-4. In the `docker-compose.yml` add the following volume mount `./services/db/data:/var/lib/postgresql/data/` so that data is persisted between sesssions.
+1. Create a file named `/services/postgre/.env` using `/services/postgre/.env.example` as a template.
+2. Edit your local db credentials in `/services/postgre/.env`
+3. Edit `/services/postgre/db.sql` to rename the databases used for development and testing.
+4. In the `docker-compose.yml` add the following volume mount `./services/postgre/data:/var/lib/postgresql/data/` so that data is persisted between sesssions.
 5. To start the container run the following command
    ```bash
    $ docker-compose up --build --detach

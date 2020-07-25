@@ -7,7 +7,7 @@ const About = () => {
         <div className="row">
           <div className="ui huge header">Rinnegan</div>
         </div>
-        <div className="ui divider"></div>
+        <div className="ui divider" />
         <div className="row">
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac

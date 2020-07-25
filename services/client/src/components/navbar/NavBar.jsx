@@ -11,6 +11,14 @@ const NavBar = (props) => {
       </Link>
     </div>
   );
+  const keywordMenu = (
+    <div className="item">
+      <Link to="/keyword">
+        <i className="icon newspaper" />
+        Sentiments
+      </Link>
+    </div>
+  );
   const unAuthenticatedMenu = (
     <div className="right menu">
       <div className="item">
@@ -30,7 +38,7 @@ const NavBar = (props) => {
   const authenticatedMenu = (
     <div className="right menu">
       <div className="item">
-        <span onClick={props.onLogOutClick}>
+        <span onClick={props.handleLogOutClick}>
           <i className="icon sign-out" />
           Sign-Out
         </span>
@@ -46,13 +54,14 @@ const NavBar = (props) => {
         </Link>
       </div>
       {props.isAuthenticated() ? profileMenu : null}
+      {props.isAuthenticated() ? keywordMenu : null}
       {props.isAuthenticated() ? authenticatedMenu : unAuthenticatedMenu}
     </div>
   );
 };
 
 NavBar.propTypes = {
-  onLogOutClick: PropTypes.func.isRequired,
+  handleLogOutClick: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.func.isRequired,
 };
 

@@ -5,6 +5,7 @@ import axios from "axios";
 import authComponents from "./components/auth";
 import userComponents from "./components/user";
 import navBarComponents from "./components/navbar";
+import keyWordComponents from "./components/keyword";
 import About from "./components/About";
 import Message from "./components/Message";
 
@@ -115,12 +116,16 @@ class App extends React.Component {
     this.setState({ messageText: null, messageType: null });
   };
 
+  onAddKeywordFormSubmit = async () => {
+    console.log("Hello");
+  };
+
   render() {
     return (
       <div className="ui">
         <navBarComponents.NavBar
           isAuthenticated={this.isAuthenticated}
-          onLogOutClick={this.onLogOutClick}
+          handleLogOutClick={this.onLogOutClick}
         />
         <div className="ui container">
           <div className="ui segment">
@@ -132,7 +137,7 @@ class App extends React.Component {
               />
             )}
             <div className="ui grid">
-              <div className="two wide column"></div>
+              <div className="two wide column" />
               <div className="twelve wide column">
                 <Switch>
                   <Route path="/" exact component={About} />
@@ -141,7 +146,7 @@ class App extends React.Component {
                     exact
                     component={() => (
                       <authComponents.RegisterUser
-                        onRegisterFormSubmit={this.onRegisterFormSubmit}
+                        handleRegisterFormSubmit={this.onRegisterFormSubmit}
                         isAuthenticated={this.isAuthenticated}
                       />
                     )}
@@ -151,7 +156,7 @@ class App extends React.Component {
                     exact
                     component={() => (
                       <authComponents.LoginUser
-                        onLoginFormSubmit={this.onLoginFormSubmit}
+                        handleLoginFormSubmit={this.onLoginFormSubmit}
                         isAuthenticated={this.isAuthenticated}
                       />
                     )}
@@ -162,7 +167,7 @@ class App extends React.Component {
                     component={() => (
                       <userComponents.ShowUser
                         user={this.state.user}
-                        onRemoveUserClick={this.onRemoveUserClick}
+                        handleRemoveUserClick={this.onRemoveUserClick}
                         isAuthenticated={this.isAuthenticated}
                       />
                     )}
@@ -174,13 +179,31 @@ class App extends React.Component {
                       <userComponents.UpdateUser
                         user={this.state.user}
                         isAuthenticated={this.isAuthenticated}
-                        onUpdateUserFormSubmit={this.onUpdateUserFormSubmit}
+                        handleUpdateUserFormSubmit={this.onUpdateUserFormSubmit}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/keyword"
+                    exact
+                    component={() => (
+                      <keyWordComponents.KeywordList
+                        isAuthenticated={this.isAuthenticated}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/keyword/1"
+                    exact
+                    component={() => (
+                      <keyWordComponents.KeywordDetail
+                        isAuthenticated={this.isAuthenticated}
                       />
                     )}
                   />
                 </Switch>
               </div>
-              <div className="two wide column"></div>
+              <div className="two wide column" />
             </div>
           </div>
         </div>

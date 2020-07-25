@@ -15,7 +15,7 @@ const RegisterUser = (props) => {
         <div className="row">
           <div className="ui huge header">Sign-Up</div>
         </div>
-        <div className="ui divider"></div>
+        <div className="ui divider" />
         <div className="row">
           <div className="eleven wide column">
             <Formik
@@ -25,7 +25,7 @@ const RegisterUser = (props) => {
                 password: "",
               }}
               onSubmit={(values, { setSubmitting, resetForm }) => {
-                props.onRegisterFormSubmit(values);
+                props.handleRegisterFormSubmit(values);
                 resetForm();
                 setSubmitting(false);
               }}
@@ -113,7 +113,7 @@ const RegisterUser = (props) => {
 };
 
 RegisterUser.propTypes = {
-  onRegisterFormSubmit: PropTypes.func.isRequired,
+  handleRegisterFormSubmit: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.func.isRequired,
 };
 
