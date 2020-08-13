@@ -1,5 +1,8 @@
 version: "3.7"
 
+volumes:
+  rinnegan-data:
+
 networks:
   backend:
     driver: bridge
@@ -20,7 +23,7 @@ services:
     networks:
       - backend
     volumes:
-      - ./services/postgre/data:/var/lib/postgresql/data/
+      - rinnegan-data:/var/lib/postgresql/data/
     build:
       context: ./services/postgre/
       dockerfile: Dockerfile
@@ -40,7 +43,6 @@ services:
     volumes:
       - ./services/server:/usr/src/app
       - ./services/server/logs:/var/log
-      - ./services/server/migrations:/usr/src/app/migrations
     build:
       context: ./services/server/
       dockerfile: Dockerfile
@@ -60,7 +62,6 @@ services:
       - 3000:3000
     volumes:
       - ./services/client/:/usr/src/builder
-      - /usr/src/app/node_modules
     build:
       context: ./services/client/
       dockerfile: Dockerfile
