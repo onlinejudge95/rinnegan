@@ -27,6 +27,14 @@ def get_invalid_user_id_by_token(token):
     return 2
 
 
+def password_matches(password, user):
+    return True
+
+
+def password_not_matches(password, user):
+    return False
+
+
 def get_expired_token_exception(token):
     raise jwt.ExpiredSignatureError()
 

@@ -1,3 +1,4 @@
+from app import bcrypt
 from app import db
 from app.api.auth.models import Token
 
@@ -51,3 +52,17 @@ def get_user_id_by_token(token):
         ID of the user for whom the token is to be generated
     """
     return Token.decode_token(token)
+
+
+def password_matches(password, user):
+    """
+    Checks if the password matches the hash stored in the DB
+
+    :param: password
+        Password entered by the user during login
+    :param: user
+        User object for given login
+    :returns:
+        Whether the password is correct or not
+    """
+    return bcrypt.check_password_hash(user.password, password)

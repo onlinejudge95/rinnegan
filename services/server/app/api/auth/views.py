@@ -5,9 +5,9 @@ from flask_restx import Resource
 from jwt import ExpiredSignatureError
 from jwt import InvalidTokenError
 
-from app import bcrypt
 from app.api.auth.crud import add_token
 from app.api.auth.crud import get_user_id_by_token
+from app.api.auth.crud import password_matches
 from app.api.auth.crud import update_token
 from app.api.auth.serializers import auth_namespace
 from app.api.auth.serializers import fetch_registered_user
@@ -69,7 +69,7 @@ class Login(Resource):
                 404, f"User with email {email} does not exists"
             )
 
-        if not bcrypt.check_password_hash(user.password, password):
+        if not password_matches(password, user):
             logger.info(f"Invalid password for {email}")
             auth_namespace.abort(401, f"Invalid password for {email}")
 
