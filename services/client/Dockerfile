@@ -1,4 +1,4 @@
-FROM node:14.7.0-alpine as builder
+FROM node:14.8.0-alpine as builder
 
 LABEL maintainer="onlinejudge95<onlinejudge95@gmail.com>"
 
