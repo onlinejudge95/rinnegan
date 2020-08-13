@@ -133,6 +133,9 @@ def test_user_login(test_app, monkeypatch):
         views, "get_user_by_email", mock_objects.get_user_object_by_email,
     )
     monkeypatch.setattr(views, "add_token", mock_objects.add_token)
+    monkeypatch.setattr(
+        views, "password_matches", mock_objects.password_matches
+    )
 
     client = test_app.test_client()
     response = client.post(
@@ -151,6 +154,32 @@ def test_user_login(test_app, monkeypatch):
 
     assert data["access_token"]
     assert data["refresh_token"]
+
+
+# Test user login fails due to wrong password
+def test_user_login_wrong_password(test_app, monkeypatch):
+    monkeypatch.setattr(
+        views, "get_user_by_email", mock_objects.get_user_by_email,
+    )
+    monkeypatch.setattr(
+        views, "password_matches", mock_objects.password_not_matches
+    )
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+
+    assert "Invalid password for" in data["message"]
 
 
 # Test user login fails due to unregistered user

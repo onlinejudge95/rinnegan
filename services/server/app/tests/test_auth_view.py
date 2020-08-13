@@ -136,6 +136,27 @@ def test_user_login(test_app, test_database, add_user):
     assert data["refresh_token"]
 
 
+# Test user login fails due to wrong password
+def test_user_login_wrong_password(test_app, test_database, add_user):
+    add_user("test_user", "test_user@mail.com", "test_password")
+    client = test_app.test_client()
+    response = client.post(
+        "/auth/login",
+        data=json.dumps(
+            {"email": "test_user@mail.com", "password": "test_password_wrong"}
+        ),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
+    assert response.status_code == 401
+
+    data = response.get_json()
+
+    assert "Invalid password for" in data["message"]
+
+
 # Test user login fails due to unregistered user
 def test_user_login_unregistered_user(test_app, test_database):
     client = test_app.test_client()
