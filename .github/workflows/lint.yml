@@ -45,5 +45,5 @@ jobs:
             --lines-after-imports 2 \
             --lines-between-types 1 \
             --line-width 79 \
-            --skip-glob "migrations/*" \
+            --skip-glob "services/server/migrations/*" \
             services/server
