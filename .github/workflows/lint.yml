@@ -15,7 +15,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools
+          python -m pip install --upgrade pip setuptools wheel
           pip install pipenv
           cd services/server/
           pipenv lock --dev --requirements > ./requirements.txt
@@ -24,3 +24,7 @@ jobs:
       - name: Run black
         run: |
           black --check --config services/server/pyproject.toml services/server
+
+      - name: Run flake8
+        run: |
+          flake8 --config services/server/setup.cfg services/server/
