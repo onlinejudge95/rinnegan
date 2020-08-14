@@ -14,8 +14,6 @@ jobs:
         run: |
           cd services/client
           docker build --tag rinnegan-client:development .
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/rinnegan-client
-          docker push rinnegan-client:development
 
       - name: Build the database
         run: |
