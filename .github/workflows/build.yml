@@ -17,13 +17,11 @@ jobs:
         run: |
           cd services/postgre
           docker build --tag postgre:development .
-          docker push rinnegan-postgre:development
 
       - name: Build the server
         run: |
           cd services/server
           docker build --tag server:development .
-          docker push rinnegan-server:development
 
   push:
     needs: build
