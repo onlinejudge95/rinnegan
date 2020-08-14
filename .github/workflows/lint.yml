@@ -71,3 +71,8 @@ jobs:
         run: |
           cd services/client/
           npm run lint
+
+      - name: Run prettier
+        run: |
+          cd services/client/
+          npm run prettier:check
