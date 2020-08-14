@@ -8,17 +8,24 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Login to Docker Hub
+        run: |
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
       - name: Build the client
         run: |
           cd services/client
           docker build --tag client:development .
+          docker push rinnegan-client:development
 
       - name: Build the database
         run: |
           cd services/postgre
           docker build --tag postgre:development .
+          docker push rinnegan-postgre:development
 
       - name: Build the server
         run: |
           cd services/server
           docker build --tag server:development .
+          docker push rinnegan-server:development
