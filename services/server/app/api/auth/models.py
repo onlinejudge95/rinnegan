@@ -1,8 +1,10 @@
-from app import db
+import datetime
+
+import jwt
+
 from flask import current_app
 
-import datetime
-import jwt
+from app import db
 
 
 class Token(db.Model):
@@ -11,10 +13,16 @@ class Token(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     access_token = db.Column(db.String(200), nullable=False)
     refresh_token = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="cascade"),
+        nullable=False,
+    )
 
-    def __init__(self, access_token, refresh_token):
+    def __init__(self, access_token, refresh_token, user_id):
         self.access_token = access_token
         self.refresh_token = refresh_token
+        self.user_id = user_id
 
     @staticmethod
     def encode_token(user_id, token_type):

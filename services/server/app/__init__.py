@@ -1,17 +1,14 @@
-from app.config import cfg_map
 from flask import abort
 from flask import Flask
 from flask import request
-from flask_admin import Admin
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-import os
+from app.config import cfg_map
 
 
-admin = Admin(template_mode="bootstrap3")
 db = SQLAlchemy()
 cors = CORS()
 bcrypt = Bcrypt()
@@ -45,8 +42,9 @@ def create_app(environemnt):
 
     api.init_app(app)
 
-    if os.getenv("FLASK_ENV") != "production":
-        admin.init_app(app)
+    from app.api.auth.models import Token  # noqa: F401
+    from app.api.sentiment.models import Sentiment  # noqa: F401
+    from app.api.users.models import User  # noqa: F401
 
     @app.before_request
     def check_headers():

@@ -1,3 +1,10 @@
+import logging
+
+from flask import request
+from flask_restx import Resource
+from jwt import ExpiredSignatureError
+from jwt import InvalidTokenError
+
 from app.api.auth.crud import get_user_id_by_token
 from app.api.auth.serializers import parser
 from app.api.users.crud import add_user
@@ -9,11 +16,6 @@ from app.api.users.crud import update_user
 from app.api.users.serializers import user_readable
 from app.api.users.serializers import user_writable
 from app.api.users.serializers import users_namespace
-from flask import request
-from flask_restx import Resource
-
-import jwt
-import logging
 
 
 logger = logging.getLogger(__name__)
@@ -40,12 +42,10 @@ class UsersList(Resource):
             return response, 400
 
         user = add_user(
-            request_data["username"],
-            request_data["email"],
-            request_data["password"],
+            request_data["username"], email, request_data["password"],
         )
         response["id"] = user.id
-        response["message"] = f"{request_data['email']} was added"
+        response["message"] = f"{email} was added"
         logger.info(f"User with email {email} added successfully")
         return response, 201
 
@@ -60,13 +60,16 @@ class UsersList(Resource):
             users_namespace.abort(403, "Token required to fetch the user list")
 
         try:
-            get_user_id_by_token(auth_header.split()[1])
+            token = auth_header.split()[1]
+
+            get_user_id_by_token(token)
+
             return get_all_users(), 200
-        except jwt.ExpiredSignatureError:
-            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
+        except ExpiredSignatureError:
+            logger.error(f"Auth-token {token} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
-        except jwt.InvalidTokenError:
-            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
+        except InvalidTokenError:
+            logger.error(f"Auth-token {token} is invalid")
             users_namespace.abort(401, "Invalid token. Please log in again.")
 
 
@@ -83,22 +86,22 @@ class UsersDetail(Resource):
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
-            get_user_id_by_token(auth_header.split()[1])
+            token = auth_header.split()[1]
+
+            get_user_id_by_token(token)
 
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.info(
-                    f"Invalid user_id for token {auth_header.split()[1]}"
-                )
+                logger.info(f"Invalid user_id for token {token}")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             return user, 200
-        except jwt.ExpiredSignatureError:
-            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
+        except ExpiredSignatureError:
+            logger.error(f"Auth-token {token} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
-        except jwt.InvalidTokenError:
-            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
+        except InvalidTokenError:
+            logger.error(f"Auth-token {token} is invalid")
             users_namespace.abort(401, "Invalid token. Please log in again.")
 
     @staticmethod
@@ -112,24 +115,24 @@ class UsersDetail(Resource):
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
-            get_user_id_by_token(auth_header.split()[1])
+            token = auth_header.split()[1]
+
+            get_user_id_by_token(token)
 
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.info(
-                    f"Invalid user_id for token {auth_header.split()[1]}"
-                )
+                logger.info(f"Invalid user_id for token {token}")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             remove_user(user)
 
             return {}, 204
-        except jwt.ExpiredSignatureError:
-            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
+        except ExpiredSignatureError:
+            logger.error(f"Auth-token {token} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
-        except jwt.InvalidTokenError:
-            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
+        except InvalidTokenError:
+            logger.error(f"Auth-token {token} is invalid")
             users_namespace.abort(401, "Invalid token. Please log in again.")
 
     @staticmethod
@@ -146,16 +149,16 @@ class UsersDetail(Resource):
             users_namespace.abort(403, "Token required to fetch the user")
 
         try:
-            get_user_id_by_token(auth_header.split()[1])
+            token = auth_header.split()[1]
+
+            get_user_id_by_token(token)
 
             request_data = request.get_json()
 
             user = get_user_by_id(user_id)
 
             if not user:
-                logger.info(
-                    f"Invalid user_id for token {auth_header.split()[1]}"
-                )
+                logger.info(f"Invalid user_id for token {token}")
                 users_namespace.abort(404, f"User {user_id} does not exist")
 
             updated_user = update_user(
@@ -163,11 +166,11 @@ class UsersDetail(Resource):
             )
 
             return updated_user, 200
-        except jwt.ExpiredSignatureError:
-            logger.error(f"Auth-token {auth_header.split()[1]} has expired")
+        except ExpiredSignatureError:
+            logger.error(f"Auth-token {token} has expired")
             users_namespace.abort(401, "Token expired. Please log in again.")
-        except jwt.InvalidTokenError:
-            logger.error(f"Auth-token {auth_header.split()[1]} is invalid")
+        except InvalidTokenError:
+            logger.error(f"Auth-token {token} is invalid")
             users_namespace.abort(401, "Invalid token. Please log in again.")
 
 

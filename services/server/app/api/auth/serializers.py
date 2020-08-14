@@ -34,5 +34,10 @@ access_token = auth_namespace.model(
     "Access", {"access_token": fields.String(required=True)}
 )
 user_tokens = auth_namespace.inherit(
-    "Tokens", refresh, {"access_token": fields.String(required=True)},
+    "Tokens",
+    refresh,
+    {
+        "access_token": fields.String(required=True),
+        "user_id": fields.Integer(readOnly=True),
+    },
 )

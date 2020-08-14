@@ -5,7 +5,7 @@ test_patterns = [
     "*/__tests__/**"
 ]
 
-exclude_patterns = ["services/server/migrations/**"]
+exclude_patterns = ["services/server/migrations/**", "services/server/gunicorn*"]
 
 [[analyzers]]
 name = "docker"
@@ -19,8 +19,7 @@ enabled = true
   ]
 
   trusted_registries = [
-    "registry.hub.docker.com",
-    "registry.gitlab.com"
+    "registry.hub.docker.com"
   ]
 
 [[analyzers]]

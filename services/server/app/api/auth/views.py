@@ -1,5 +1,13 @@
+import logging
+
+from flask import request
+from flask_restx import Resource
+from jwt import ExpiredSignatureError
+from jwt import InvalidTokenError
+
 from app.api.auth.crud import add_token
 from app.api.auth.crud import get_user_id_by_token
+from app.api.auth.crud import password_matches
 from app.api.auth.crud import update_token
 from app.api.auth.serializers import auth_namespace
 from app.api.auth.serializers import fetch_registered_user
@@ -9,11 +17,6 @@ from app.api.auth.serializers import register_user
 from app.api.auth.serializers import user_tokens
 from app.api.users.crud import add_user
 from app.api.users.crud import get_user_by_email
-from flask import request
-from flask_restx import Resource
-
-import jwt
-import logging
 
 
 logger = logging.getLogger(__name__)
@@ -39,9 +42,7 @@ class Register(Resource):
             )
 
         user = add_user(
-            request_data["username"],
-            request_data["email"],
-            request_data["password"],
+            request_data["username"], email, request_data["password"],
         )
         logger.info(f"User with email {email} added successfully")
         return user, 201
@@ -52,12 +53,14 @@ class Login(Resource):
     @auth_namespace.marshal_with(user_tokens)
     @auth_namespace.expect(login_user, validate=True)
     @auth_namespace.response(200, "Successfully logged the user in")
+    @auth_namespace.response(401, "Invalid password for <email>")
     @auth_namespace.response(
         404, "User with email <user_email> does not exists"
     )
     def post():
         request_data = request.get_json()
         email = request_data.get("email")
+        password = request_data.get("password")
 
         user = get_user_by_email(email)
         if not user:
@@ -65,7 +68,13 @@ class Login(Resource):
             auth_namespace.abort(
                 404, f"User with email {email} does not exists"
             )
+
+        if not password_matches(password, user):
+            logger.info(f"Invalid password for {email}")
+            auth_namespace.abort(401, f"Invalid password for {email}")
+
         token = add_token(user.id)
+
         logger.info(f"User with email {email} logged in successfully")
         return token, 200
 
@@ -85,10 +94,10 @@ class Refresh(Resource):
             token = update_token(refresh_token, user_id)
             logger.info(f"Refreshed token for user with id {user_id}")
             return token, 200
-        except jwt.ExpiredSignatureError:
+        except ExpiredSignatureError:
             logger.error(f"Auth-token {refresh_token} has expired")
             auth_namespace.abort(401, "Token expired. Please log in again.")
-        except jwt.InvalidTokenError:
+        except InvalidTokenError:
             logger.error(f"Auth-token {refresh_token} is invalid")
             auth_namespace.abort(401, "Invalid token. Please log in again.")
 

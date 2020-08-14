@@ -1,0 +1,78 @@
+name: lint
+
+on: [pull_request]
+
+jobs:
+  server:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install pipenv
+          cd services/server/
+          pipenv lock --dev --requirements > ./requirements.txt
+          pip install --requirement requirements.txt
+
+      - name: Run black
+        run: |
+          cd services/server/
+          black \
+          --check \
+          --config pyproject.toml \
+          .
+
+      - name: Run flake8
+        run: |
+          cd services/server/
+          flake8 \
+          --config setup.cfg \
+          .
+
+      - name: Run isort
+        run: |
+          cd services/server/
+          isort \
+            --atomic \
+            --case-sensitive \
+            --check-only \
+            --force-alphabetical-sort-within-sections \
+            --force-single-line-imports \
+            --lines-after-imports 2 \
+            --lines-between-types 1 \
+            --line-width 79 \
+            --skip-glob "migrations/*" \
+            .
+
+  client:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node 14.8
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.8
+
+      - name: Install dependencies
+        run: |
+          npm update -g
+          cd services/client/
+          npm install
+
+      - name: Run eslint
+        run: |
+          cd services/client/
+          npm run lint
+
+      - name: Run prettier
+        run: |
+          cd services/client/
+          npm run prettier:check
