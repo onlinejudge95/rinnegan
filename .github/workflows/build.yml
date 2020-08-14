@@ -1,0 +1,14 @@
+name: build
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build the database
+        run: |
+          cd services/postgre
+          docker build --tag postgre:development services/postgre
