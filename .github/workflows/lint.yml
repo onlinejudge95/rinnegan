@@ -3,8 +3,8 @@ name: lint
 on: [pull_request]
 
 jobs:
-  greeting:
-    runs-on: ubuntu-latest
+  server:
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
@@ -50,3 +50,24 @@ jobs:
             --line-width 79 \
             --skip-glob "migrations/*" \
             .
+
+  client:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node 14.8.0
+        uses: actions/setup-python@v2
+        with:
+          node-version: 14.8.0
+
+      - name: Install dependencies
+        run: |
+          npm update -g
+          cd services/client/
+          npm install --only dev
+
+      - name: Run eslint
+        run: |
+          cd services/client/
+          npm run lint
