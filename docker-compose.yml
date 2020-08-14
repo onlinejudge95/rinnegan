@@ -6,11 +6,11 @@ volumes:
 networks:
   backend:
     driver: bridge
-    name: sentimental-backend
+    name: rinnegan-backend
 
   frontend:
     driver: bridge
-    name: sentimental-frontend
+    name: rinnegan-frontend
 
 services:
   postgre:

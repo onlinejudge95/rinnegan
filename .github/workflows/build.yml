@@ -8,7 +8,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Build the client
+        run: |
+          cd services/client
+          docker build --tag client:development .
+
       - name: Build the database
         run: |
           cd services/postgre
           docker build --tag postgre:development .
+
+      - name: Build the server
+        run: |
+          cd services/server
+          docker build --tag server:development .
