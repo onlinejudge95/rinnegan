@@ -23,8 +23,27 @@ jobs:
 
       - name: Run black
         run: |
-          black --check --config services/server/pyproject.toml services/server
+          black \
+          --check \
+          --config services/server/pyproject.toml \
+          services/server
 
       - name: Run flake8
         run: |
-          flake8 --config services/server/setup.cfg services/server/
+          flake8 \
+          --config services/server/setup.cfg \
+          services/server/
+
+      - name: Run isort
+        run: |
+          isort \
+            --atomic \
+            --case-sensitive \
+            --check-only \
+            --force-alphabetical-sort-within-sections \
+            --force-single-line-imports \
+            --lines-after-imports 2 \
+            --lines-between-types 1 \
+            --line-width 79 \
+            --skip-glob "migrations/*" \
+            services/server
