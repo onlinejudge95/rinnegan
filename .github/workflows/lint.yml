@@ -65,7 +65,7 @@ jobs:
         run: |
           npm update -g
           cd services/client/
-          npm install --only dev
+          npm install
 
       - name: Run eslint
         run: |
