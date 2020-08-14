@@ -1,4 +1,4 @@
-name: greetings
+name: lint
 
 on: [pull_request]
 
@@ -17,6 +17,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools
           pip install pipenv
+          cd services/server/
           pipenv lock --dev --requirements > ./requirements.txt
           pip install --requirement requirements.txt
 
