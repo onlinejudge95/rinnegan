@@ -1,0 +1,28 @@
+name: docker
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Login to github registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com --username ${{ github.actor }} --password-stdin
+
+      - name: Build the client
+        run: |
+          cd services/client
+          docker build --tag rinnegan-client:development .
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/rinnegan-client
+          docker push rinnegan-client:development
+
+      - name: Build the database
+        run: |
+          cd services/postgre
+          docker build --tag rinnegan-postgre:development .
+
+      - name: Build the server
+        run: |
+          cd services/server
+          docker build --tag rinnegan-server:development .
