@@ -11,4 +11,4 @@ jobs:
       - name: Build the database
         run: |
           cd services/postgre
-          docker build --tag postgre:development services/postgre
+          docker build --tag postgre:development .
